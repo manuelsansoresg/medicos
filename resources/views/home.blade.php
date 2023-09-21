@@ -9,19 +9,19 @@
             </a>
         </div>
         <div class="col-6 col-md-3 text-center">
-            <a href="" class="link-secondary text-decoration-none fw-bold">
+            <a href="/admin/citas" class="link-secondary text-decoration-none fw-bold">
                 <img class="img-fluid" src="{{ asset('image/timetable.png') }}" alt="">
                 <p class="mt-2 text-center">CITAS</p>
             </a>
         </div>
         <div class="col-6 col-md-3 text-center">
-            <a href="" class="link-secondary text-decoration-none fw-bold">
+            <a href="/admin/pacientes" class="link-secondary text-decoration-none fw-bold">
                 <img class="img-fluid" src="{{ asset('image/youth.png') }}" alt="">
                 <p class="mt-2 text-center">PACIENTES</p>
             </a>
         </div>
         <div class="col-6 col-md-3 text-center">
-            <a href="" class="link-secondary text-decoration-none fw-bold">
+            <a href="/admin/pendientes" class="link-secondary text-decoration-none fw-bold">
                 <img class="img-fluid" src="{{ asset('image/alarm.png') }}" alt="">
                 <p class="mt-2 text-center">PENDIENTES</p>
             </a>

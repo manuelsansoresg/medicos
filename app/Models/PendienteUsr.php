@@ -22,8 +22,7 @@ class PendienteUsr extends Model
     public static function getByDay()
     {
         $diadhoy  = date("Y-m-d"); 
-        /* return PendienteUsr::where('idusrregistra', Auth::user()->id)
-                        ->where('dfecha', $diadhoy)->get(); */
-        return PendienteUsr::all();
+        return PendienteUsr::where('idusrregistra', Auth::user()->id)
+                        ->where('dfecha', $diadhoy)->get();
     }
 }

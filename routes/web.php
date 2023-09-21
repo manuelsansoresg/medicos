@@ -21,4 +21,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['prefix' => 'admin'], function () {
     Route::resource('actividades', '\App\Http\Controllers\Admin\ActividadesController')->middleware('auth');
+    Route::resource('citas', '\App\Http\Controllers\Admin\CitasController')->middleware('auth');
+    Route::resource('pacientes', '\App\Http\Controllers\Admin\PacientesController')->middleware('auth');
+    Route::resource('pendientes', '\App\Http\Controllers\Admin\PendientesController')->middleware('auth');
 });

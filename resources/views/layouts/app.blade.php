@@ -78,8 +78,8 @@
         <main class="py-4">
             <div class="container">
                 <div class="row  justify-content-center align-items-center"><!-- Agregado vh-100 y align-items-center -->
-                    <div class="col-md-8">
-                        <div class="card pt-5 px-5 class="bg-white"">
+                    <div class="col-12 col-md-9">
+                        <div class="card pt-5 px-5" class="bg-white">
                             <h5 class="text-center">BIENVENIDO AL SISTEMA: <b>{{ Auth::user()->name }}</b> </h5>
                             @yield('content')
                             
