@@ -20,7 +20,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
+    <div id="app" class="bg-white">
         {{-- <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
@@ -76,7 +76,18 @@
         </nav> --}}
 
         <main class="py-4">
-            @yield('content')
+            <div class="container">
+                <div class="row  justify-content-center align-items-center"><!-- Agregado vh-100 y align-items-center -->
+                    <div class="col-md-8">
+                        <div class="card pt-5 px-5 class="bg-white"">
+                            <h5 class="text-center">BIENVENIDO AL SISTEMA: <b>{{ Auth::user()->name }}</b> </h5>
+                            @yield('content')
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </main>
     </div>
 </body>
