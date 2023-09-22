@@ -33,7 +33,7 @@
             </a>
         </div>
         <div class="col-6 col-md-3 text-center">
-            <a href="" class="link-secondary text-decoration-none fw-bold">
+            <a href="/admin/administracion" class="link-secondary text-decoration-none fw-bold">
                 <img class="img-fluid" src="{{ asset('image/gear.png') }}" alt="">
                 <p class="mt-2 text-center">ADMINISTRACIÓN</p>
             </a>

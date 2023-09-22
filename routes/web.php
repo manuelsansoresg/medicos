@@ -24,4 +24,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('citas', '\App\Http\Controllers\Admin\CitasController')->middleware('auth');
     Route::resource('pacientes', '\App\Http\Controllers\Admin\PacientesController')->middleware('auth');
     Route::resource('pendientes', '\App\Http\Controllers\Admin\PendientesController')->middleware('auth');
+    Route::resource('administracion', '\App\Http\Controllers\Admin\AdministracionController')->middleware('auth');
+    
+    Route::resource('clinica', '\App\Http\Controllers\Admin\ClinicaController')->middleware('auth');
 });
