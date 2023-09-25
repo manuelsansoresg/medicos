@@ -26,7 +26,9 @@ class ClinicaController extends Controller
      */
     public function create()
     {
-        //
+        $clinica_id   = null;
+        $clinica      = null;
+        return view('administracion.clinica.frm', compact('clinica', 'clinica_id'));
     }
 
     /**
@@ -37,7 +39,7 @@ class ClinicaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Clinica::saveEdit($request);
     }
 
     /**
@@ -59,7 +61,9 @@ class ClinicaController extends Controller
      */
     public function edit($id)
     {
-        //
+        $clinica_id   = $id;
+        $clinica      = Clinica::find($id);
+        return view('administracion.clinica.frm', compact('clinica', 'clinica_id'));
     }
 
     /**

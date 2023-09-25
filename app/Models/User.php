@@ -42,4 +42,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function saveEdit($data , $user_id = null)
+    {
+        if ($user_id == null) {
+            $user = User::create($data);
+        } else {
+            $user = User::find($user_id);
+            $user->fill($data);
+            $user->update();
+        }
+        return $user;
+    }
 }

@@ -7,6 +7,7 @@ return [
     ),
     
     'status' => array(
+        '' => 'SELECCIONE UNA OPCIÓN',
         0 => 'NO',
         1 => 'SÍ',
     ),
