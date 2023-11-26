@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Clinica;
+use App\Models\Consultorio;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CitasController extends Controller
 {
@@ -14,7 +17,12 @@ class CitasController extends Controller
      */
     public function index()
     {
-        return view('citas.list');
+        $user = Auth::user();
+        //$is_medico =  Auth::user()->hasRole('administrador');
+        $is_medico =  Auth::user()->hasRole('medico');
+        $clinicas = Clinica::getAll();
+        $consultorios = Consultorio::getAll();
+        return view('citas.list', compact('clinicas', 'consultorios', 'is_medico'));
     }
 
     /**

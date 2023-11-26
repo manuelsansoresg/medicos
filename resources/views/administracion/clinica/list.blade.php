@@ -6,7 +6,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                   <li class="breadcrumb-item active" aria-current="page"><a href="/">INICIO</a></li>
-                  <li class="breadcrumb-item"><a href="/">ADMINISTRACIÓN</a></li>
+                  <li class="breadcrumb-item"><a href="/admin/administracion">ADMINISTRACIÓN</a></li>
                   <li class="breadcrumb-item">LISTA DE CLINICAS</li>
                 </ol>
               </nav>
@@ -38,7 +38,7 @@
                             <td> {{ config('enums.status')[$clinica->istatus] }} </td>
                             <td class="col-2">
                                 <a href="/admin/clinica/{{ $clinica->idclinica }}/edit" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a href="" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></a>
+                                <a href="#" onclick="deleteClinica({{ $clinica->idclinica }})"  class="btn btn-danger"><i class="fa-solid fa-trash-can"></i></a>
                             </td>
                         </tr>
                     @endforeach

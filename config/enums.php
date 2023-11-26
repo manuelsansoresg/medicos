@@ -11,5 +11,12 @@ return [
         0 => 'NO',
         1 => 'SÍ',
     ),
+    
+    'usuario_puesto' => array(
+        '' => 'SELECCIONE UNA OPCIÓN',
+        'administrador' => 'ADMINISTRADOR',
+        'medico' => 'DOCTOR',
+        'auxiliar' => 'AYUDANTE',
+    ),
 
 ];

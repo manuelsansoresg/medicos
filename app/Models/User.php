@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -22,6 +23,20 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'vapellido',
+        'ttelefono',
+        'tdireccion',
+        'idpuesto',
+        'vcedula',
+        'RFC',
+        'especialidad',
+        'idclinica',
+        'idoctora',
+        'status',
+        'usuario_alta',
+        'vcodigodocto',
+        'creador_id',
+        'usuario_principal',
     ];
 
     /**
@@ -43,15 +58,34 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public static function saveEdit($data , $user_id = null)
+    public static function saveEdit($request)
     {
+        $data       = $request->data;
+        $user_id    = $request->user_id;
+        $password   = $request->password;
+        $rol        = $request->rol;
+
+        
+        if ($password != null) {
+            $data['password'] = bcrypt($password);
+        }
+
         if ($user_id == null) {
+            $data['creador_id'] = Auth::user()->id;
             $user = User::create($data);
+            $user->assignRole($rol);
         } else {
             $user = User::find($user_id);
             $user->fill($data);
             $user->update();
+
+            $roles = $user->roles;
+            foreach ($roles as $row_rol) {
+                $user->removeRole($row_rol);
+            }
+            $user->assignRole($rol);
         }
+        ClinicaUser::saveEdit($user->id, $request);
         return $user;
     }
 }

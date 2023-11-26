@@ -21,7 +21,7 @@
                 </a>
             </div>
             <div class="col-6 col-md-3 text-center">
-                <a href="/admin/actividades" class="link-secondary text-decoration-none fw-bold">
+                <a href="/admin/clinica/create" class="link-secondary text-decoration-none fw-bold">
                     <img class="img-fluid" src="{{ asset('image/addhospital.png') }}" alt="">
                     <p class="mt-2 text-center"> NUEVA CLINICA</p>
                 </a>
@@ -39,19 +39,19 @@
                 </a>
             </div>
             <div class="col-6 col-md-3 text-center">
-                <a href="/admin/actividades" class="link-secondary text-decoration-none fw-bold">
+                <a href="/admin/usuarios" class="link-secondary text-decoration-none fw-bold">
                     <img class="img-fluid" src="{{ asset('image/user.png') }}" alt="">
                     <p class="mt-2 text-center">  USUARIOS </p>
                 </a>
             </div>
             <div class="col-6 col-md-3 text-center">
-                <a href="/admin/actividades" class="link-secondary text-decoration-none fw-bold">
+                <a href="/admin/usuarios/create" class="link-secondary text-decoration-none fw-bold">
                     <img class="img-fluid" src="{{ asset('image/adduser.png') }}" alt="">
                     <p class="mt-2 text-center">   NUEVO USUARIO </p>
                 </a>
             </div>
             <div class="col-6 col-md-3 text-center">
-                <a href="/admin/actividades" class="link-secondary text-decoration-none fw-bold">
+                <a href="/admin/citas" class="link-secondary text-decoration-none fw-bold">
                     <img class="img-fluid" src="{{ asset('image/emptycalendar.png') }}" alt="">
                     <p class="mt-2 text-center">DÍAS SIN CITAS </p>
                 </a>

@@ -86,6 +86,6 @@ class ClinicaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Clinica::find($id)->delete();
     }
 }

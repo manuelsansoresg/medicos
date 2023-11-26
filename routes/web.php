@@ -27,4 +27,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('administracion', '\App\Http\Controllers\Admin\AdministracionController')->middleware('auth');
     
     Route::resource('clinica', '\App\Http\Controllers\Admin\ClinicaController')->middleware('auth');
+    Route::resource('usuarios', '\App\Http\Controllers\Admin\UserController')->middleware('auth');
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

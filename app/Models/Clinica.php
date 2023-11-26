@@ -16,6 +16,11 @@ class Clinica extends Model
         'idclinica','tnombre','tdireccion','vrfc','ttelefono','logotipo','rutalogo','istatus','vfolioclinica'
     ];
 
+    public static function getAll()
+    {
+        return Clinica::all();
+    }
+
     public static function saveEdit($request)
     {
         $data = $request->data;
