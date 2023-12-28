@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\Clinica;
+use App\Models\ClinicaUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,10 +20,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users    = User::all();
-        
+        $users        = User::all();
+        $my_clinics   = null;
 
-        return view('administracion.user.list', compact('users'));
+        return view('administracion.user.list', compact('users', 'my_clinics'));
     }
 
     /**
@@ -90,10 +91,11 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user_id   = $id;
-        $user      = User::find($id);
-        $clinicas = Clinica::getAll();
-        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas'));
+        $user_id    = $id;
+        $user       = User::find($id);
+        $clinicas   = Clinica::getAll();
+        $my_clinics = ClinicaUser::where('user_id', $user_id)->get();
+        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics'));
     }
 
     /**

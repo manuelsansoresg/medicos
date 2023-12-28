@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
+    'logo' => '<b>Admin</b>',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
@@ -291,10 +291,15 @@ return [
 
     'menu' => [
         // Navbar items:
-        [
+        /* [
             'type'         => 'navbar-search',
             'text'         => 'search',
             'topnav_right' => true,
+        ], */
+        [
+            'text'        => 'Mi clinica y consultorio',
+            'url'         => '/query/viewClinicaYConsultorio',
+            'icon'        => 'far fa-fw fa-file',
         ],
         [
             'type'         => 'fullscreen-widget',
@@ -302,21 +307,49 @@ return [
         ],
 
         // Sidebar items:
-        [
+        /* [
             'type' => 'sidebar-menu-search',
             'text' => 'search',
-        ],
-        [
+        ], */
+        /* [
             'text' => 'blog',
             'url'  => 'admin/blog',
             'can'  => 'manage-blog',
+        ], */
+        [
+            'text'        => 'Clínicas',
+            'url'         => 'admin/clinica',
+            'icon'        => 'far fa-fw fa-file',
         ],
         [
-            'text'        => 'pages',
-            'url'         => 'admin/pages',
+            'text'        => 'Consultorios',
+            'url'         => 'admin/consultorio',
             'icon'        => 'far fa-fw fa-file',
-            'label'       => 4,
-            'label_color' => 'success',
+        ],
+        [
+            'text'        => 'Usuarios',
+            'url'         => 'admin/usuarios',
+            'icon'        => 'far fa-fw fa-file',
+        ],
+        [
+            'text'        => 'Citas',
+            'url'         => 'admin/citas',
+            'icon'        => 'far fa-fw fa-file',
+        ],
+        [
+            'text'        => 'Pacientes',
+            'url'         => 'admin/pacientes',
+            'icon'        => 'far fa-fw fa-file',
+        ],
+        [
+            'text'        => 'Pendientes',
+            'url'         => 'admin/pendientes',
+            'icon'        => 'far fa-fw fa-file',
+        ],
+        [
+            'text'        => 'Actividades',
+            'url'         => 'admin/pendientes',
+            'icon'        => 'far fa-fw fa-file',
         ],
         ['header' => 'account_settings'],
         [
@@ -367,7 +400,7 @@ return [
                 ],
             ],
         ],
-        ['header' => 'labels'],
+        /* ['header' => 'labels'],
         [
             'text'       => 'important',
             'icon_color' => 'red',
@@ -382,7 +415,7 @@ return [
             'text'       => 'information',
             'icon_color' => 'cyan',
             'url'        => '#',
-        ],
+        ], */
     ],
 
     /*
@@ -421,7 +454,7 @@ return [
 
     'plugins' => [
         'Datatables' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
@@ -441,7 +474,7 @@ return [
             ],
         ],
         'Select2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
@@ -487,6 +520,21 @@ return [
                     'type' => 'js',
                     'asset' => false,
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js',
+                ],
+            ],
+        ],
+        'webpack' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '/css/app.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '/js/app.js',
                 ],
             ],
         ],

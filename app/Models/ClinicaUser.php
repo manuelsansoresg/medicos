@@ -17,13 +17,15 @@ class ClinicaUser extends Model
 
     public static function saveEdit($id, $request)
     {
+        $existingConfiguration = ClinicaUser::where(['user_id' => $id]);
+
+        if ($existingConfiguration != null) {
+            $existingConfiguration->delete();
+        }
+
         if (isset($request->clinicas)) {
             $clinicas = $request->clinicas;
-            $existingConfiguration = ClinicaUser::where(['user_id' => $id]);
-
-            if ($existingConfiguration != null) {
-                $existingConfiguration->delete();
-            }
+            
             
             foreach ($clinicas as $key => $clinica) {
                 $existingClinica = Clinica::find($clinica);
@@ -38,5 +40,10 @@ class ClinicaUser extends Model
                 }
             }
         }
+    }
+
+    public function clinica()
+    {
+        return $this->belongsTo(Clinica::class, 'clinica_id');
     }
 }

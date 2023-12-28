@@ -20,4 +20,22 @@ class Consultorio extends Model
     {
         return Consultorio::all();
     }
+
+    public static function saveEdit($request)
+    {
+        $data = $request->data;
+        $consultorio_id = $request->consultorio_id;
+        if ($consultorio_id == null) {
+            $consultorio = Consultorio::create($data);
+        } else {
+            $consultorio = Consultorio::find($consultorio_id);
+            $consultorio->update($data);
+        }
+        return $consultorio;
+    }
+
+    public function consultorioClinica()
+    {
+        return $this->belongsTo(Clinica::class, 'idclinica');
+    }
 }

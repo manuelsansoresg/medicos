@@ -18,6 +18,7 @@ class Clinica extends Model
 
     public static function getAll()
     {
+        //*cambiar listando las clinicas donde perteneces si no eres administrador
         return Clinica::all();
     }
 
