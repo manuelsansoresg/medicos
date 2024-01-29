@@ -56,7 +56,7 @@
                     </div>
                     <div class="col-md-12 text-right">
                         <div class="mb-3">
-                            <input type="hidden" id="consultorio_id" name="consultorio_id" value="{{ $id }}" >
+                            <input type="hidden" name="id" value="{{ $id }}" >
                             <button class="btn btn-primary">Guardar</button>
                         </div>
                     </div>

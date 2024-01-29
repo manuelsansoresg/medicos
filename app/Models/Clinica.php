@@ -34,4 +34,10 @@ class Clinica extends Model
         }
         return $clinica;
     }
+
+    public function consultorios()
+    {
+        return $this->hasMany(Consultorio::class, 'idclinica');
+    }
+
 }

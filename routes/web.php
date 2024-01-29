@@ -19,8 +19,8 @@ Auth::routes();
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
 
-Route::get('/query/clinicaYConsultorio', [App\Http\Controllers\HomeController::class, 'clinicaYConsultorio'])->name('home')->middleware('auth');
-Route::get('/query/viewClinicaYConsultorio', [App\Http\Controllers\HomeController::class, 'viewClinicaYConsultorio'])->name('home')->middleware('auth');
+Route::get('/query/clinicaYConsultorio', [App\Http\Controllers\HomeController::class, 'clinicaYConsultorio'])->middleware('auth');
+Route::get('/query/viewClinicaYConsultorio', [App\Http\Controllers\HomeController::class, 'viewClinicaYConsultorio'])->middleware('auth');
 
 Route::group(['prefix' => 'admin'], function () {
     Route::resource('actividades', '\App\Http\Controllers\Admin\ActividadesController')->middleware('auth');
@@ -30,8 +30,13 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('administracion', '\App\Http\Controllers\Admin\AdministracionController')->middleware('auth');
     
     Route::resource('clinica', '\App\Http\Controllers\Admin\ClinicaController')->middleware('auth');
+    Route::get('/clinica/{clinica}/consultorio/get', [App\Http\Controllers\Admin\ClinicaController::class, 'consultorioGet'])->middleware('auth');
+    Route::get('/clinica/consultorio/myConfiguration', [App\Http\Controllers\Admin\ClinicaController::class, 'consultorioGet'])->middleware('auth');
+    Route::post('/clinica/consultorio/set', [App\Http\Controllers\Admin\ClinicaController::class, 'setClinicaConsultorio'])->middleware('auth');
+
     Route::resource('consultorio', '\App\Http\Controllers\Admin\ConsultoriosController')->middleware('auth');
     Route::resource('usuarios', '\App\Http\Controllers\Admin\UserController')->middleware('auth');
+    Route::resource('sin_citas', '\App\Http\Controllers\Admin\SinCitasController')->middleware('auth');
 });
 
 Auth::routes();

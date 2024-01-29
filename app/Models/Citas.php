@@ -12,4 +12,12 @@ class Citas extends Model
     protected $fillable = [
         'idcitas','vfoliopaciente','tmotivoconsulta','dfecha','vhora','idregistrado','iddoctor','idclinica','idconsultorio','idcliente','istatuscita','idiaconsulta','idiasemana','iformacita'
     ];
+
+    public static function saveEdit($request)
+    {
+        $data = $request->data;
+        if ($request->idcitas == null) {
+            Citas::create($data);
+        }
+    }
 }

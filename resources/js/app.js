@@ -1,23 +1,17 @@
-$('.select2multiple').select2({
-    placeholder: "Escribe para buscar..",
-});
+if (document.getElementsByClassName('select2multiple')) {
+    $('.select2multiple').select2({
+        placeholder: "Escribe para buscar..",
+    });
+}
+
 
 require('./bootstrap');
 
 
+require('./sin_citas');
 require('./clinica');
 require('./consultorio');
+require('./clinicaconsultorio');
 require('./user');
+require('./citas');
 
-if (!document.getElementById('isRedirect')) {
-    axios
-        .get("/query/clinicaYConsultorio")
-        .then(function (response) {
-            let result = response.data;
-            if (result.status == 500) {
-                /* window.location = '/query/viewClinicaYConsultorio'; */
-            }
-        })
-        .catch(error => {
-        });
-}

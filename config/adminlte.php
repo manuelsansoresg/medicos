@@ -332,6 +332,11 @@ return [
             'icon'        => 'far fa-fw fa-file',
         ],
         [
+            'text'        => 'Días sin citas',
+            'url'         => 'admin/sin_citas',
+            'icon'        => 'far fa-fw fa-file',
+        ],
+        [
             'text'        => 'Citas',
             'url'         => 'admin/citas',
             'icon'        => 'far fa-fw fa-file',
@@ -499,12 +504,12 @@ return [
             ],
         ],
         'Sweetalert2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@8',
+                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@11',
                 ],
             ],
         ],
@@ -534,7 +539,7 @@ return [
                 [
                     'type' => 'js',
                     'asset' => true,
-                    'location' => '/js/app.js',
+                    'location' => '/js/app.js?version'.date('H-i-s'),
                 ],
             ],
         ],

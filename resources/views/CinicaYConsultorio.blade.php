@@ -16,13 +16,13 @@
 
 @section('content')
 <div class="container bg-white py-2">
-    <div class="row mt-3">
+    <div class="row mt-3 px-1 px-md-5">
        
     
         <div class="col-12 mt-3">
-            <form method="post" action="/admin/usuarios" id="frm-selection">
+            <form method="post"  id="frm-selection">
                 <div class="col-12">
-                    <p class="text-info">Los campos marcados con * son requeridos</p>
+                    <p class="text-info">Favor de elegir una clinica y consultorio</p>
                 </div>
                
                 @csrf
@@ -30,7 +30,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="inputNombre" class="form-label">*CLINICAS</label>
-                            <select name="clinica"  class="form-control">
+                            <select name="clinica" id="setClinica"  onchange="changeConsultorio()" class="form-control">
                                 <option value="">Seleccione una opción</option>
                                 @foreach ($my_clinics as $my_clinic)
                                 @php
@@ -44,7 +44,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="inputApellido" class="form-label">*CONSULTORIOS</label>
-                            <select name="consultorio" id="consultorio" disabled  class="form-control">
+                            <select name="consultorio" id="setConsultorio" disabled  class="form-control">
                                 <option value="">Seleccione una opción</option>
                             </select>
                         </div>

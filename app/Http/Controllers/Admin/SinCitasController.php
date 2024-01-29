@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Clinica;
+use App\Models\FechaEspeciales;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 
-class ClinicaController extends Controller
+class SinCitasController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,31 +15,8 @@ class ClinicaController extends Controller
      */
     public function index()
     {
-        $clinicas = Clinica::all();
-        return view('administracion.clinica.list', compact('clinicas'));
-    }
-
-    public function consultorioGet(Clinica $clinica)
-    {
-        $consultorios = $clinica->consultorios;
-        return response()->json($consultorios);
-    }
-    
-    public function myConfiguration(Request $request)
-    {
-        $clinica = $request->session()->has('clinica');
-        $consultorio = $request->session()->get('consultorio');
-    }
-
-    public function setClinicaConsultorio(Request $request)
-    {
-        // Obtener los valores de consultorio y clinica del request
-        $consultorio = $request->input('consultorio');
-        $clinica = $request->input('clinica');
-
-        // Asignar valores a las variables de sesión
-        Session::put('clinica', $clinica);
-        Session::put('consultorio', $consultorio);
+        $query = FechaEspeciales::getAll();
+        return view('administracion.sin_citas.list', compact('query'));
     }
 
     /**
@@ -50,9 +26,9 @@ class ClinicaController extends Controller
      */
     public function create()
     {
-        $clinica_id   = null;
-        $clinica      = null;
-        return view('administracion.clinica.frm', compact('clinica', 'clinica_id'));
+        $id       = null;
+        $query    = null;
+        return view('administracion.sin_citas.frm', compact('id', 'query'));
     }
 
     /**
@@ -63,7 +39,7 @@ class ClinicaController extends Controller
      */
     public function store(Request $request)
     {
-        Clinica::saveEdit($request);
+        FechaEspeciales::saveEdit($request);
     }
 
     /**
@@ -85,10 +61,9 @@ class ClinicaController extends Controller
      */
     public function edit($id)
     {
-        $clinica_id   = $id;
-        $clinica      = Clinica::find($id);
-        
-        return view('administracion.clinica.frm', compact('clinica', 'clinica_id'));
+        $id       = $id;
+        $query    = FechaEspeciales::find($id);;
+        return view('administracion.sin_citas.frm', compact('id', 'query'));
     }
 
     /**
@@ -111,6 +86,6 @@ class ClinicaController extends Controller
      */
     public function destroy($id)
     {
-        Clinica::find($id)->delete();
+        FechaEspeciales::find($id)->delete();
     }
 }
