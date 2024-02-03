@@ -25,7 +25,9 @@ Route::get('/query/viewClinicaYConsultorio', [App\Http\Controllers\HomeControlle
 Route::group(['prefix' => 'admin'], function () {
     Route::resource('actividades', '\App\Http\Controllers\Admin\ActividadesController')->middleware('auth');
     Route::resource('citas', '\App\Http\Controllers\Admin\CitasController')->middleware('auth');
+    Route::get('citas/{consultaAsignado}/{hora}/{fecha}/add', [App\Http\Controllers\Admin\CitasController::class, 'add'])->middleware('auth');
     Route::resource('pacientes', '\App\Http\Controllers\Admin\PacientesController')->middleware('auth');
+    Route::get('pacientes/get/search', [App\Http\Controllers\Admin\PacientesController::class, 'search'])->middleware('auth');
     Route::resource('pendientes', '\App\Http\Controllers\Admin\PendientesController')->middleware('auth');
     Route::resource('administracion', '\App\Http\Controllers\Admin\AdministracionController')->middleware('auth');
     

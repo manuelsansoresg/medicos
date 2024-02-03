@@ -20,6 +20,8 @@ class ClinicaController extends Controller
         return view('administracion.clinica.list', compact('clinicas'));
     }
 
+    
+
     public function consultorioGet(Clinica $clinica)
     {
         $consultorios = $clinica->consultorios;

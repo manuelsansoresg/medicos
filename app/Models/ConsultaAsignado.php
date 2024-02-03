@@ -16,6 +16,7 @@ class ConsultaAsignado extends Model
     use HasFactory;
 
     protected $table = 'consultasignado';
+    protected $primaryKey = 'idconsultasignado';
     protected $fillable = [
         'idconsultasignado', 'iddoctor', 'idclinica', 'ihorainicial', 'ihorafinal', 'idia', 'iturno', 'itiempo', 'dfechaalta', 'idalta', 'idconsultorio', 'itipousr'
     ];
@@ -53,9 +54,10 @@ public static function getByDate($date, $isGroup = true)
     $resultados = [];
 
     foreach ($consulta as $asignado) {
-        $ihorainicial = $asignado->ihorainicial;
-        $ihorafinal = $asignado->ihorafinal;
-        $itiempo = $asignado->itiempo;
+        $ihorainicial   = $asignado->ihorainicial;
+        $ihorafinal     = $asignado->ihorafinal;
+        $itiempo        = $asignado->itiempo;
+        $momento        = $asignado->iturno;
 
         $contorhoras = 0;
         $horanueva = $ihorainicial;
@@ -77,6 +79,8 @@ public static function getByDate($date, $isGroup = true)
                     'hora' => date("g:i a", strtotime($horaFormateada)),
                     'horaSinFormato' => $horaFormateada,
                     'statusconactivanop' => $isDisponible== null ? false : $isDisponible->iestatus,
+                    'diasemana' => $dayOfWeek,
+                    'momento' => $momento,
                 ];
             } elseif (!$isCurrentDate) {
                 // If the date is not the current date, add all time slots without considering the current time
@@ -84,6 +88,8 @@ public static function getByDate($date, $isGroup = true)
                     'hora' => date("g:i a", strtotime($horaFormateada)),
                     'horaSinFormato' => $horaFormateada,
                     'statusconactivanop' => $isDisponible== null ? false : $isDisponible->iestatus,
+                    'diasemana' => $dayOfWeek,
+                    'momento' => $momento,
                 ];
             }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Paciente;
 use Illuminate\Http\Request;
 
 class PacientesController extends Controller
@@ -15,6 +16,12 @@ class PacientesController extends Controller
     public function index()
     {
         return view('pacientes.list');
+    }
+
+    public function search(Request $request)
+    {
+        $pacientes =  Paciente::search($request->all());
+        return response()->json(['results' => $pacientes]);
     }
 
     /**

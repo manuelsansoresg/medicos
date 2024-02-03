@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Citas;
 use App\Models\Clinica;
 use App\Models\ConsultaAsignado;
 use App\Models\Consultorio;
 use App\Models\FechaEspeciales;
+use App\Models\Paciente;
+use DateTime;
+use DateInterval;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,7 +31,25 @@ class CitasController extends Controller
         $consultorios       = Consultorio::getAll();
         $fechasEspeciales   = FechaEspeciales::getByDate($fecha);
         $consultaAsignados   = ConsultaAsignado::getByDate($fecha);
-        return view('administracion.citas.list', compact('clinicas', 'consultorios', 'is_medico', 'fechasEspeciales', 'consultaAsignados', 'fecha'));
+        $pacientes = Paciente::getAll();
+        
+        return view('administracion.citas.list', compact('clinicas', 'consultorios', 'is_medico', 'fechasEspeciales', 'consultaAsignados', 'fecha', 'pacientes'));
+    }
+
+    public function add(ConsultaAsignado $consultaAsignado, $hora, $fecha)
+    {
+        $momento          = $consultaAsignado->iturno;
+        $diasemana        = $consultaAsignado->idia;
+        $horas            = date('H:i', strtotime($hora));
+        $fe_inicio        = date('Y-m-d', strtotime($fecha));
+        $idconsultorio    = $consultaAsignado->idconsultorio;
+        $lidldoctores     = $consultaAsignado->lidldoctores;
+        $idia     = $consultaAsignado->idia;
+        $id_cita          = null;
+        
+        //$diastrans = 365 - $diasm;
+        
+        return view('administracion.citas.add', compact('momento', 'diasemana', 'horas', 'fe_inicio', 'idconsultorio', 'lidldoctores', 'id_cita', 'idia'));
     }
 
     /**
@@ -48,7 +70,7 @@ class CitasController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
