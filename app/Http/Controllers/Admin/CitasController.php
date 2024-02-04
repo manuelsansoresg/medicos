@@ -43,7 +43,7 @@ class CitasController extends Controller
         $horas            = date('H:i', strtotime($hora));
         $fe_inicio        = date('Y-m-d', strtotime($fecha));
         $idconsultorio    = $consultaAsignado->idconsultorio;
-        $lidldoctores     = $consultaAsignado->lidldoctores;
+        $lidldoctores     = $consultaAsignado->iddoctor;
         $idia     = $consultaAsignado->idia;
         $id_cita          = null;
         
@@ -70,7 +70,7 @@ class CitasController extends Controller
      */
     public function store(Request $request)
     {
-        
+        Citas::saveEdit($request);
     }
 
     /**

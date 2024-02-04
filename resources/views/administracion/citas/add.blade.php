@@ -56,7 +56,7 @@
                             <textarea class="form-control" name="data[tmotivoconsulta]" id="" cols="30" rows="4"></textarea>
                         </div>
                         <input type="hidden" name="id_cita" value="{{ $id_cita }}">
-                        <input type="hidden" name="lidldoctores" value="{{ $lidldoctores }}">
+                        <input type="hidden" name="data['lidldoctores']" value="{{ $lidldoctores }}">
                         <input type="hidden" name="idconsultorio" value="{{ $idconsultorio }}">
                         <input type="hidden" name="data[idiasemana]" value="{{ $idia }}">
                     </div>

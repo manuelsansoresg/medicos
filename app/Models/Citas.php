@@ -15,6 +15,8 @@ class Citas extends Model
     protected $fillable = [
         'idcitas','vfoliopaciente','tmotivoconsulta','dfecha','vhora','idregistrado','iddoctor','idclinica','idconsultorio','idcliente','istatuscita','idiaconsulta','idiasemana','iformacita'
     ];
+    // Desactivar las marcas de tiempo
+    public $timestamps = false;
 
     public static  function faltandias($fecha) {
         
@@ -39,20 +41,20 @@ class Citas extends Model
         
         $data                     = $request->data;
         
-        $diasm = $diasm = Citas::faltandias($data['fe_inicio']);
+        $diasm = $diasm = Citas::faltandias($data['dfecha']);
         $diastrans = 365 - $diasm;
         $userId                   = Auth::user()->id;
         $user                     = User::find($userId);
         $isNotAdminOrDoctor       = $user->hasRole(['auxiliar', 'secretario']);
-        $paciente                 = Paciente::find($request->idcliente);
+        $paciente                 = Paciente::find($data['idcliente']);
         $lidldoctores             = $request->lidldoctores;
         $idldoctores              = $userId;
         $data['vfoliopaciente']   = $paciente->vcodigopasiente;
         $data['idclinica']        = Session::get('clinica');
         $data['idconsultorio']    = $request->idconsultorio;
-        $data['idcliente']        = $request->idcliente;
+        //$data['idcliente']        = $request->idcliente;
         $data['idiaconsulta']     = $diastrans;
-        $data['idiasemana']       = $request->idcliente;
+        
         
         
 
@@ -66,7 +68,7 @@ class Citas extends Model
         $data['idregistrado']   = $altacita;
         $data['iddoctor']   = $iddoctor;
         if ($request->id_cita == null) {
-            Citas::create($data);
+            return Citas::create($data);
         }
     }
 }
