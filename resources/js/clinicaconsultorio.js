@@ -71,7 +71,11 @@ if (document.getElementById('frm-selection')) {
                 Swal.fire({
                     text: "Los valores se han almacenado con éxito. A partir de ahora, los filtros en todo el panel administrativo estarán basados en esta selección.",
                     icon: "warning"
-                  });
+                  }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                      window.location = '/home';
+                    }});
             })
             .catch(function (error) {
                 // Manejar errores si es necesario
