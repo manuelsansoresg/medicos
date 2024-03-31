@@ -356,6 +356,11 @@ return [
             'url'         => 'admin/pendientes',
             'icon'        => 'far fa-fw fa-file',
         ],
+        [
+            'text'       => 'Contrtol acceso',
+            'icon_color' => 'green',
+            'url'        => '/admin/acceso',
+        ],
         ['header' => 'account_settings'],
         [
             'text' => 'profile',
@@ -405,6 +410,7 @@ return [
                 ],
             ],
         ],
+       
         /* ['header' => 'labels'],
         [
             'text'       => 'important',

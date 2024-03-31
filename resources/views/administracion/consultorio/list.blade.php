@@ -37,7 +37,7 @@
                 <tbody>
                     @foreach ($query as $query)
                         <tr>
-                            <td>{{ $query->vnumconsultorio }}</td>
+                            <td> {{ $query->vnumconsultorio }} </td>
                             <td> {{ $query->thubicacion }} </td>
                             <td> {{ $query->ttelefono }} </td>
                             <td> 

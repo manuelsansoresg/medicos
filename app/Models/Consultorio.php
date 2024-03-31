@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class Consultorio extends Model
 {
@@ -19,6 +21,15 @@ class Consultorio extends Model
     public static function getAll()
     {
         return Consultorio::all();
+    }
+
+    public static function getMyCon()
+    {
+        /* $user       = User::find(Auth::user()->id);
+        $is_admin   = Auth::user()->hasRole(['medico', 'auxiliar', 'secretario']); */
+        $clinica                  = Session::get('clinica');
+        
+        return Consultorio::where(['idclinica'=> $clinica])->get();
     }
 
     public static function saveEdit($request)

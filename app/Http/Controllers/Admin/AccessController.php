@@ -3,13 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Clinica;
-use App\Models\Consultorio;
+use App\Models\Access;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class ConsultoriosController extends Controller
+class AccessController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,8 +16,8 @@ class ConsultoriosController extends Controller
      */
     public function index()
     {
-        $query = Consultorio::all();
-        return view('administracion.consultorio.list', compact('query'));
+        $query = Access::getAll();
+        return view('administracion.access.list', compact('query'));
     }
 
     /**
@@ -29,10 +27,8 @@ class ConsultoriosController extends Controller
      */
     public function create()
     {
-        $id       = null;
-        $query    = null;
-        $clinicas = Clinica::getAll();
-        return view('administracion.consultorio.frm', compact('query', 'id', 'clinicas'));
+        $users = User::where('activo', 1)->get();
+        return view('administracion.access.frm', compact('users'));
     }
 
     /**
@@ -43,7 +39,7 @@ class ConsultoriosController extends Controller
      */
     public function store(Request $request)
     {
-        Consultorio::saveEdit($request);
+        //
     }
 
     /**
@@ -54,17 +50,8 @@ class ConsultoriosController extends Controller
      */
     public function show($id)
     {
-        $myUser = User::find(Auth::user()->id);
-        $data = array(
-            'idconsultorio' => $id,
-            'userId' => Auth::user()->id,
-            'myUser' => $myUser,
-        );
-        $view = \View::make('administracion.consultorio.horarios', $data)->render();
-        return response()->json($view);
+        //
     }
-
-    
 
     /**
      * Show the form for editing the specified resource.
@@ -74,10 +61,7 @@ class ConsultoriosController extends Controller
      */
     public function edit($id)
     {
-        $id   = $id;
-        $query      = Consultorio::find($id);
-        $clinicas = Clinica::getAll(); 
-        return view('administracion.consultorio.frm', compact('query', 'id', 'clinicas'));
+        //
     }
 
     /**
@@ -100,6 +84,6 @@ class ConsultoriosController extends Controller
      */
     public function destroy($id)
     {
-        Consultorio::find($id)->delete();
+        //
     }
 }

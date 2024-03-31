@@ -36,7 +36,8 @@ class UserController extends Controller
         $user_id   = null;
         $user      = null;
         $clinicas = Clinica::getAll();
-        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas'));
+        $my_clinics = ClinicaUser::where('user_id', $user_id)->get();
+        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics'));
     }
 
     /**

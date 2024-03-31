@@ -37,8 +37,13 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('/clinica/consultorio/set', [App\Http\Controllers\Admin\ClinicaController::class, 'setClinicaConsultorio'])->middleware('auth');
 
     Route::resource('consultorio', '\App\Http\Controllers\Admin\ConsultoriosController')->middleware('auth');
+
     Route::resource('usuarios', '\App\Http\Controllers\Admin\UserController')->middleware('auth');
     Route::resource('sin_citas', '\App\Http\Controllers\Admin\SinCitasController')->middleware('auth');
+    Route::resource('consulta-asignado', '\App\Http\Controllers\Admin\ConsultasignadoController')->middleware('auth');
+    Route::get('/consulta-asignado/{user}/create', [App\Http\Controllers\Admin\ConsultasignadoController::class, 'create'])->middleware('auth');
+
+    Route::resource('acceso', '\App\Http\Controllers\Admin\AccessController')->middleware('auth');
 });
 
 Auth::routes();

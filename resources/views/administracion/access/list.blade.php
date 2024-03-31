@@ -19,27 +19,33 @@
     <div class="container bg-white py-2">
         <div class="row mt-3">
             <div class="col-12 text-right">
-                <a href="/admin/usuarios/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                <a href="/admin/acceso/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
             </div>
             <div class="col-12">
                 <table class="table mt-3">
                     <thead>
                         <tr>
-                            <th>NOMBRE</th>
-                            <th>CORREO</th>
-                            <th>ACCIONES</th>
+                            <th>USUARIO</th>
+                            <th># DOCTORES</th>
+                            <th># AUXILIARES</th>
+                            <th>DIAS</th>
+                            <th>COSTO</th>
+                            <th>PAGADO</th>
+                            <th>STATUS</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($users as $user)
+                        @foreach ($query as $query)
                             <tr>
-                                <td>{{ $user->name }}</td>
-                                <td> {{ $user->email }} </td>
+                                <td>{{ $query->name }}</td>
+                                <td>  </td>
+                                <td></td>
                                 <td class="col-3">
-                                    <a href="/admin/consulta-asignado/{{ $user->id }}" class="btn btn-warning text-white"><i class="fas fa-building"></i></a>
-                                    <a href="/admin/usuarios/{{ $user->id }}/edit" class="btn btn-primary"><i
+                                    <a href="/admin/consulta-asignado/{{ $query->id }}" class="btn btn-warning text-white"><i class="fas fa-building"></i></a>
+                                    <a href="/admin/usuarios/{{ $query->id }}/edit" class="btn btn-primary"><i
                                             class="fas fa-edit"></i></a>
-                                    <a href="#" onclick="deleteUser({{ $user->id }})" class="btn btn-danger"><i
+                                    <a href="#" onclick="deleteUser({{ $query->id }})" class="btn btn-danger"><i
                                             class="fas fa-trash"></i></a>
                                 </td>
                             </tr>
