@@ -18,7 +18,7 @@ class CreateAccess extends Migration
             $table->unsignedBigInteger('user_id'); // Crear un campo para almacenar el ID del usuario
             $table->integer('num_doctor')->nullable();
             $table->integer('num_auxiliar')->nullable();
-            $table->integer('dias')->nullable();
+            $table->date('fecha_vencimiento')->nullable();
             $table->decimal('costo')->nullable();
             $table->smallInteger('is_pagado')->nullable();
             $table->smallInteger('status')->nullable();

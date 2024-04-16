@@ -27,8 +27,10 @@ class AccessController extends Controller
      */
     public function create()
     {
-        $users = User::where('activo', 1)->get();
-        return view('administracion.access.frm', compact('users'));
+        $acces_id = null;
+        $access = null;
+        $users = User::getUsers();
+        return view('administracion.access.frm', compact('access', 'acces_id', 'users'));
     }
 
     /**
@@ -39,7 +41,7 @@ class AccessController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Access::saveEdit($request);
     }
 
     /**

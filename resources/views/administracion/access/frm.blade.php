@@ -35,119 +35,76 @@
                 </div>
                 @csrf
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="inputNombre" class="form-label">*NOMBRE(S)</label>
-                            <input type="text" class="form-control" name="data[name]" id="inputNombre" value="{{ $user != null ? $user->name : null }}" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="inputApellido" class="form-label">*APELLIDO(S)</label>
-                            <input type="text" class="form-control" name="data[vapellido]" id="inputApellido" value="{{ $user != null ? $user->vapellido : null }}" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="inputTelefono" class="form-label">TELEFONO</label>
-                            <input type="text" class="form-control" name="data[ttelefono]" id="inputTelefono" value="{{ $user != null ? $user->ttelefono : null }}">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="inputDireccion" class="form-label">DIRECCIÓN</label>
-                            <textarea name="data[tdireccion]" id="inputDireccion" cols="30" rows="5" class="form-control">{{ $user != null ? $user->tdireccion : null }}</textarea>
-                        </div>
-                    </div>
+                    
                     @hasrole('administrador')
                     <div class="col-md-6">
-                        @php
-                            $puestos = config('enums.usuario_puesto');
-                        @endphp
                         <div class="mb-3">
-                            <label for="inputPuesto" class="form-label">*PUESTO</label>
-                            @php
-                            $roles = Auth::user()->getRoleNames()[0];
-                        @endphp
-                            <select name="rol" id="inputPuesto" class="form-control" required>
-                               
-                                @foreach ($puestos as $key =>  $puesto)
-                                    <option value="{{ $key}}" {{ isset(Auth::user()->getRoleNames()[0]) && $key == Auth::user()->getRoleNames()[0] ? 'selected' : null }}> {{ $puesto}} </option>
+                            <label for="inputCedula" class="form-label">* USUARIO</label>
+                            <select name="data[user_id]" id="user_id" class="form-control">
+                                <option value="">SELECCIONE UNA OPCIÓN</option>
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id }}"> {{ $user->name }} </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-    
-                    <div class="col-md-6" id="content-financial_product_id">
-                        <div class="form-group">
-                            <label class="form-label">CLINICAS</label>
-                            <div class="form-control-wrap">
-                                <select name="clinicas[]" id="" class="form-control select2multiple" multiple="multiple"  data-search="on">
-                                   @foreach ($clinicas as $clinica)
-                                       <option value="{{ $clinica->idclinica }}" 
-                                        @foreach ($my_clinics as $my_clinic)
-                                          {{ $my_clinic->clinica_id == $clinica->idclinica ? 'selected' : null}}
-                                        @endforeach
-                                        >{{ $clinica->tnombre }}</option>
-                                   @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-    
-                  
-                    @endhasrole
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="inputEstatus" class="form-label">*ACTIVO</label>
-                            <select name="data[status]" id="inputEstatus" class="form-control" required>
-                                
-                               @foreach (config('enums.status') as $key => $item)
-                                   <option value="{{ $key }}" {{ $user != null && $user->status == $key ? 'selected' : null  }}>{{ $item }}</option>
-                               @endforeach
+                            <label for="inputCedula" class="form-label">* # USUARIOS DOCTORES</label>
+                            <input type="number" class="form-control" name="data[num_doctor]" id="num_doctor" value="" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="inputCedula" class="form-label"># USUARIOS AUXILIARES</label>
+                            <input type="number" class="form-control" name="data[num_auxiliar]" id="num_auxiliar" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="inputCedula" class="form-label"># DÍAS ACTIVO</label>
+                            <input type="number" class="form-control" name="data[dias]" id="dias" value="">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="inputCedula" class="form-label">*FECHA VENCIMIENTO</label>
+                            <input type="date" class="form-control" name="data[fecha_vencimiento]" id="fecha_vencimiento" value="">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="inputCedula" class="form-label">COSTO</label>
+                            <input type="date" class="form-control" name="data[costo]" id="costo" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="inputCedula" class="form-label">*PAGADO</label>
+                            <select name="data[is_pagado]" id="is_pagado" class="form-control" required>
+                                <option value="">SELECCIONE UNA OPCIÓN</option>
+                                <option value="1">SÍ</option>
+                                <option value="0">NO</option>
                             </select>
                         </div>
                     </div>
-                    <div class="col-12 py-3 mt-3">
-                        <p class="lead">DATOS PARA INGRESAR AL SISTEMA</p>
-                    </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="inputCorreo" class="form-label">*CORREO</label>
-                            <input type="email" class="form-control" name="data[email]" id="inputCorreo" value="{{ $user != null ? $user->email : null }}" required>
+                            <label for="inputCedula" class="form-label">*ACTIVO</label>
+                            <select name="data[status]" id="status" class="form-control" required>
+                                <option value="">SELECCIONE UNA OPCIÓN</option>
+                                <option value="1">SÍ</option>
+                                <option value="0">NO</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="inputPassword" class="form-label">{{ $user_id == null ? '*' : null}}CONTRASEÑA</label>
-                            <input type="password" class="form-control" name="password" id="inputPassword" {{ $user_id == null ? 'required' : '' }}>
-                           
-                        </div>
-                    </div>
-                    <div class="col-12 py-3 mt-3">
-                        <p class="lead">INFORMACIÓN COMPLEMENTARIA</p>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="inputCedula" class="form-label">CEDULA PROFESIONAL</label>
-                            <input type="text" class="form-control" name="data[vcedula]" id="inputCedula" value="{{ $user != null ? $user->vcedula : null }}">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="inputRfc" class="form-label">RFC</label>
-                            <input type="text" class="form-control" name="data[RFC]" id="inputRfc" value="{{ $user != null ? $user->RFC : null }}">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="inputEspecialidad" class="form-label">ESPECIALIDAD O TÍTULO</label>
-                            <input type="text" class="form-control" name="data[especialidad]" id="inputEspecialidad" value="{{ $user != null ? $user->especialidad : null }}">
-                        </div>
-                    </div>
+                  
+                    @endhasrole
                     <div class="col-md-12 text-right">
                         <div class="mb-3">
-                            <input type="hidden" id="user_id" name="user_id" value="{{ $user_id }}" >
+                            <input type="hidden" id="acces_id" name="acces_id" value="{{ $acces_id }}" >
                             <button class="btn btn-primary">Guardar</button>
                         </div>
                     </div>
