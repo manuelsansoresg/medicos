@@ -28,10 +28,10 @@
                             <th>USUARIO</th>
                             <th># DOCTORES</th>
                             <th># AUXILIARES</th>
-                            <th>DIAS</th>
+                            <th>FECHA VENCIMIENTO</th>
                             <th>COSTO</th>
                             <th>PAGADO</th>
-                            <th>STATUS</th>
+                            <th>ACTIVO</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -39,13 +39,28 @@
                         @foreach ($query as $query)
                             <tr>
                                 <td>{{ $query->name }}</td>
-                                <td>  </td>
-                                <td></td>
+                                <td> {{ $query->num_doctor }}  </td>
+                                <td> {{ $query->num_auxiliar }}</td>
+                                <td> {{ $query->fecha_vencimiento }}</td>
+                                <td> {{ $query->costo }}</td>
+                                <td> 
+                                    @if ($query->is_pagado)
+                                        <span class="badge bg-success">Sí</span>
+                                    @else
+                                        <span class="badge bg-success">No</span>
+                                    @endif
+                                </td>
+                                <td> 
+                                    @if ($query->status)
+                                        <span class="badge bg-success">Sí</span>
+                                    @else
+                                        <span class="badge bg-success">No</span>
+                                    @endif
+                                </td>
                                 <td class="col-3">
-                                    <a href="/admin/consulta-asignado/{{ $query->id }}" class="btn btn-warning text-white"><i class="fas fa-building"></i></a>
-                                    <a href="/admin/usuarios/{{ $query->id }}/edit" class="btn btn-primary"><i
+                                    <a href="/admin/acceso/{{ $query->id }}/edit" class="btn btn-primary"><i
                                             class="fas fa-edit"></i></a>
-                                    <a href="#" onclick="deleteUser({{ $query->id }})" class="btn btn-danger"><i
+                                    <a href="#" onclick="deleteAccess({{ $query->id }})" class="btn btn-danger"><i
                                             class="fas fa-trash"></i></a>
                                 </td>
                             </tr>

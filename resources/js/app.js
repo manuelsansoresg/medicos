@@ -14,4 +14,5 @@ require('./consultorio');
 require('./clinicaconsultorio');
 require('./user');
 require('./citas');
+require('./access');
 

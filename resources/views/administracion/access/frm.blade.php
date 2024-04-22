@@ -22,7 +22,7 @@
        
     
         <div class="col-12 mt-3">
-            <form method="post" action="/admin/access" id="frm-access">
+            <form method="post" action="/admin/acceso" id="frm-access">
            {{--  @if ($user_id == null)
             @else
             <form method="post" action="/admin/usuarios" id="upd-frm-users">
@@ -35,58 +35,55 @@
                 </div>
                 @csrf
                 <div class="row">
-                    
+                    @php
+                        $status = config('enums.status');
+                    @endphp
                     @hasrole('administrador')
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="inputCedula" class="form-label">* USUARIO</label>
-                            <select name="data[user_id]" id="user_id" class="form-control">
-                                <option value="">SELECCIONE UNA OPCIÓN</option>
-                                @foreach ($users as $user)
-                                    <option value="{{ $user->id }}"> {{ $user->name }} </option>
-                                @endforeach
-                            </select>
+                            <label for="user_id" class="form-label">* USUARIO</label>
+                                <select name="data[user_id]" id="user_id" class="form-control">
+                                    <option value="">SELECCIONE UNA OPCIÓN</option>
+                                    @foreach ($users as $user)
+                                        <option value="{{ $user->id }}" {{ $access != null && $access->user_id == $user->id ? 'selected' : null }}> {{ $user->name }} </option>
+                                    @endforeach
+                                </select>
+                                <div id="error-data_user_id" class="text-danger"></div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="inputCedula" class="form-label">* # USUARIOS DOCTORES</label>
-                            <input type="number" class="form-control" name="data[num_doctor]" id="num_doctor" value="" required>
+                            <input type="number" class="form-control" name="data[num_doctor]" id="num_doctor" value="{{ $access != null ? $access->num_doctor : null }}" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="inputCedula" class="form-label"># USUARIOS AUXILIARES</label>
-                            <input type="number" class="form-control" name="data[num_auxiliar]" id="num_auxiliar" value="">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="inputCedula" class="form-label"># DÍAS ACTIVO</label>
-                            <input type="number" class="form-control" name="data[dias]" id="dias" value="">
+                            <input type="number" class="form-control" name="data[num_auxiliar]" id="num_auxiliar" value="{{ $access != null ? $access->num_auxiliar : null }}">
                         </div>
                     </div>
                     
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="inputCedula" class="form-label">*FECHA VENCIMIENTO</label>
-                            <input type="date" class="form-control" name="data[fecha_vencimiento]" id="fecha_vencimiento" value="">
+                            <input type="date" class="form-control" name="data[fecha_vencimiento]" id="fecha_vencimiento" value="{{ $access != null ? $access->fecha_vencimiento : null }}">
                         </div>
                     </div>
                     
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="inputCedula" class="form-label">COSTO</label>
-                            <input type="date" class="form-control" name="data[costo]" id="costo" value="">
+                            <input type="text" class="form-control" name="data[costo]" id="costo" value="{{ $access != null ? $access->costo : null }}">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="inputCedula" class="form-label">*PAGADO</label>
                             <select name="data[is_pagado]" id="is_pagado" class="form-control" required>
-                                <option value="">SELECCIONE UNA OPCIÓN</option>
-                                <option value="1">SÍ</option>
-                                <option value="0">NO</option>
+                                @foreach ($status as $key =>  $pay)
+                                    <option value="{{ $key }}" {{ $access != null && $key == $access->is_pagado ? 'selected' : null }}>{{ $pay }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -94,9 +91,9 @@
                         <div class="mb-3">
                             <label for="inputCedula" class="form-label">*ACTIVO</label>
                             <select name="data[status]" id="status" class="form-control" required>
-                                <option value="">SELECCIONE UNA OPCIÓN</option>
-                                <option value="1">SÍ</option>
-                                <option value="0">NO</option>
+                                @foreach ($status as $key =>  $active)
+                                    <option value="{{ $key }}" {{ $access != null && $key == $access->status ? 'selected' : null }}>{{ $active }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>

@@ -22,9 +22,14 @@ class Access extends Model
 
     public static function getAll()
     {
-        return Access::select('name', 'user_id', 'num_doctor', 'num_auxiliar', 'fecha_vencimiento', 'costo', 'is_pagado', 'access.status')
+        return Access::select( 'access.id', 'name', 'user_id', 'num_doctor', 'num_auxiliar', 'fecha_vencimiento', 'costo', 'is_pagado', 'access.status')
                     ->join('users', 'users.id', 'access.user_id')
                     ->get();
+    }
+
+    public static function isExist($userId, $accessId)
+    {
+        return Access::where('user_id', $userId)->count();
     }
 
     public static function saveEdit($request)

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Access;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AccessController extends Controller
 {
@@ -39,10 +40,35 @@ class AccessController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        Access::saveEdit($request);
-    }
+
+    
+     public function store(Request $request)
+     {
+         $accessId = $request->input('acces_id');
+         $userId = $request->input('data.user_id'); // Obtener el user_id del formulario
+         
+         $rules = [
+             'data.user_id' => 'required|unique:access,user_id', // Regla unique básica
+         ];
+     
+         if ($accessId != null) {
+             // Escenario de actualización: ignorar el usuario actual solo si se ha cambiado el user_id
+             $rules['data.user_id'] .= ',' . $accessId . ',id';
+         }
+         
+         $messages = [
+             'unique' => 'El valor del campo ya está en uso.', // Mensaje personalizado genérico
+         ];
+     
+         $request->validate($rules, $messages);
+     
+         Access::saveEdit($request);
+     }
+     
+
+     
+    
+    
 
     /**
      * Display the specified resource.
@@ -63,7 +89,10 @@ class AccessController extends Controller
      */
     public function edit($id)
     {
-        //
+        $acces_id = $id;
+        $access = Access::find($acces_id);
+        $users = User::getUsers();
+        return view('administracion.access.frm', compact('access', 'acces_id', 'users'));
     }
 
     /**

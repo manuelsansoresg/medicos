@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserUpdateRequest;
+use App\Models\Access;
 use App\Models\Clinica;
 use App\Models\ClinicaUser;
 use App\Models\User;
@@ -24,6 +25,11 @@ class UserController extends Controller
         $my_clinics   = null;
 
         return view('administracion.user.list', compact('users', 'my_clinics'));
+    }
+
+    public function isExist(User $user, $accessId)
+    {
+        return response()->json(Access::isExist($user->id, $accessId));
     }
 
     /**

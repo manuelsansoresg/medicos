@@ -62,9 +62,7 @@ class User extends Authenticatable
     {
         $isAdmin = Auth::user()->hasRole('administrador');
         if ($isAdmin === true) { //si es admin obtener todos los usuarios que no  se le han creado sus accesos
-            $users = User::whereNotIn('id', function ($query) {
-                $query->select('user_id')->from('access');
-            })->where('id', '!=', Auth::user()->id)
+            $users = User::where('id', '!=', Auth::user()->id)
                 ->where('status', 1)
                 ->get();
         } else {

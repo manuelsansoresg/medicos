@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+
 return [
 
     /*
@@ -320,6 +322,7 @@ return [
             'text'        => 'Clínicas',
             'url'         => 'admin/clinica',
             'icon'        => 'far fa-fw fa-file',
+            
         ],
         [
             'text'        => 'Consultorios',
@@ -360,6 +363,7 @@ return [
             'text'       => 'Contrtol acceso',
             'icon_color' => 'green',
             'url'        => '/admin/acceso',
+            'can'  => 'menu-admin',
         ],
         ['header' => 'account_settings'],
         [
