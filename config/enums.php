@@ -15,8 +15,16 @@ return [
     'usuario_puesto' => array(
         '' => 'SELECCIONE UNA OPCIÓN',
         'administrador' => 'ADMINISTRADOR',
-        'medico' => 'DOCTOR',
-        'auxiliar' => 'AYUDANTE',
+        'medico' => 'MEDICO',
+        'auxiliar' => 'AUXILIAR',
+        'secretario' => 'SECRETARIO',
+    ),
+    
+    'usuario_puesto_medico' => array(
+        '' => 'SELECCIONE UNA OPCIÓN',
+        'medico' => 'MEDICO',
+        'auxiliar' => 'AUXILIAR',
+        'secretario' => 'SECRETARIO',
     ),
 
 ];

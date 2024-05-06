@@ -78,7 +78,10 @@ class AccessController extends Controller
      */
     public function show($id)
     {
-        //
+        $access = Access::find($id);
+        $users = User::getMyUsers($access->user_id);
+        
+        return view('administracion.access.show', compact('access', 'users'));
     }
 
     /**

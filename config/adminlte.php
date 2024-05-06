@@ -333,6 +333,7 @@ return [
             'text'        => 'Usuarios',
             'url'         => 'admin/usuarios',
             'icon'        => 'far fa-fw fa-file',
+            'can'  => ['menu-admin', 'menu-users'],
         ],
         [
             'text'        => 'Días sin citas',

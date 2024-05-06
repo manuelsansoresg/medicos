@@ -21,15 +21,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users        = User::all();
+        $users        = User::GetListUsers();
         $my_clinics   = null;
 
         return view('administracion.user.list', compact('users', 'my_clinics'));
-    }
-
-    public function isExist(User $user, $accessId)
-    {
-        return response()->json(Access::isExist($user->id, $accessId));
     }
 
     /**
@@ -39,11 +34,12 @@ class UserController extends Controller
      */
     public function create()
     {
-        $user_id   = null;
-        $user      = null;
-        $clinicas = Clinica::getAll();
+        $user_id    = null;
+        $user       = null;
+        $clinicas   = Clinica::getAll();
         $my_clinics = ClinicaUser::where('user_id', $user_id)->get();
-        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics'));
+        $puestos    = User::getRoles();
+        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics', 'puestos'));
     }
 
     /**
@@ -102,7 +98,9 @@ class UserController extends Controller
         $user       = User::find($id);
         $clinicas   = Clinica::getAll();
         $my_clinics = ClinicaUser::where('user_id', $user_id)->get();
-        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics'));
+        $puestos    = User::getRoles();
+
+        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics', 'puestos'));
     }
 
     /**

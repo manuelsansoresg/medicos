@@ -58,6 +58,79 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * get roles by user role
+     */
+    public static function getRoles()
+    {
+        $isAdmin = Auth::user()->hasRole('administrador');
+        $isMedico = Auth::user()->hasRole('medico');
+        if ($isAdmin == true) {
+            $puestos = config('enums.usuario_puesto');
+        } elseif ($isMedico == true) {
+            $puestos = config('enums.usuario_puesto_medico');
+        }
+
+        return $puestos;
+    }
+
+    public static function countUsersCreate($userId)
+    {
+        $users         = User::where('usuario_principal', $userId)->get();
+        $countMedico   = 0;
+        $countAuxiliar = 0;
+
+        foreach ($users as $user) {
+            if ($user->hasRole('medico')) {
+                $countMedico = $countMedico + 1;
+            }
+            if ($user->hasRole('auxiliar')) {
+                $countAuxiliar = $countAuxiliar + 1;
+            }
+            
+        }
+        $dataUser = array(
+            'medico' => $countMedico,
+            'auxiliar' => $countAuxiliar
+        );
+        return $dataUser;
+    }
+
+    public static function colorUsersCreate($users , $limit)
+    {
+        $percentage = $users / $limit * 100;
+        $color = 'bg-success'; // Verde si falta menos de la mitad o ninguno
+        if ($percentage > 0 &&  $percentage < 25) {
+            $color = 'bg-danger'; // Rojo si falta más de la mitad
+        } elseif ($percentage > 0 && $percentage < 50) {
+            $color = 'bg-warning'; // Naranja si falta la mitad
+        }
+
+        return $color;
+    }
+
+    public static function getMyUsers($userId)
+    {
+        return User::where('usuario_principal', $userId)->get();
+    }
+    
+    //*obtiene listado de tu usuario y los usuarios que te pertenecen si eres medico, si eres admin obtiene el listado de todos los usuarios
+    public static function GetListUsers()
+    {
+        $isAdmin = Auth::user()->hasRole('administrador');
+        $isDoctor = Auth::user()->hasRole('medico');
+        $users =  null;
+        if ($isAdmin === true) {
+            $users = User::all();
+        }
+        if ($isDoctor === true) {
+            $users = User::where('id', Auth::user()->id)
+                            ->orWhere('usuario_principal', Auth::user()->id)
+                            ->get();
+        }
+        return $users;
+    }
+
     public static function getUsers()
     {
         $isAdmin = Auth::user()->hasRole('administrador');

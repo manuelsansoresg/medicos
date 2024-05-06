@@ -61,7 +61,7 @@ class HomeController extends Controller
 
     public function viewClinicaYConsultorio()
     {
-        $my_clinics = ClinicaUser::where('user_id', Auth::user()->id)->get();
+        $my_clinics = ClinicaUser::myClinics();
         return view('CinicaYConsultorio', compact('my_clinics'));
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class ClinicaUser extends Model
 {
@@ -14,6 +15,18 @@ class ClinicaUser extends Model
     protected $fillable = [
         'user_id','clinica_id'
     ];
+
+    public static function myClinics()
+    {
+        $is_admin   = Auth::user()->hasRole(['administrador']);
+        if ($is_admin === true) {
+            $my_clinics = ClinicaUser::select('clinica_id')->distinct()->get();
+
+        } else {
+            $my_clinics = ClinicaUser::where('user_id', Auth::user()->id)->get();
+        }
+        return $my_clinics;
+    }
 
     public static function saveEdit($id, $request)
     {

@@ -59,20 +59,17 @@
                             <textarea name="data[tdireccion]" id="inputDireccion" cols="30" rows="5" class="form-control">{{ $user != null ? $user->tdireccion : null }}</textarea>
                         </div>
                     </div>
-                    @hasrole('administrador')
+                    @hasrole(['administrador', 'medico', 'auxiliar'])
                     <div class="col-md-6">
-                        @php
-                            $puestos = config('enums.usuario_puesto');
-                        @endphp
+                       
                         <div class="mb-3">
                             <label for="inputPuesto" class="form-label">*PUESTO</label>
                             @php
-                            $roles = Auth::user()->getRoleNames()[0];
+                            $rol = $user!= null ?  $user->getRoleNames()[0] : null;
                         @endphp
-                            <select name="rol" id="inputPuesto" class="form-control" required>
-                               
+                            <select name="rol" id="inputPuesto" class="form-control" required onchange="addPrincipalUser(this)">
                                 @foreach ($puestos as $key =>  $puesto)
-                                    <option value="{{ $key}}" {{ isset(Auth::user()->getRoleNames()[0]) && $key == Auth::user()->getRoleNames()[0] ? 'selected' : null }}> {{ $puesto}} </option>
+                                    <option value="{{ $key}}" {{ $user != null && $rol === $key ? 'selected' : null }}> {{ $puesto}} </option>
                                 @endforeach
                             </select>
                         </div>
@@ -147,6 +144,7 @@
                     </div>
                     <div class="col-md-12 text-right">
                         <div class="mb-3">
+                            <input type="text" id="usuario_principal" name="data[usuario_principal]" value="{{ $user == null ? $user->usuario_principal : null }}" >
                             <input type="hidden" id="user_id" name="user_id" value="{{ $user_id }}" >
                             <button class="btn btn-primary">Guardar</button>
                         </div>

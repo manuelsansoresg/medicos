@@ -39,7 +39,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('consultorio', '\App\Http\Controllers\Admin\ConsultoriosController')->middleware('auth');
 
     Route::resource('usuarios', '\App\Http\Controllers\Admin\UserController')->middleware('auth');
-    Route::get('usuarios/{user}/{accessId}/isExist', [App\Http\Controllers\Admin\UserController::class, 'isExist'])->middleware('auth');
+    
 
     Route::resource('sin_citas', '\App\Http\Controllers\Admin\SinCitasController')->middleware('auth');
     Route::resource('consulta-asignado', '\App\Http\Controllers\Admin\ConsultasignadoController')->middleware('auth');

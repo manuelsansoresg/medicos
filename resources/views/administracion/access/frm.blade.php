@@ -8,7 +8,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item active" aria-current="page"><a href="/">INICIO</a></li>
                     <li class="breadcrumb-item"> <a href="/admin/acceso">ACCESO</a> </li>
-                    <li class="breadcrumb-item">USUARIO</li>
+                    <li class="breadcrumb-item">ACCESO</li>
                 </ol>
             </nav>
         </div>

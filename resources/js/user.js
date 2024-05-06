@@ -58,17 +58,3 @@ $("#frm-users").submit(function (e) {
             }
         });
 });
-
-window.isExistUser = function(user) {
-    let userId = user.value;
-    let accesId = $('#acces_id').val();
-
-    axios
-    .get("/admin/usuarios/"+userId+'/'+accesId+'/isExist')
-    .then(function (response) {
-        let result = response.data;
-    })
-    .catch(error => { 
-       
-    });
-}
