@@ -18,7 +18,7 @@ class ConsultoriosController extends Controller
      */
     public function index()
     {
-        $query = Consultorio::all();
+        $query = Consultorio::where('idconsultorios',  Session()->get('consultorio'))->get();
         return view('administracion.consultorio.list', compact('query'));
     }
 
@@ -52,12 +52,12 @@ class ConsultoriosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, $userId = null)
     {
         $myUser = User::find(Auth::user()->id);
         $data = array(
             'idconsultorio' => $id,
-            'userId' => Auth::user()->id,
+            'userId' => $userId,
             'myUser' => $myUser,
         );
         $view = \View::make('administracion.consultorio.horarios', $data)->render();

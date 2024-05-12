@@ -35,11 +35,11 @@ $("#frm-consultorio").submit(function (e) {
 
 //horario consulta
 
-window.changeOffice = function (office) {
+window.changeOffice = function (office, userId) {
     $('#content-horario-consulta').html('');
     $('#content-duracion-consulta').hide();
     axios
-        .get("/admin/consultorio/" + office)
+        .get("/admin/consultorio/" + office+'/'+userId+'/show')
         .then(function (response) {
             let result = response.data;
             $('#content-horario-consulta').html(result);
@@ -87,12 +87,23 @@ window.validateHours = function(id) {
 function sendFormData() {
     // Obtener los datos del formulario
     var formData = new FormData($('#frm-user-add-office')[0]);
-
+    let userId = $('#userId').val();
     // Enviar los datos con Axios
     axios.post('/admin/consulta-asignado', formData)
         .then(function(response) {
             // Manejar la respuesta exitosa
-            console.log(response.data);
+            Swal.fire({
+                title: 'Datos guardados exitosamente',
+                text:'¿Deseas volver al listado de horarios?',
+                showDenyButton: true,
+                showCancelButton: false,
+                confirmButtonText: 'SÍ',
+                denyButtonText: `NO`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location = '/admin/consulta-asignado/'+userId;
+                }
+            })
         })
         .catch(function(error) {
             // Manejar el error
@@ -105,3 +116,31 @@ $('#frm-user-add-office').submit(function(e) {
     e.preventDefault();
     sendFormData();
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    if (document.getElementById('idConsultorio')) {
+        let offices =  $('#offices').val();
+        let userId =  $('#userId').val();
+        changeOffice(offices, userId);
+    }
+});
+
+window.deleteConsultaAsignado = function (userId , consultorioId) {
+    Swal.fire({
+        title: '¿Deseas borrar el elemento?',
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: 'SÍ',
+        denyButtonText: `NO`,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            axios
+                .delete("/admin/consulta-asignado/"+userId+"/"+consultorioId+"/delete")
+                .then(function (response) {
+                    window.location = '/admin/consulta-asignado/'+userId;
+                })
+                .catch(error => {
+                });
+        }
+    })
+}

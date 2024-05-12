@@ -40,10 +40,10 @@
                         <div class="form-group">
                             <label class="form-label">CONSULTORIO</label>
                             <div class="form-control-wrap">
-                                <select name="data[idconsultorio]" id="offices"  onchange="changeOffice(this.value)" class="form-control">
+                                <select name="data[idconsultorio]" id="offices"  onchange="changeOffice(this.value, {{ $myUser->id }})" class="form-control">
                                     <option value="">Seleccione una opción</option>
                                    @foreach ($offices as $office)
-                                       <option value="{{ $office->idconsultorios }}">{{ $office->vnumconsultorio }}</option>
+                                       <option value="{{ $office->idconsultorios }}" {{ isset($idConsultorio) && $idConsultorio == $office->idconsultorios ? 'selected' : null  }}>{{ $office->vnumconsultorio }}</option>
                                    @endforeach
                                 </select>
                             </div>
@@ -83,7 +83,9 @@
                             {{-- <input type="hidden" id="user_id" name="user_id" value="{{ $user_id }}" > --}}
                             <input name="tipo" id="tipo" value="1" type="hidden" />
                             <input name="medicocon" id="medicocon" value="{{ $myUser->id }}" type="hidden" />
+                            <input name="userId" id="userId"  value="{{ $user->id }}" type="hidden" />
                             <input name="asignarp" id="asignarp" value="1" type="hidden" />
+                            <input name="idConsultorio" id="idConsultorio" value="{{ isset($idConsultorio)? $idConsultorio : null }}" type="hidden" />
                             <button class="btn btn-primary" id="btn-add-office-user">Guardar</button>
                         </div>
                     </div>

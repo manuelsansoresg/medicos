@@ -1,4 +1,6 @@
 @extends('adminlte::page')
+@inject('user', 'App\Models\User')
+@inject('consultorio', 'App\Models\Consultorio')
 
 @section('content_header')
     <div class="container">
@@ -8,7 +10,7 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item" aria-current="page"><a href="/">INICIO</a></li>
                         <li class="breadcrumb-item"> <a href="/admin/usuarios"> LISTA DE USUARIOS </a></li>
-                        <li class="breadcrumb-item active">ASIGNAR EL CONSULTORIO</li>
+                        <li class="breadcrumb-item active">LISTADO DE HORARIOS</li>
                     </ol>
                 </nav>
             </div>
@@ -26,29 +28,31 @@
                 <table class="table mt-3">
                     <thead>
                         <tr>
-                            <th>NOMBRE</th>
-                            <th>HORA INICIAL - HORA FINAL</th>
+                            <th>USUARIO</th>
+                            <th>CONSULTORIO</th>
                             <th> </th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($query as $query)
-                            @if ($query->ihorainicial != 0 && $query->ihorafinal != '')
-                            <tr>
-                                <td>{{ $query->name }}</td>
-                                <td> 
-                                    {{ $query->ihorainicial }} - {{ $query->ihorafinal }}    
-                                </td>
-                                <td class="col-2">
-                                    
-                                    <a href="/admin/consulta-asignado/{{ $query->id }}" class="btn btn-warning text-white"><i class="fas fa-building"></i></a>
-                                    <a href="/admin/usuarios/{{ $query->id }}/edit" class="btn btn-primary"><i
-                                            class="fas fa-edit"></i></a>
-                                    <a href="#" onclick="deleteUser({{ $query->id }})" class="btn btn-danger"><i
-                                            class="fas fa-trash"></i></a>
-                                </td>
-                            </tr>
-                            @endif
+                        @php
+                            $user        = $user::find($query->iddoctor);
+                            $consultorio = $consultorio::find($query->idconsultorio);
+                        @endphp
+                           <tr>
+                            <td>{{ $user->name }} {{ $user->vapellido }} </td>
+                            <td> 
+                                {{ $consultorio->vnumconsultorio }}   
+                            </td>
+                            <td class="col-2">
+                                
+                                {{-- <a href="/admin/consulta-asignado/{{ $query->id }}" class="btn btn-warning text-white"><i class="fas fa-building"></i></a> --}}
+                                <a href="/admin/consulta-asignado/{{ $id }}/{{ $query->idconsultorio }}/edit" class="btn btn-primary"><i
+                                        class="fas fa-edit"></i></a>
+                                <a href="#" onclick="deleteConsultaAsignado({{ $id }}, {{ $query->idconsultorio }})" class="btn btn-danger"><i
+                                        class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>

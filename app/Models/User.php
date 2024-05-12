@@ -65,10 +65,13 @@ class User extends Authenticatable
     {
         $isAdmin = Auth::user()->hasRole('administrador');
         $isMedico = Auth::user()->hasRole('medico');
+        $isAuxiliar = Auth::user()->hasRole('auxiliar');
         if ($isAdmin == true) {
             $puestos = config('enums.usuario_puesto');
         } elseif ($isMedico == true) {
             $puestos = config('enums.usuario_puesto_medico');
+        } elseif ($isAuxiliar == true) {
+            $puestos = config('enums.usuario_auxiliar');
         }
 
         return $puestos;
@@ -117,16 +120,24 @@ class User extends Authenticatable
     //*obtiene listado de tu usuario y los usuarios que te pertenecen si eres medico, si eres admin obtiene el listado de todos los usuarios
     public static function GetListUsers()
     {
-        $isAdmin = Auth::user()->hasRole('administrador');
-        $isDoctor = Auth::user()->hasRole('medico');
+        $isAdmin    = Auth::user()->hasRole('administrador');
+        $isDoctor   = Auth::user()->hasRole('medico');
+        $isAuxiliar = Auth::user()->hasRole('auxiliar');
+        $myUser = User::find(Auth::user()->id);
         $users =  null;
         if ($isAdmin === true) {
             $users = User::all();
         }
         if ($isDoctor === true) {
             $users = User::where('id', Auth::user()->id)
-                            ->orWhere('usuario_principal', Auth::user()->id)
+                            ->orWhere('usuario_principal', $myUser->usuario_principal)
                             ->get();
+        }
+
+        if ($isAuxiliar === true) {
+            $users =  User::where('id', Auth::user()->id)
+                        ->orWhere('creador_id', Auth::user()->id)
+                        ->get();
         }
         return $users;
     }
@@ -146,11 +157,12 @@ class User extends Authenticatable
 
     public static function saveEdit($request)
     {
-        $data       = $request->data;
-        $user_id    = $request->user_id;
-        $password   = $request->password;
-        $rol        = $request->rol;
-
+        $data         = $request->data;
+        $user_id      = $request->user_id;
+        $password     = $request->password;
+        $rol          = $request->rol;
+        $current_user = Auth::user();
+        
         
         if ($password != null) {
             $data['password'] = bcrypt($password);
@@ -172,6 +184,22 @@ class User extends Authenticatable
             $user->assignRole($rol);
         }
         ClinicaUser::saveEdit($user->id, $request);
+
+        if ($current_user->hasRole('administrador')) {
+            User::where('id', $user->id)->update([
+                'usuario_principal' => $user->id
+            ]);
+        } elseif ($current_user->hasRole('medico')) {
+            User::where('id', $user->id)->update([
+                'usuario_principal' => Auth::user()->id
+            ]);
+        } elseif ($current_user->hasRole('auxiliar')) {
+            $myUser = User::find(Auth::user()->id);
+            User::where('id', $user->id)->update([
+                'usuario_principal' => $myUser->usuario_principal
+            ]);
+        } 
+    
         return $user;
     }
 }

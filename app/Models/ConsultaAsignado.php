@@ -24,16 +24,22 @@ class ConsultaAsignado extends Model
     ];
 
 
-    public static function getMyCon()
+    public static function getMyCon($userId)
     {
+        \DB::enableQueryLog(); // Enable query log
         $user       = User::find(Auth::user()->id);
         /*
         $is_admin   = Auth::user()->hasRole(['medico', 'auxiliar', 'secretario']); */
-        $clinica                  = Session::get('clinica');
-
-        return ConsultaAsignado::where(['consultasignado.idclinica' => $clinica, 'consultasignado.iddoctor' => $user->id])
-                                ->join('users', 'users.id', 'consultasignado.iddoctor')
-                                ->get();
+        $clinica     = Session::get('clinica');
+        $consultorio = Session::get('consultorio');
+        $query = ConsultaAsignado::select('iddoctor', 'idconsultorio')
+        ->where('idclinica', $clinica)
+        ->where('iddoctor', $userId)
+        ->groupBy('iddoctor', 'idconsultorio')
+        ->get();
+    
+        //dd(\DB::getQueryLog()); // Show results of log
+        return $query;
     }
 
     public static function getByDate($date, $isGroup = true)
@@ -137,7 +143,7 @@ class ConsultaAsignado extends Model
         //$requestData    = $request->all();
         $idclinica      = Session()->get('clinica');
         $idconsultorio  = Session()->get('consultorio');
-        $iddoctor = Auth::user()->id;
+        $iddoctor = $request->userId;
 
         $horarios = [
             'manana' => [
@@ -164,6 +170,7 @@ class ConsultaAsignado extends Model
                     'idconsultorio' => $idconsultorio,
                     'idclinica' => $idclinica,
                     'itiempo' => $request->duraconsulta,
+                    'iddoctor' => $iddoctor,
                 );
 
                 $dataArray[] =  array(
@@ -172,6 +179,7 @@ class ConsultaAsignado extends Model
                     'idconsultorio' => $idconsultorio,
                     'idclinica' => $idclinica,
                     'itiempo' => $request->duraconsulta,
+                    'iddoctor' => $iddoctor,
                 );
                 
                 $consulta = ConsultaAsignado::where($data)->count();

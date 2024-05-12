@@ -15,7 +15,9 @@ class SinCitasController extends Controller
      */
     public function index()
     {
-        $query = FechaEspeciales::getAll();
+        $consultorio =  Session()->get('consultorio');
+        $clinica =  Session()->get('clinica');
+        $query = FechaEspeciales::where(['idclinica'=> $clinica, 'idconsultorio' => $consultorio])->get();
         return view('administracion.sin_citas.list', compact('query'));
     }
 

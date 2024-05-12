@@ -144,7 +144,6 @@
                     </div>
                     <div class="col-md-12 text-right">
                         <div class="mb-3">
-                            <input type="text" id="usuario_principal" name="data[usuario_principal]" value="{{ $user == null ? $user->usuario_principal : null }}" >
                             <input type="hidden" id="user_id" name="user_id" value="{{ $user_id }}" >
                             <button class="btn btn-primary">Guardar</button>
                         </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ConsultaAsignado;
+use App\Models\Consultasignado;
 use App\Models\Consultorio;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class ConsultasignadoController extends Controller
     {
         $offices = Consultorio::getMyCon(); //consultorios
         $myUser = User::find(Auth::user()->id);
-        return view('administracion.user.consultorioAsignado.frm', compact('offices', 'myUser'));
+        return view('administracion.user.consultorioAsignado.frm', compact('offices', 'myUser', 'user'));
     }
 
     /**
@@ -53,7 +54,8 @@ class ConsultasignadoController extends Controller
      */
     public function show($id)
     {
-        $query = ConsultaAsignado::getMyCon(); //consultorios
+
+        $query = ConsultaAsignado::getMyCon($id); //consultorios
         return view('administracion.user.consultorioAsignado.list', compact('query', 'id'));
     }
 
@@ -63,9 +65,12 @@ class ConsultasignadoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, $idConsultorio)
     {
-        //
+        $user = User::find($id);
+        $offices = Consultorio::getMyCon(); //consultorios
+        $myUser = User::find(Auth::user()->id);
+        return view('administracion.user.consultorioAsignado.frm', compact('offices', 'myUser', 'user', 'idConsultorio'));
     }
 
     /**
@@ -86,8 +91,11 @@ class ConsultasignadoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, $idConsultorio)
     {
-        //
+        ConsultaAsignado::where([
+            'iddoctor' => $id,
+            'idconsultorio' => $idConsultorio,
+        ])->delete();
     }
 }

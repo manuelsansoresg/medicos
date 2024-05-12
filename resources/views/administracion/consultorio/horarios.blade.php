@@ -25,9 +25,10 @@
                             'idia' => $idia,
                             'iturno' => $iturno,
                             'idconsultorio' => $idconsultorio,
+                            'iddoctor' => $userId,
                             'itipousr' => 1, //*revisar porque es el tipo de usuario
                         ];
-
+                        //dd($data_where);
                         $queryConsultaAsignado    = $consultaAsignado::where($data_where);
                         $getQueryConsultaAsignado = $queryConsultaAsignado->first();
                         $numeror                  = $queryConsultaAsignado->count();
@@ -39,13 +40,13 @@
                             $aliasIdIni   = $turno[$iturno]."_ini[]";
                             $aliasIdFin   = $turno[$iturno]."_fin[]";
                         @endphp
-                        <select name="{{ $aliasIdIni }}"  id="{{ $aliasIdIni }}" class="form-control select-horas" onchange="validateHours('{{ $aliasId }}')">
+                        <select name="{{ $aliasIdIni }}"  id="{{ $aliasId }}_ini" class="form-control select-horas" onchange="validateHours('{{ $aliasId }}')">
                             @for($hour = 0; $hour < 24; $hour++)
                                 <option value="{{ $hour }}" {{ $getQueryConsultaAsignado!= null && $getQueryConsultaAsignado->ihorainicial == $hour ? 'selected' : null }}>{{ $hour }}</option>
                             @endfor
                         </select>
                         <br>
-                        <select name="{{ $aliasIdFin }}"  id="{{ $aliasIdFin }}" class="form-control select-horas" onchange="validateHours('{{ $aliasId }}')">
+                        <select name="{{ $aliasIdFin }}"  id="{{ $aliasId }}_fin" class="form-control select-horas" onchange="validateHours('{{ $aliasId }}')">
                             @for($hour = 0; $hour < 24; $hour++)
                                 <option value="{{ $hour }}" {{ $getQueryConsultaAsignado!= null && $getQueryConsultaAsignado->ihorafinal == $hour ? 'selected' : null }}>{{ $hour }}</option>
                             @endfor
