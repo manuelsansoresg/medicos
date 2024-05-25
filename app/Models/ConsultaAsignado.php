@@ -42,23 +42,25 @@ class ConsultaAsignado extends Model
         return $query;
     }
 
-    public static function getByDate($date, $isGroup = true)
+    public static function getByDate($date, $doctor_id = null, $isGroup = true)
     {
         \DB::enableQueryLog(); // Enable query log
 
-        $doctor_id = Auth::user()->id;
+        $doctor_id = $doctor_id == null ? Auth::user()->id : $doctor_id;
         $dateTime = new DateTime($date);
         $dayOfWeek = $dateTime->format('w');
-
+        $dayOfWeek= $dayOfWeek == 0 ? 7  : $dayOfWeek; 
         $idclinica = Session()->get('clinica');
         $idconsultorio = Session()->get('consultorio');
 
+        //dd($idclinica, $doctor_id, $dayOfWeek);
 
         $consulta = ConsultaAsignado::where([
             'consultasignado.idclinica' => $idclinica,
             'consultasignado.iddoctor' => $doctor_id,
             'consultasignado.idia' => $dayOfWeek
         ])
+        ->where('ihorainicial', '>', '0')
             ->where(function ($query) {
                 $query->whereIn('iturno', [1, 2, 3])
                     ->orWhereNull('iturno');
@@ -66,7 +68,7 @@ class ConsultaAsignado extends Model
             ->join('consultorios', 'consultorios.idconsultorios', '=', 'consultasignado.idconsultorio')
             ->orderBy('iturno', 'ASC')
             ->get();
-
+        
         $resultados = [];
 
         foreach ($consulta as $asignado) {
@@ -78,36 +80,70 @@ class ConsultaAsignado extends Model
             $contorhoras = 0;
             $horanueva = $ihorainicial;
             $horarios = [];
-
+            /* 
+            $statusconactivanop = false;
+            if ($getUserCita === null) {
+                $statusconactivanop = true;
+            } */
+            /*  $horarios[] = [
+                'hora' => date("g:i a", strtotime($horaFormateada)),
+                'horaSinFormato' => $ihorainicial,
+                'statusconactivanop' => $statusconactivanop,
+                'diasemana' => $dayOfWeek,
+                'momento' => $momento,
+            ]; */
+            //dd($horanueva, $ihorafinal);
             while ($horanueva < $ihorafinal) {
                 $horaFormateada = sprintf("%02d:%02d", floor($horanueva), ($horanueva - floor($horanueva)) * 60);
-
+                
                 // Check if the provided date is equal to the current date
                 $isCurrentDate = $dateTime->format('Y-m-d') == now()->format('Y-m-d');
-
                 // verificar disponibilidad
                 //*revisar si el $date es correcto si no poner el date de la fecha actual del servidor
-                $isDisponible = ConsultasActivas::disponible($asignado->idconsultorio, $asignado->iddoctor, $date, $asignado->idia, $asignado->iturno, $asignado->idclinica);
-
+                //$isDisponible = ConsultasActivas::disponible($asignado->idconsultorio, $asignado->iddoctor, $date, $asignado->idia, $asignado->iturno, $asignado->idclinica);
+                $horaampm =  date("g:i a", strtotime($horaFormateada));
+                $isDisponible = UserCita::where([
+                                'consulta_asignado_id' => $asignado->idconsultasignado,
+                                'hora' => $horaampm,
+                                'status' => 1,
+                                ])
+                                ->first();
                 // Validar si la hora actual es menor a la hora que estamos procesando (only if the date is the current date)
-                if ($isCurrentDate && $horaFormateada > now()->format('H:i')) {
+                $horarios[] = [
+                    'id' => $asignado->idconsultasignado,
+                    'hora' => date("g:i a", strtotime($horaFormateada)),
+                    'horaSinFormato' => $horaFormateada,
+                    'statusconactivanop' => $isDisponible == null ? false : true,
+                    'diasemana' => $dayOfWeek,
+                    'momento' => $momento,
+                    'asignado' => $asignado->idconsultasignado,
+                    'user_cita_id' => $isDisponible == null ? null :  $isDisponible->id,
+                ];
+
+                /* if ($isCurrentDate && $horaFormateada > now()->format('H:i')) {
                     $horarios[] = [
+                        'id' => $asignado->idconsultasignado,
                         'hora' => date("g:i a", strtotime($horaFormateada)),
                         'horaSinFormato' => $horaFormateada,
-                        'statusconactivanop' => $isDisponible == null ? false : $isDisponible->iestatus,
+                        'statusconactivanop' => $isDisponible == null ? false : true,
                         'diasemana' => $dayOfWeek,
                         'momento' => $momento,
+                        'asignado' => $asignado->idconsultasignado,
+                        'isDisponible' => $isDisponible == null ? 'libre' : 'ocupado',
                     ];
                 } elseif (!$isCurrentDate) {
                     // If the date is not the current date, add all time slots without considering the current time
                     $horarios[] = [
+                        'id' => $asignado->idconsultasignado,
                         'hora' => date("g:i a", strtotime($horaFormateada)),
                         'horaSinFormato' => $horaFormateada,
-                        'statusconactivanop' => $isDisponible == null ? false : $isDisponible->iestatus,
+                        'statusconactivanop' => $isDisponible == null ? false : true,
                         'diasemana' => $dayOfWeek,
                         'momento' => $momento,
+                        'asignado' => $asignado->idconsultasignado,
+                        'isDisponible' => $isDisponible == null ? 'libre' : 'ocupado',
                     ];
-                }
+                } */
 
                 $horanueva += $itiempo / 60; // Aumenta la hora actual en el intervalo de tiempo
             }

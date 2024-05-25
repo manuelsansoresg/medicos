@@ -16,15 +16,23 @@ class Paciente extends Model
         'idlpaciente','vnombre','vapellido','ttelefono','vfechan','vfecham','vcodigopasiente','vpass','istatus','vpeso','tdireccion','vnumeroseguro','tobservaciones','vfoto','vruta','mail','idclinica','isexo','idreveusr'
     ];
 
-    public static function getAll()
+    public static function getAll($search = null, $limit = null)
     {
         $clinica                  = Session::get('clinica');
         $consultorio              = Session::get('consultorio');
       
-        return Paciente::where([
+        $pacientes =  Paciente::where([
             'idclinica' => $clinica,
             'istatus' => 1,
-        ])->get();
+        ]);
+        if ($search != '') {
+            $pacientes->where('vnombre', 'like', '%' . $search . '%');
+            $pacientes->orWhere('vapellido', 'like', '%' . $search . '%');
+            $pacientes->orWhere('vcodigopasiente', 'like', '%' . $search . '%');
+        }
+        $limit = $limit === null ? 50 : $limit;
+        return $pacientes->paginate($limit);
+        
     }
     
     public static function search($query)

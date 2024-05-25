@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -77,11 +78,28 @@ class User extends Authenticatable
         return $puestos;
     }
 
+    public static function getUsersByRol($rol)
+    {
+        $clinica     = Session::get('clinica');
+        $consultorio = Session::get('consultorio');
+
+        
+        
+        return User::select('users.id', 'users.name', 'iddoctor', 'idconsultorio')
+                    ->join('consultasignado', 'consultasignado.iddoctor', 'users.id')
+                    ->whereHas('roles', function ($q) use($rol) {
+                    $q->where('name', $rol);
+                })
+                ->groupBy('iddoctor', 'idconsultorio')
+                ->get();
+    }
+
     public static function countUsersCreate($userId)
     {
         $users         = User::where('usuario_principal', $userId)->get();
         $countMedico   = 0;
         $countAuxiliar = 0;
+        $countPaciente = 0;
 
         foreach ($users as $user) {
             if ($user->hasRole('medico')) {
@@ -90,11 +108,15 @@ class User extends Authenticatable
             if ($user->hasRole('auxiliar')) {
                 $countAuxiliar = $countAuxiliar + 1;
             }
+            if ($user->hasRole('paciente')) {
+                $countPaciente = $countPaciente + 1;
+            }
             
         }
         $dataUser = array(
             'medico' => $countMedico,
-            'auxiliar' => $countAuxiliar
+            'auxiliar' => $countAuxiliar,
+            'paciente' => $countPaciente,
         );
         return $dataUser;
     }
@@ -139,6 +161,7 @@ class User extends Authenticatable
                         ->orWhere('creador_id', Auth::user()->id)
                         ->get();
         }
+        
         return $users;
     }
 
@@ -198,7 +221,7 @@ class User extends Authenticatable
             User::where('id', $user->id)->update([
                 'usuario_principal' => $myUser->usuario_principal
             ]);
-        } 
+        }
     
         return $user;
     }
