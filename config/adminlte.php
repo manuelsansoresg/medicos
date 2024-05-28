@@ -357,7 +357,7 @@ return [
         ],
         [
             'text'        => 'Actividades',
-            'url'         => 'admin/pendientes',
+            'url'         => 'admin/actividades',
             'icon'        => 'far fa-fw fa-file',
         ],
         [

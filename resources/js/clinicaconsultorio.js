@@ -46,6 +46,9 @@ window.changeConsultorio = function () {
                     option.text = consultorio.vnumconsultorio;
                     selectConsultorio.add(option);
                 });
+                let optionTodos = new Option('Todos', 0);
+                selectConsultorio.add(optionTodos)
+
             } else {
                 // Si no hay datos, bloquear el select nuevamente
                 selectConsultorio.disabled = true;

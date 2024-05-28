@@ -46,12 +46,13 @@ class ConsultaAsignado extends Model
     {
         \DB::enableQueryLog(); // Enable query log
 
-        $doctor_id = $doctor_id == null ? Auth::user()->id : $doctor_id;
-        $dateTime = new DateTime($date);
-        $dayOfWeek = $dateTime->format('w');
-        $dayOfWeek= $dayOfWeek == 0 ? 7  : $dayOfWeek; 
-        $idclinica = Session()->get('clinica');
+        $doctor_id     = $doctor_id == null ? Auth::user()->id : $doctor_id;
+        $dateTime      = new DateTime($date);
+        $dayOfWeek     = $dateTime->format('w');
+        $dayOfWeek     = $dayOfWeek == 0 ? 7  : $dayOfWeek;
+        $idclinica     = Session()->get('clinica');
         $idconsultorio = Session()->get('consultorio');
+        $turnos = array(1=> 'mañana', 2=> 'tarde', 3 => 'noche');
 
         //dd($idclinica, $doctor_id, $dayOfWeek);
 
@@ -66,11 +67,12 @@ class ConsultaAsignado extends Model
                     ->orWhereNull('iturno');
             })
             ->join('consultorios', 'consultorios.idconsultorios', '=', 'consultasignado.idconsultorio')
+            ->orderBy('idconsultorio', 'ASC')
             ->orderBy('iturno', 'ASC')
             ->get();
         
         $resultados = [];
-
+        //dd($consulta);
         foreach ($consulta as $asignado) {
             $ihorainicial   = $asignado->ihorainicial;
             $ihorafinal     = $asignado->ihorafinal;
@@ -80,19 +82,7 @@ class ConsultaAsignado extends Model
             $contorhoras = 0;
             $horanueva = $ihorainicial;
             $horarios = [];
-            /* 
-            $statusconactivanop = false;
-            if ($getUserCita === null) {
-                $statusconactivanop = true;
-            } */
-            /*  $horarios[] = [
-                'hora' => date("g:i a", strtotime($horaFormateada)),
-                'horaSinFormato' => $ihorainicial,
-                'statusconactivanop' => $statusconactivanop,
-                'diasemana' => $dayOfWeek,
-                'momento' => $momento,
-            ]; */
-            //dd($horanueva, $ihorafinal);
+           
             while ($horanueva < $ihorafinal) {
                 $horaFormateada = sprintf("%02d:%02d", floor($horanueva), ($horanueva - floor($horanueva)) * 60);
                 
@@ -100,7 +90,6 @@ class ConsultaAsignado extends Model
                 $isCurrentDate = $dateTime->format('Y-m-d') == now()->format('Y-m-d');
                 // verificar disponibilidad
                 //*revisar si el $date es correcto si no poner el date de la fecha actual del servidor
-                //$isDisponible = ConsultasActivas::disponible($asignado->idconsultorio, $asignado->iddoctor, $date, $asignado->idia, $asignado->iturno, $asignado->idclinica);
                 $horaampm =  date("g:i a", strtotime($horaFormateada));
                 $isDisponible = UserCita::where([
                                 'consulta_asignado_id' => $asignado->idconsultasignado,
@@ -149,9 +138,10 @@ class ConsultaAsignado extends Model
             }
 
             if (!empty($horarios)) {
-                $resultados[] = [
+                $resultados[$asignado->vnumconsultorio.' '.$turnos[$momento]] = [
                     'consultorio' => $asignado->vnumconsultorio,
                     'horarios' => $horarios,
+                    'turno' => $momento,
                     'id' => $asignado->idconsultasignado,
                 ];
             }
@@ -161,6 +151,9 @@ class ConsultaAsignado extends Model
             // ... (código existente)
             $consulta->groupBy('iturno');
         }
+
+        
+        
         //dd(\DB::getQueryLog()); // Show results of log
         return $resultados;
     }
@@ -170,16 +163,22 @@ class ConsultaAsignado extends Model
         /* ConsultaAsignado::where([
             'iddoctor' => Auth::user()->id,
         ]); */
-        return ConsultaAsignado::join('consultorios', 'consultorios.idconsultorios', 'consultasignado.idconsultorio')
+        $today = date('Y-m-d');
+        return ConsultaAsignado::
+             join('consultorios', 'consultorios.idconsultorios', 'consultasignado.idconsultorio')
+            ->join('user_citas', 'user_citas.consulta_asignado_id', 'consultasignado.idconsultasignado')
+            ->where('ihorainicial', '>', 0) 
+            ->where('user_citas.fecha', $today)
             ->get();
     }
 
     public static function saveEdit($request)
     {
         //$requestData    = $request->all();
-        $idclinica      = Session()->get('clinica');
-        $idconsultorio  = Session()->get('consultorio');
-        $iddoctor = $request->userId;
+        $dataRequest   = $request->data;
+        $idclinica     = Session()->get('clinica');
+        $idconsultorio = $dataRequest['idconsultorio'];
+        $iddoctor      = $request->userId;
 
         $horarios = [
             'manana' => [

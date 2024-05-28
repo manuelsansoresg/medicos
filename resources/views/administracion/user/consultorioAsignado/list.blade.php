@@ -37,7 +37,7 @@
                         @foreach ($query as $query)
                         @php
                             $user        = $user::find($query->iddoctor);
-                            $consultorio = $consultorio::find($query->idconsultorio);
+                            $consultorio = $consultorio::where('idconsultorios', $query->idconsultorio)->first();
                         @endphp
                            <tr>
                             <td>{{ $user->name }} {{ $user->vapellido }} </td>

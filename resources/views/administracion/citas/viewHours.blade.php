@@ -6,7 +6,7 @@
             @endif
         </div>
         @php
-            $horarios = [0 => 'Mañana', 1 => 'TARDE', 2 => 'NOCHE'];
+            $horarios = [1 => 'Mañana', 2 => 'TARDE', 3 => 'NOCHE'];
         @endphp
 
     </div>
@@ -16,7 +16,8 @@
                 <div class="col-12 col-md-4">
                     <div class="card py-2 px-2">
                         <div class="card-header">
-                            <h6> {{ $horarios[$key] }} {{ $consultaAsignado['consultorio'] }} </h6>
+                            <p class="text-muted">{{ $horarios[ $consultaAsignado['turno']] }}</p>
+                            <h6>   {{ $consultaAsignado['consultorio'] }} </h6>
                           </div>
                           <div class="card-body">
                             @php
