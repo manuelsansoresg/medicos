@@ -14,7 +14,7 @@
         </div>
     </div>
 @stop
-
+@inject('UserCita', 'App\Models\UserCita')
 @section('content')
 <div class="container">
     <div class="row mt-3">
@@ -64,9 +64,14 @@
                                             {{ config('enums.turno')[$consulta->iturno] }} 
                                         </td>
                                         <td>
-                                            DE {{ $consulta->ihorafinal }}:00 HRS.  A  {{ $consulta->ihorafinal }}:00 HRS.<br>
+                                            DE {{ $consulta->ihorainicial }}:00 HRS.  A  {{ $consulta->ihorafinal }}:00 HRS.<br>
                                         </td>
-                                        <td>0</td>
+                                        <td>
+                                            @php
+                                                $citas = $UserCita::where('consulta_asignado_id', $consulta->idconsultasignado)->count();
+                                            @endphp
+                                            {{ $citas }}
+                                        </td>
                                         <td>
                                             {{ $consulta->vnumconsultorio }}
                                         </td>

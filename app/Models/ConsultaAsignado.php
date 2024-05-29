@@ -166,7 +166,7 @@ class ConsultaAsignado extends Model
         $today = date('Y-m-d');
         return ConsultaAsignado::
              join('consultorios', 'consultorios.idconsultorios', 'consultasignado.idconsultorio')
-            ->join('user_citas', 'user_citas.consulta_asignado_id', 'consultasignado.idconsultasignado')
+            ->leftJoin('user_citas', 'user_citas.consulta_asignado_id', 'consultasignado.idconsultasignado')
             ->where('ihorainicial', '>', 0) 
             ->where('user_citas.fecha', $today)
             ->get();
