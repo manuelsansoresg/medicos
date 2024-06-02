@@ -39,7 +39,9 @@ class UserController extends Controller
         $clinicas   = Clinica::getAll();
         $my_clinics = ClinicaUser::where('user_id', $user_id)->get();
         $puestos    = User::getRoles();
-        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics', 'puestos'));
+        $userAdmins = User::getUsersByNameRol('medico');
+        
+        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics', 'puestos', 'userAdmins'));
     }
 
     /**
@@ -99,8 +101,8 @@ class UserController extends Controller
         $clinicas   = Clinica::getAll();
         $my_clinics = ClinicaUser::where('user_id', $user_id)->get();
         $puestos    = User::getRoles();
-
-        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics', 'puestos'));
+        $userAdmins = User::getUsersByNameRol('medico');
+        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics', 'puestos', 'userAdmins'));
     }
 
     /**

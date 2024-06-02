@@ -58,6 +58,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @if ($consultas != null)
                                 @foreach ($consultas as $consulta)
                                     <tr>
                                         <td> 
@@ -68,20 +69,23 @@
                                         </td>
                                         <td>
                                             @php
-                                                $citas = $UserCita::where('consulta_asignado_id', $consulta->idconsultasignado)->count();
+                                                $getcitas = $UserCita::where('consulta_asignado_id', $consulta->idconsultasignado);
+                                                $totalCitas = $getcitas->count();
+                                                $cita = $getcitas->first();
                                             @endphp
-                                            {{ $citas }}
+                                            {{ $totalCitas }}
                                         </td>
                                         <td>
                                             {{ $consulta->vnumconsultorio }}
                                         </td>
                                         <td>
-                                            <a class="btn btn-primary" href="procesos/usrvisto.php?m=<? echo $idldoctores;?>&d=<? echo $v?>&c=<? echo $idconsultorio?>&h=<? echo $contador?>&cd=1" >
+                                            <a class="btn btn-primary" href="/admin/citas/{{ $consulta->idconsultasignado }}/list">
                                                 <strong>INICIAR CONSULTA</strong>
                                                 </a>
                                         </td>
                                     </tr>
                                 @endforeach
+                                @endif
                             </tbody>
                         </table>
                     </div>

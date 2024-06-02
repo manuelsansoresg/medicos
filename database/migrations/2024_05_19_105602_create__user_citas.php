@@ -18,6 +18,7 @@ class CreateUserCitas extends Migration
             $table->bigInteger('doctor_id');
             $table->bigInteger('paciente_id');
             $table->time('hora');
+            $table->date('fecha');
             $table->text('motivo')->nullable();
             $table->bigInteger('id_consultorio')->nullable();
             $table->bigInteger('id_clinica')->nullable();
@@ -34,6 +35,6 @@ class CreateUserCitas extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('_user_citas');
+        Schema::dropIfExists('user_citas');
     }
 }

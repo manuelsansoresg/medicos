@@ -18,20 +18,23 @@ return [
         'medico' => 'MEDICO',
         'auxiliar' => 'AUXILIAR',
         'secretario' => 'SECRETARIO',
-        'paciente' => 'PACIENTE',
     ),
     
     'usuario_puesto_medico' => array(
         '' => 'SELECCIONE UNA OPCIÓN',
         'auxiliar' => 'AUXILIAR',
         'secretario' => 'SECRETARIO',
-        'paciente' => 'PACIENTE',
     ),
     
     'usuario_auxiliar' => array(
         '' => 'SELECCIONE UNA OPCIÓN',
         'secretario' => 'SECRETARIO',
-        'paciente' => 'PACIENTE',
+    ),
+
+    'sexo' => array(
+        '' => 'SELECCIONE UNA OPCIÓN',
+        'MASCULINO' => 'MASCULINO',
+        'FEMENINO' => 'FEMENINO',
     ),
 
 ];

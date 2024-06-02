@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Citas;
 use App\Models\Clinica;
 use App\Models\ConsultaAsignado;
+use App\Models\Consultasignado;
 use App\Models\Consultorio;
 use App\Models\FechaEspeciales;
 use App\Models\Paciente;
@@ -71,6 +72,11 @@ class CitasController extends Controller
         return response()->json(['view' => $view, 'data' => $data]);
     }
 
+    public function viewCitaConsultaAsignado(ConsultaAsignado $consultaAsignado)
+    {
+        $horarios = ConsultaAsignado::getHoursByConsulta($consultaAsignado);
+        return view('administracion.citas.HoraCitaUser', compact('horarios'));
+    }
 
     /**
      * Show the form for creating a new resource.

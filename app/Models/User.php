@@ -38,6 +38,14 @@ class User extends Authenticatable
         'vcodigodocto',
         'creador_id',
         'usuario_principal',
+        
+        'fecha_nacimiento',
+        'codigo_paciente',
+        'num_seguro',
+        'foto',
+        'ruta_foto',
+        'sexo',
+        'alergias'
     ];
 
     /**
@@ -78,12 +86,30 @@ class User extends Authenticatable
         return $puestos;
     }
 
+    public static function getUsersByNameRol($rol)
+    {
+        $clinica     = Session::get('clinica');
+        $consultorio = Session::get('consultorio');
+        
+        return User::select('users.id', 'users.name')
+                    ->whereHas('roles', function ($q) use($rol) {
+                    $q->where('name', $rol);
+                })
+                ->get();
+    }
+    public static function getUsersByRoles($roles)
+    {
+        return User::
+            whereHas('roles', function ($q) use($roles) {
+            $q->whereIn('name', $roles);
+        })
+        ->get();
+    }
+   
     public static function getUsersByRol($rol)
     {
         $clinica     = Session::get('clinica');
         $consultorio = Session::get('consultorio');
-
-        
         
         return User::select('users.id', 'users.name', 'iddoctor', 'idconsultorio')
                     ->join('consultasignado', 'consultasignado.iddoctor', 'users.id')
@@ -148,7 +174,7 @@ class User extends Authenticatable
         $myUser = User::find(Auth::user()->id);
         $users =  null;
         if ($isAdmin === true) {
-            $users = User::all();
+            $users = User::getUsersByRoles(['administrador', 'medico', 'auxiliar', 'secretario']);
         }
         if ($isDoctor === true) {
             $users = User::where('id', Auth::user()->id)
@@ -183,7 +209,7 @@ class User extends Authenticatable
         $data         = $request->data;
         $user_id      = $request->user_id;
         $password     = $request->password;
-        $rol          = $request->rol;
+        $rol          = isset( $request->rol)?  $request->rol : 'paciente';
         $current_user = Auth::user();
         
         
@@ -206,23 +232,50 @@ class User extends Authenticatable
             }
             $user->assignRole($rol);
         }
-        ClinicaUser::saveEdit($user->id, $request);
 
-        if ($current_user->hasRole('administrador')) {
+        //create code user
+        $codeUser = self::createCode($user->id);
+        User::where('id', $user->id)->update([
+            'codigo_paciente' => $codeUser
+        ]);
+
+        ClinicaUser::saveEdit($user->id, $request);
+        if (!isset($data['usuario_principal'])) {
+            if ($current_user->hasRole('administrador')) {
+                User::where('id', $user->id)->update([
+                    'usuario_principal' => $user->id
+                ]);
+            } elseif ($current_user->hasRole('medico')) {
+                User::where('id', $user->id)->update([
+                    'usuario_principal' => Auth::user()->id
+                ]);
+            } elseif ($current_user->hasRole('auxiliar') || $current_user->hasRole('paciente')) {
+                $myUser = User::find(Auth::user()->id);
+                User::where('id', $user->id)->update([
+                    'usuario_principal' => $myUser->usuario_principal
+                ]);
+            }
+        } else {
             User::where('id', $user->id)->update([
-                'usuario_principal' => $user->id
-            ]);
-        } elseif ($current_user->hasRole('medico')) {
-            User::where('id', $user->id)->update([
-                'usuario_principal' => Auth::user()->id
-            ]);
-        } elseif ($current_user->hasRole('auxiliar')) {
-            $myUser = User::find(Auth::user()->id);
-            User::where('id', $user->id)->update([
-                'usuario_principal' => $myUser->usuario_principal
+                'usuario_principal' => $data['usuario_principal']
             ]);
         }
     
         return $user;
+    }
+
+    public function createCode($userId)
+    {
+        $caja1 = '';
+        for($i=0 ; $i<5 ; $i++)
+        {   
+          $abecedario ="A0BC1D2EF3G4HI5JK6LM7NO8PQ9RSTUVWXYZ";
+          $des =rand(0,35);
+          $has = 1;
+          $letra1=substr($abecedario,$des,$has);
+          @$caja1 .= $letra1;
+        } 
+        $caja1 = $caja1."-".$userId;
+        return $caja1;
     }
 }

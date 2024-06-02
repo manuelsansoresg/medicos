@@ -7,8 +7,8 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item active" aria-current="page"><a href="/">INICIO</a></li>
-                    <li class="breadcrumb-item"> <a href="/admin/usuarios">LISTA DE USUARIOS</a> </li>
-                    <li class="breadcrumb-item">USUARIOS</li>
+                    <li class="breadcrumb-item"> <a href="/admin/usuarios">LISTA DE PACIENTES</a> </li>
+                    <li class="breadcrumb-item">PACIENTE</li>
                 </ol>
             </nav>
         </div>
@@ -22,7 +22,7 @@
        
     
         <div class="col-12 mt-3">
-            <form method="post" action="/admin/usuarios" id="frm-users">
+            <form method="post" action="/admin/pacientes" id="frm-paciente">
            {{--  @if ($user_id == null)
             @else
             <form method="post" action="/admin/usuarios" id="upd-frm-users">
@@ -49,6 +49,26 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
+                            <label for="inputSexo" class="form-label">SEXO</label>
+                            @php
+                                $sexo = config('enums.sexo');
+                            @endphp
+                            <select name="data[sexo]"  id="sexo" class="form-control">
+                                @foreach ($sexo as $sexo)
+                                    <option value="{{ $sexo }}">{{ $sexo }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="inputTelefono" class="form-label">FECHA NACIMIENTO</label>
+                            <input type="date" class="form-control" name="data[fecha_nacimiento]" id="fecha_nacimiento" value="{{ $user != null ? $user->fecha_nacimiento : null }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
                             <label for="inputTelefono" class="form-label">TELEFONO</label>
                             <input type="text" class="form-control" name="data[ttelefono]" id="inputTelefono" value="{{ $user != null ? $user->ttelefono : null }}">
                         </div>
@@ -59,41 +79,25 @@
                             <textarea name="data[tdireccion]" id="inputDireccion" cols="30" rows="5" class="form-control">{{ $user != null ? $user->tdireccion : null }}</textarea>
                         </div>
                     </div>
-                    @hasrole(['administrador', 'medico', 'auxiliar'])
+                    
                     <div class="col-md-6">
-                       
                         <div class="mb-3">
-                            <label for="inputPuesto" class="form-label">*PUESTO</label>
-                            @php
-                            $rol = $user!= null ?  $user->getRoleNames()[0] : null;
-                        @endphp
-                            <select name="rol" id="inputPuesto" class="form-control" required onchange="addPrincipalUser(this)">
-                                @foreach ($puestos as $key =>  $puesto)
-                                    <option value="{{ $key}}" {{ $user != null && $rol === $key ? 'selected' : null }}> {{ $puesto}} </option>
-                                @endforeach
+                            <label for="inputImss" class="form-label">N° I.M.S.S</label>
+                            <input type="text" class="form-control" name="data[num_seguro]" id="num_seguro" value="{{ $user != null ? $user->num_seguro : null }}">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="inputEstatus" class="form-label">*ACTIVO</label>
+                            <select name="data[status]" id="inputEstatus" class="form-control" required>
+                                
+                               @foreach (config('enums.status') as $key => $item)
+                                   <option value="{{ $key }}" {{ $user != null && $user->status == $key ? 'selected' : null  }}>{{ $item }}</option>
+                               @endforeach
                             </select>
                         </div>
                     </div>
-    
-                    <div class="col-md-6" id="content-financial_product_id">
-                        <div class="form-group">
-                            <label class="form-label">CLINICAS</label>
-                            <div class="form-control-wrap">
-                                <select name="clinicas[]" id="" class="form-control select2multiple" multiple="multiple"  data-search="on">
-                                   @foreach ($clinicas as $clinica)
-                                       <option value="{{ $clinica->idclinica }}" 
-                                        @foreach ($my_clinics as $my_clinic)
-                                          {{ $my_clinic->clinica_id == $clinica->idclinica ? 'selected' : null}}
-                                        @endforeach
-                                        >{{ $clinica->tnombre }}</option>
-                                   @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-    
-                  
-                    @endhasrole
                     @hasrole('administrador')
                     <div class="col-md-6" id="usuario_propietario">
                         <div class="form-group">
@@ -108,54 +112,24 @@
                     </div>
                     @endrole
 
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="inputEstatus" class="form-label">*ACTIVO</label>
-                            <select name="data[status]" id="inputEstatus" class="form-control" required>
-                                
-                               @foreach (config('enums.status') as $key => $item)
-                                   <option value="{{ $key }}" {{ $user != null && $user->status == $key ? 'selected' : null  }}>{{ $item }}</option>
-                               @endforeach
-                            </select>
-                        </div>
-                    </div>
                     <div class="col-12 py-3 mt-3">
                         <p class="lead">DATOS PARA INGRESAR AL SISTEMA</p>
+                        <p class="text-info">Solo llenar cuando se quiera dar acceso al sistema</p>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="inputCorreo" class="form-label">*CORREO</label>
-                            <input type="email" class="form-control" name="data[email]" id="inputCorreo" value="{{ $user != null ? $user->email : null }}" required>
+                            <label for="inputCorreo" class="form-label">CORREO</label>
+                            <input type="email" class="form-control" name="data[email]" id="inputCorreo" value="{{ $user != null ? $user->email : null }}">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="inputPassword" class="form-label">{{ $user_id == null ? '*' : null}}CONTRASEÑA</label>
-                            <input type="password" class="form-control" name="password" id="inputPassword" {{ $user_id == null ? 'required' : '' }}>
-                           
+                            <label for="inputPassword" class="form-label">CONTRASEÑA</label>
+                            <input type="password" class="form-control" name="password" id="inputPassword">
                         </div>
                     </div>
-                    <div class="col-12 py-3 mt-3">
-                        <p class="lead">INFORMACIÓN COMPLEMENTARIA</p>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="inputCedula" class="form-label">CEDULA PROFESIONAL</label>
-                            <input type="text" class="form-control" name="data[vcedula]" id="inputCedula" value="{{ $user != null ? $user->vcedula : null }}">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="inputRfc" class="form-label">RFC</label>
-                            <input type="text" class="form-control" name="data[RFC]" id="inputRfc" value="{{ $user != null ? $user->RFC : null }}">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="inputEspecialidad" class="form-label">ESPECIALIDAD O TÍTULO</label>
-                            <input type="text" class="form-control" name="data[especialidad]" id="inputEspecialidad" value="{{ $user != null ? $user->especialidad : null }}">
-                        </div>
-                    </div>
+                    
+                   
                     <div class="col-md-12 text-right">
                         <div class="mb-3">
                             <input type="hidden" id="user_id" name="user_id" value="{{ $user_id }}" >
