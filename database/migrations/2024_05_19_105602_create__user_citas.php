@@ -15,9 +15,9 @@ class CreateUserCitas extends Migration
     {
         Schema::create('user_citas', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('doctor_id');
+            $table->bigInteger('iddoctor');
             $table->bigInteger('paciente_id');
-            $table->time('hora');
+            $table->string('hora');
             $table->date('fecha');
             $table->text('motivo')->nullable();
             $table->bigInteger('id_consultorio')->nullable();

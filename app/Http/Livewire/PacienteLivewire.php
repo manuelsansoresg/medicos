@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Paciente;
+use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -22,7 +23,7 @@ class PacienteLivewire extends Component
         if ($this->search !== '' && $this->page > 1) {
             $this->resetPage();
         }
-        $pacientes = Paciente::getAll($this->search, $this->limit);
+        $pacientes = User::getUsersByRoles(['paciente'], $this->search, $this->limit, true);
         return view('livewire.paciente-livewire', compact('pacientes'));
     }
 }

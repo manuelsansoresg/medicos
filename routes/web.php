@@ -54,6 +54,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::delete('/consulta-asignado/{userId}/{idConsultorio}/delete', [App\Http\Controllers\Admin\ConsultasignadoController::class, 'destroy'])->middleware('auth');
 
     Route::resource('acceso', '\App\Http\Controllers\Admin\AccessController')->middleware('auth');
+
+    Route::resource('consulta', '\App\Http\Controllers\Admin\ConsultaController')->middleware('auth');
 });
 
 Auth::routes();

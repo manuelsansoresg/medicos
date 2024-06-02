@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\PendienteUsr;
 use Illuminate\Http\Request;
 
-class PendientesController extends Controller
+class ConsultaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +14,7 @@ class PendientesController extends Controller
      */
     public function index()
     {
-        $query = PendienteUsr::all();
-        return view('pendientes.list', compact('query'));
+        //
     }
 
     /**
@@ -26,9 +24,7 @@ class PendientesController extends Controller
      */
     public function create()
     {
-        $pendiente = null;
-        $pendiente_id = null;
-        return view('pendientes.form', compact('pendiente', 'pendiente_id'));
+        //
     }
 
     /**
@@ -39,7 +35,7 @@ class PendientesController extends Controller
      */
     public function store(Request $request)
     {
-        PendienteUsr::saveEdit($request);
+        //
     }
 
     /**
@@ -61,9 +57,7 @@ class PendientesController extends Controller
      */
     public function edit($id)
     {
-        $pendiente = PendienteUsr::find($id);
-        $pendiente_id = $id;
-        return view('pendientes.form', compact('pendiente', 'pendiente_id'));
+        //
     }
 
     /**
@@ -86,6 +80,6 @@ class PendientesController extends Controller
      */
     public function destroy($id)
     {
-        PendienteUsr::find($id)->delete();
+        //
     }
 }

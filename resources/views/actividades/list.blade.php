@@ -38,9 +38,9 @@
                         <div class="mt-3">
                             @foreach ($sqlpend as $respend)
                                 <li>
-                                    {{ $respend->tpendiente }}
+                                    {{ $respend->pendiente }}
                                     <p>
-                                        {{ $respend->vhora }}
+                                        {{ $respend->hora }}
                                     </p>
                                 </li>
                             @endforeach

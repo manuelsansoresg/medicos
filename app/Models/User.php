@@ -97,13 +97,26 @@ class User extends Authenticatable
                 })
                 ->get();
     }
-    public static function getUsersByRoles($roles)
+    public static function getUsersByRoles($roles, $search = null, $limit = null, $isPaginate = false)
     {
-        return User::
+        $users = User::
             whereHas('roles', function ($q) use($roles) {
             $q->whereIn('name', $roles);
-        })
-        ->get();
+        });
+
+        if ($search != '') {
+            $users->where('name', 'like', '%' . $search . '%');
+            $users->orWhere('vapellido', 'like', '%' . $search . '%');
+            $users->orWhere('codigo_paciente', 'like', '%' . $search . '%');
+        }
+        
+        $limit = $limit === null ? 50 : $limit;
+        if ($isPaginate === true) {
+            $users = $users->paginate($limit);
+        } else {
+            $users = $users->get();
+        }
+        return $users;
     }
    
     public static function getUsersByRol($rol)

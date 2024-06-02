@@ -22,12 +22,12 @@
                 @foreach ($pacientes as $paciente)
                     <tr>
                         <td> {{ $paciente->vnombre }} {{ $paciente->vapellido }} </td>
-                        <td> {{ $paciente->vcodigopasiente }}</td>
+                        <td> {{ $paciente->codigo_paciente }}</td>
                         <td> 
                             @php
-                                $nombre = $paciente->vnombre.' '. $paciente->vapellido;
+                                $nombre = $paciente->name.' '. $paciente->vapellido;
                             @endphp
-                            <a href="#" onclick="SelecPaciente({{ $paciente->idlpaciente  }}, '{{ $nombre }}')" class="btn btn-primary">Seleccionar</a>
+                            <a href="#" onclick="SelecPaciente({{ $paciente->id  }}, '{{ $nombre }}')" class="btn btn-primary">Seleccionar</a>
                         </td>
                     </tr>
                 @endforeach

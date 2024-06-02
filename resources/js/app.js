@@ -15,4 +15,5 @@ require('./clinicaconsultorio');
 require('./user');
 require('./citas');
 require('./access');
+require('./pendiente');
 

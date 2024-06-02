@@ -51,7 +51,10 @@
                                         {{ $horario['isDisponible'] }}
                                     </td>
                                     <td>
-
+                                        @if ($horario['userCitaId'] != null)
+                                            <a href="/admin/consulta/{{ $horario['userCitaId'] }}" class="btn btn-primary"><i class="fas fa-people-arrows"></i></a>
+                                            <a href="" class="btn btn-danger"><i class="fas fa-user-times"></i></a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

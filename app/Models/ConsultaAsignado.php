@@ -50,12 +50,13 @@ class ConsultaAsignado extends Model
         $horanueva    = $ihorainicial;
         $itiempo      = $asignado->itiempo;
         $horarios     = [];
-        $paciente     = null;
-        $motivo       = null;
 
+        //TODO CAMBIAR LISTADO DE PACIENTE CON USUARIOS ROL PACIENTE IGUAL EN LA VISTA DE LA CITA
         while ($horanueva < $ihorafinal) 
         {
-            $paciente = null;
+            $paciente   = null;
+            $motivo     = null;
+            $userCitaId = null;
             $horaFormateada = sprintf("%02d:%02d", floor($horanueva), ($horanueva - floor($horanueva)) * 60);
             $horaSinFormato = date("g:i a", strtotime($horaFormateada));
             $userCita       = UserCita::where(['consulta_asignado_id' => $asignado->idconsultasignado,
@@ -64,10 +65,11 @@ class ConsultaAsignado extends Model
             $isDisponible   = $userCita != null && $userCita->hora == $horaSinFormato ? true : false;
 
             if ($userCita != null && $userCita->hora == $horaSinFormato) {
-                $getPaciente = Paciente::where('idlpaciente', $userCita->paciente_id)
+                $getPaciente = User::where('id', $userCita->paciente_id)
                                         ->first();
-                $paciente = $getPaciente->vnombre;
+                $paciente = $getPaciente->name. ' '.$getPaciente->vapellido;
                 $motivo = $userCita->motivo;
+                $userCitaId = $userCita->id;
             }
             $horarios[] = [
                 'id' => $asignado->idconsultasignado,
@@ -76,6 +78,7 @@ class ConsultaAsignado extends Model
                 'isDisponible' => $isDisponible,
                 'paciente' => $paciente ,
                 'motivo' => $motivo,
+                'userCitaId' => $userCitaId,
                
             ];
             $horanueva += $itiempo / 60; // Aumenta la hora actual en el intervalo de tiempo
