@@ -20,6 +20,7 @@ class CreateConsultas extends Migration
             $table->bigInteger('idusrregistra')->nullable();
             $table->date('fecha')->nullable();
             $table->string('motivo');
+            $table->string('exploracion')->nullable();
             $table->string('peso')->nullable();
             $table->text('receta')->nullable();
             $table->timestamps();

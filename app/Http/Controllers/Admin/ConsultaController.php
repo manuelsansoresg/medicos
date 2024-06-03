@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Consulta;
+use App\Models\User;
+use App\Models\UserCita;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+
 
 class ConsultaController extends Controller
 {
@@ -35,7 +40,7 @@ class ConsultaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Consulta::saveEdit($request);
     }
 
     /**
@@ -46,7 +51,35 @@ class ConsultaController extends Controller
      */
     public function show($id)
     {
-        //
+        $consulta = Consulta::find($id);
+        return response()->json($consulta);
+    }
+
+    public function registroConsulta($userCitaId, $consultaAsignadoId)
+    {
+        $userCita       = UserCita::find($userCitaId);
+        $paciente       = User::find($userCita->paciente_id);
+        $ultimaConsulta = Consulta::where('user_cita_id', $userCita->id)->orderBy('created_at', 'DESC')->first();
+        $consultas      = Consulta::getByPaciente($paciente->id);
+        return view('administracion.consulta.form', compact('consultaAsignadoId', 'paciente', 'ultimaConsulta', 'consultas', 'userCitaId'));
+    }
+
+    public function recetaPdf(Consulta $consulta)
+    {
+        $getUserMedic = User::find($consulta->idusrregistra);
+        $getMedico    = User::find($getUserMedic->usuario_principal);
+        $medico       = $getMedico == null ? $getUserMedic : $getMedico;
+        $paciente     = User::find($consulta->paciente_id);
+        $data         = array(
+            'consulta' => $consulta,
+            'medico'   => $medico,
+            'paciente' => $paciente
+        );
+
+        $pdf = Pdf::loadView('administracion.consulta.receta', $data);
+        $pdf->setPaper('A4');
+
+        return $pdf->stream();
     }
 
     /**
@@ -80,6 +113,6 @@ class ConsultaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Consulta::where('id', $id)->delete();
     }
 }

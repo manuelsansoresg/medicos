@@ -74,8 +74,9 @@ class CitasController extends Controller
 
     public function viewCitaConsultaAsignado(ConsultaAsignado $consultaAsignado)
     {
-        $horarios = ConsultaAsignado::getHoursByConsulta($consultaAsignado);
-        return view('administracion.citas.HoraCitaUser', compact('horarios'));
+        $horarios           = ConsultaAsignado::getHoursByConsulta($consultaAsignado);
+        $consultaAsignadoId = $consultaAsignado->idconsultasignado;
+        return view('administracion.citas.HoraCitaUser', compact('horarios', 'consultaAsignadoId'));
     }
 
     /**

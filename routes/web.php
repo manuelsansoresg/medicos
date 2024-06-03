@@ -56,6 +56,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('acceso', '\App\Http\Controllers\Admin\AccessController')->middleware('auth');
 
     Route::resource('consulta', '\App\Http\Controllers\Admin\ConsultaController')->middleware('auth');
+    Route::get('consulta/{userCitaId}/{consultaAsignadoId}/registro', [App\Http\Controllers\Admin\ConsultaController::class, 'registroConsulta'])->middleware('auth');
+    Route::get('consulta/{consulta}/generate/pdf', [App\Http\Controllers\Admin\ConsultaController::class, 'recetaPdf'])->middleware('auth');
 });
 
 Auth::routes();
