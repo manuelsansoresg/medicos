@@ -18,6 +18,9 @@ class Consulta extends Model
         'exploracion',
         'peso',
         'receta',
+        'temperatura',
+        'estatura',
+        'indicaciones_generales',
     ];
 
     public static function getByPaciente($pacienteId,  $search = null, $limit = null, $isPaginate = false)

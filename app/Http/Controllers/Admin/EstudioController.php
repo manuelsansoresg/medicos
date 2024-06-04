@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Consulta;
+use App\Models\Estudio;
 use App\Models\User;
-use App\Models\UserCita;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
-
-class ConsultaController extends Controller
+class EstudioController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -32,38 +31,6 @@ class ConsultaController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        Consulta::saveEdit($request);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $consulta = Consulta::find($id);
-        return response()->json($consulta);
-    }
-
-    public function registroConsulta($userCitaId, $consultaAsignadoId)
-    {
-        $userCita       = UserCita::find($userCitaId);
-        $paciente       = User::find($userCita->paciente_id);
-        $ultimaConsulta = Consulta::where('paciente_id', $paciente->id)->orderBy('created_at', 'DESC')->first();
-        $consultas      = Consulta::getByPaciente($paciente->id);
-        return view('administracion.consulta.form', compact('consultaAsignadoId', 'paciente', 'ultimaConsulta', 'consultas', 'userCitaId'));
-    }
-
     public function recetaPdf(Consulta $consulta)
     {
         $getUserMedic = User::find($consulta->idusrregistra);
@@ -77,10 +44,33 @@ class ConsultaController extends Controller
             'paciente' => $paciente
         );
 
-        $pdf = Pdf::loadView('administracion.consulta.receta', $data);
+        $pdf = Pdf::loadView('administracion.consulta.estudio', $data);
         $pdf->setPaper('A4');
 
         return $pdf->stream();
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        Estudio::saveEdit($request);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $estudio = Estudio::find($id);
+        return response()->json($estudio);
     }
 
     /**
@@ -114,6 +104,6 @@ class ConsultaController extends Controller
      */
     public function destroy($id)
     {
-        Consulta::where('id', $id)->delete();
+        Estudio::where('id', $id)->delete();
     }
 }

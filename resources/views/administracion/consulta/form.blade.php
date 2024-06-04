@@ -30,7 +30,7 @@
                         <h6>Nombre: {{ $paciente->name }} {{ $paciente->fecha_nacimiento }}</h6>
                         <h6>Peso:
                             @if ($ultimaConsulta != null)
-                                {{ $ultimaConsulta->peso }} ({{ $ultimaConsulta->created_at }})
+                                {{ $ultimaConsulta != null ? $ultimaConsulta->peso : null }} ({{ Carbon\Carbon::parse($ultimaConsulta->created_at)->format('Y-m-d h:i a') }})
                             @endif
                         </h6>
                         <h6>Alergias: {{ $paciente->alergias }} </h6>
@@ -51,7 +51,7 @@
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-consulta" role="tabpanel" aria-labelledby="nav-consulta-tab">
                         <div class="col-12 mt-3 py-3">
-                            <a href="#" onclick="nuevaConsulta('{{ $ultimaConsulta->peso }}')" class="btn btn-primary float-right">Nueva consulta</a>
+                            <a href="#" onclick="nuevaConsulta('{{ $ultimaConsulta != null ? $ultimaConsulta->peso : null }}', '{{ $ultimaConsulta != null ? $ultimaConsulta->temperatura : null }}', '{{ $ultimaConsulta != null ? $ultimaConsulta->estatura : null }}')" class="btn btn-primary float-right">Nueva consulta</a>
                         </div>
                         <div class="row" id="content-consulta" style="display: none">
                             <div class="col-12">
@@ -72,6 +72,18 @@
                                         </div>
                                         <div class="col-12">
                                             <div class="mb-3">
+                                                <label for="inputPeso" class="form-label">TEMPERATURA</label>
+                                                <input type="text" name="data[temperatura]" id="temperatura" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="inputPeso" class="form-label">ESTATURA</label>
+                                                <input type="text" name="data[estatura]" id="estatura" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="mb-3">
                                                 <label for="inputExploracion" class="form-label">EXPLORACIÓN MEDICA</label>
                                                 <textarea name="data[exploracion]" id="exploracion" cols="30" rows="4" class="form-control"></textarea>
                                             </div>
@@ -82,10 +94,17 @@
                                                 <textarea name="data[receta]" id="receta" cols="30" rows="4" class="form-control"></textarea>
                                             </div>
                                         </div>
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="inputReceta" class="form-label">INDICACIONES GENERALES</label>
+                                                <textarea name="data[indicaciones_generales]" id="indicaciones_generales" cols="30" rows="4" class="form-control"></textarea>
+                                            </div>
+                                        </div>
                                         <input type="hidden" name="data[user_cita_id]" id="user_cita_id" value="{{ $userCitaId }}">
                                         <input type="hidden" name="data[paciente_id]" id="paciente_id" value="{{ $paciente != null ? $paciente->id : null }}">
                                         <input type="hidden" name="consulta_id" id="consulta_id" value="">
                                         <div class="mb-3 text-right">
+                                            <a class="btn btn-danger pointer" onclick="cancelConsulta()">Cancelar</a>
                                             <button class="btn btn-primary">Guardar</button>
                                         </div>
                                     </div>
@@ -95,15 +114,49 @@
                             </div>
                         </div>
                         <div class="col-12 mt-5">
-                            
                             <livewire:consulta-livewire :limit="10" :pacienteId="$paciente->id" />
-
-
-                            
                         </div>
                     </div>
                     
                     <div class="tab-pane fade show active" id="nav-estudio" role="tabpanel" aria-labelledby="nav-estudio-tab">
+                        <div class="col-12 mt-3 py-3">
+                            <a href="#" onclick="nuevoEstudio()" class="btn btn-primary float-right">Nuevo estudio</a>
+                        </div>
+                        <div class="row" id="content-estudio" style="display: none">
+                            <div class="col-12">
+                                <form method="post" action="/admin/estudio" id="frm-estudio">
+                                    <div class="col-12">
+                                        <p class="text-info">Los campos marcados con * son requeridos</p>
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="inputRecordatorio" class="form-label">*ESTUDIOS</label>
+                                                <textarea name="data[estudios]" id="estudios" cols="30" rows="4" class="form-control" required></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="inputPeso" class="form-label">DIAGNOSTICOS</label>
+                                                <textarea name="data[diagnosticos]" id="diagnosticos" cols="30" rows="4" class="form-control" required></textarea>
+                                            </div>
+                                        </div>
+                                        
+                                        <input type="hidden" name="data[user_cita_id]" id="estudio_user_cita_id" value="{{ $userCitaId }}">
+                                        <input type="hidden" name="data[paciente_id]" id="estudio_paciente_id" value="{{ $paciente != null ? $paciente->id : null }}">
+                                        <input type="hidden" name="estudio_id" id="estudio_diagnostico_id" value="">
+                                        <div class="mb-3 text-right">
+                                            <a class="btn btn-danger pointer" onclick="cancelEstudio()">Cancelar</a>
+                                            <button class="btn btn-primary">Guardar</button>
+                                        </div>
+                                    </div>
+                                    @csrf
+    
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-5">
+                            <livewire:estudio-livewire :limit="10" :pacienteId="$paciente->id" />
+                        </div>
+
                     </div>
                 </div>
             </div>

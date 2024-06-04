@@ -17,4 +17,5 @@ require('./citas');
 require('./access');
 require('./pendiente');
 require('./consulta');
+require('./estudio');
 
