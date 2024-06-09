@@ -61,7 +61,8 @@ class ConsultaController extends Controller
         $paciente       = User::find($userCita->paciente_id);
         $ultimaConsulta = Consulta::where('paciente_id', $paciente->id)->orderBy('created_at', 'DESC')->first();
         $consultas      = Consulta::getByPaciente($paciente->id);
-        return view('administracion.consulta.form', compact('consultaAsignadoId', 'paciente', 'ultimaConsulta', 'consultas', 'userCitaId'));
+        $isExpedient    = false;
+        return view('administracion.consulta.form', compact('consultaAsignadoId', 'paciente', 'ultimaConsulta', 'consultas', 'userCitaId', 'isExpedient'));
     }
 
     public function recetaPdf(Consulta $consulta)

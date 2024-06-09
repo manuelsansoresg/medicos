@@ -20,7 +20,21 @@ class Consultorio extends Model
 
     public static function getAll()
     {
-        return Consultorio::all();
+        $clinica     = Session::get('clinica');
+        $consultorio = Session::get('consultorio');
+        $isAdmin     = Auth::user()->hasRole('administrador');
+
+        if ($isAdmin) {
+            return Consultorio::all();
+        }
+
+        if ($consultorio == 0) {
+            return Consultorio::where('idclinica', $clinica)->get();
+        }
+        return Consultorio::where([
+            'idconsultorios' => $consultorio,
+            'idclinica' => $clinica,
+        ])->get();
     }
 
     public static function getMyCon()

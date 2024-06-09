@@ -16,38 +16,23 @@ class Paciente extends Model
         'idlpaciente','vnombre','vapellido','ttelefono','vfechan','vfecham','vcodigopasiente','vpass','istatus','vpeso','tdireccion','vnumeroseguro','tobservaciones','vfoto','vruta','mail','idclinica','isexo','idreveusr'
     ];
 
-    public static function getAll($search = null, $limit = null)
+    public static function search($request)
     {
-        $clinica                  = Session::get('clinica');
-        $consultorio              = Session::get('consultorio');
-      
-        $pacientes =  Paciente::where([
-            'idclinica' => $clinica,
-            'istatus' => 1,
-        ]);
-        if ($search != '') {
-            $pacientes->where('vnombre', 'like', '%' . $search . '%');
-            $pacientes->orWhere('vapellido', 'like', '%' . $search . '%');
-            $pacientes->orWhere('vcodigopasiente', 'like', '%' . $search . '%');
-        }
-        $limit = $limit === null ? 50 : $limit;
-        return $pacientes->paginate($limit);
-        
-    }
-    
-    public static function search($query)
-    {
-        $clinica                  = Session::get('clinica');
-        $consultorio              = Session::get('consultorio');
+        $clinica     = Session::get('clinica');
+        $consultorio = Session::get('consultorio');
+        $search      = $request->search;
         //$pacientes = Paciente::where('vapellido', 'LIKE', '%' . $query . '%')
         $pacientes = Paciente::
             where([
             'idclinica' => $clinica,
             'istatus' => 1,
         ])
-        ->limit(40)
+        ->where(function ($query) use ($search) {
+            $query->orWhere('vnombre', 'LIKE', "%$search%");
+        })
         ->get();
-        $newPacientes = array();
+        return $pacientes;
+       /*  $newPacientes = array();
         foreach ($pacientes as $paciente) 
         {
             $newPacientes[] = array(
@@ -55,6 +40,6 @@ class Paciente extends Model
                 'text' => $paciente->vnombre.' '.$paciente->vapellido,
             );    
         }
-        return $newPacientes;
+        return $newPacientes; */
     }
 }

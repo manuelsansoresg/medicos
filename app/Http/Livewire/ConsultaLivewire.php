@@ -15,11 +15,13 @@ class ConsultaLivewire extends Component
     public    $search          = '';
     public    $limit;
     public    $pacienteId;
+    public    $isExpedient;
 
-    public function mount($limit, $pacienteId)
+    public function mount($limit, $pacienteId, $isExpedient)
     {
         $this->limit      = $limit;
         $this->pacienteId = $pacienteId;
+        $this->isExpedient = $isExpedient;
     }
 
     public function render()

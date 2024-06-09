@@ -57,19 +57,35 @@ $(document).ready(function () {
     document.getElementById('frm-cita').addEventListener('submit', function (event) {
       event.preventDefault();  // Prevenir el envío normal del formulario
 
-      // Obtener el formulario y sus valores
-      let formulario = event.target;
-      let formData = new FormData(formulario);
+      // Obtener el valor del input con id 'hora'
+      var hora = document.getElementById("hora").value;
 
-      // Realizar la solicitud POST utilizando Axios
-      axios.post('/admin/citas', formData)
-        .then(function (response) {
-          window.location.reload();
-        })
-        .catch(function (error) {
-          // Manejar errores si es necesario
-          console.error(error);
-        });
+      // Verificar si el valor está vacío
+      if (!hora) {
+          // Si está vacío, mostrar una alerta
+          Swal.fire({
+            text: "Debe seleccionar una hora.",
+            icon: "warning"
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            });
+      } else {
+
+        // Obtener el formulario y sus valores
+        let formulario = event.target;
+        let formData = new FormData(formulario);
+  
+        // Realizar la solicitud POST utilizando Axios
+        axios.post('/admin/citas', formData)
+          .then(function (response) {
+            window.location.reload();
+          })
+          .catch(function (error) {
+            // Manejar errores si es necesario
+            console.error(error);
+          });
+      }
+
     });
   }
 
@@ -81,16 +97,14 @@ window.setCita = function () {
   let valueDate = $('#InputFecha').val();
 
   $('#content-hoursCita').html('');
-  $('#content-paciente-livewire').hide();
+  
   
   axios.get('/admin/citas/'+valueDate+'/'+iddoctor+'/set')
     .then(function (response) {
       let result = response.data;
       let view = result.view;
       let data = result.data;
-      if (data['totalConsulta'] > 0 ) {
-        $('#content-paciente-livewire').show();
-      }
+      
       $('#content-hoursCita').show();
       $('#content-hoursCita').html(view);
     })
@@ -128,12 +142,10 @@ window.SelecPaciente = function (pacienteId, nombre) {
   $('#content-paciente-add').show('slow');
   $('#paciente_id').val(pacienteId);
   $('#paciente-add').html(nombre);
-  $('#content-paciente-livewire').hide('slow');
 }
 
 window.changePacienteCita = function()
 {
-  $('#content-paciente-livewire').show('slow');
   $('#content-paciente-add').hide('slow');
 }
 
@@ -141,4 +153,34 @@ if (document.getElementById('frm-cita')) {
   window.addEventListener('DOMContentLoaded', function() {
     setCita();
   });
+}
+
+
+$("#busqueda-pacientes").easyAutocomplete({
+  maxResults: 50,
+  url: function (search) {
+      return "/admin/pacientes/get/search?search=" + search;
+  },
+
+  getValue: function (element) {
+      return element.id+'-'+element.name+' '+element.vapellido;
+  },
+  list: {
+      maxNumberOfElements: 30,
+      onClickEvent: function(){
+          let folio = $('#busqueda-pacientes').val().split('-')[0];
+          $('#paciente_id').val(folio);
+      },
+     
+      onHideListEvent: function () {
+          let folio = $('#busqueda-pacientes').val().split('-')[0];
+          $('#paciente_id').val(folio);
+      }
+  }
+   
+});
+
+window.updateSelectedTab = function (selectedTab)
+{
+  Livewire.emit('updateSelectedTab', selectedTab);
 }

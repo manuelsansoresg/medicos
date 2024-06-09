@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Consultorio;
 use App\Models\FechaEspeciales;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class SinCitasController extends Controller
 {
@@ -15,9 +17,7 @@ class SinCitasController extends Controller
      */
     public function index()
     {
-        $consultorio =  Session()->get('consultorio');
-        $clinica =  Session()->get('clinica');
-        $query = FechaEspeciales::where(['idclinica'=> $clinica, 'idconsultorio' => $consultorio])->get();
+        $query = FechaEspeciales::getAll();
         return view('administracion.sin_citas.list', compact('query'));
     }
 
@@ -28,9 +28,11 @@ class SinCitasController extends Controller
      */
     public function create()
     {
-        $id       = null;
-        $query    = null;
-        return view('administracion.sin_citas.frm', compact('id', 'query'));
+        $id          = null;
+        $query       = null;
+        $consultorio = Session::get('consultorio');
+        $consultorios = Consultorio::getAll();
+        return view('administracion.sin_citas.frm', compact('id', 'query', 'consultorio', 'consultorios'));
     }
 
     /**
@@ -63,9 +65,11 @@ class SinCitasController extends Controller
      */
     public function edit($id)
     {
-        $id       = $id;
-        $query    = FechaEspeciales::find($id);;
-        return view('administracion.sin_citas.frm', compact('id', 'query'));
+        $id           = $id;
+        $query        = FechaEspeciales::find($id);
+        $consultorio  = Session::get('consultorio');
+        $consultorios = Consultorio::getAll();
+        return view('administracion.sin_citas.frm', compact('id', 'query', 'consultorios', 'consultorio'));
     }
 
     /**

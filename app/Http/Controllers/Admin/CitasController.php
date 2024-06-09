@@ -30,14 +30,20 @@ class CitasController extends Controller
         $fecha             = isset($_GET['fecha'])? $_GET['fecha'] : date('Y-m-d');
         $user              = Auth::user();
         $is_medico         = Auth::user()->hasRole('medico');
+        $iddoctor = null;
+        if (!Auth::user()->hasRole('administrador')) {
+            $iddoctor = User::getMyUserPrincipal();
+        }
+        
+
         $clinicas          = Clinica::getAll();
         $consultorios      = Consultorio::getAll();
         $fechasEspeciales  = FechaEspeciales::getByDate($fecha);
         $consultaAsignados = ConsultaAsignado::getByDate($fecha);
-        $pacientes         = Paciente::getAll();
+        $pacientes         = User::getUsersByRoles(['paciente']);
         $userAdmins        = User::getUsersByRol('medico');
         
-        return view('administracion.citas.list', compact('clinicas', 'consultorios', 'is_medico', 'fechasEspeciales', 'consultaAsignados', 'fecha', 'pacientes', 'userAdmins'));
+        return view('administracion.citas.list', compact('clinicas', 'iddoctor', 'consultorios', 'is_medico', 'fechasEspeciales', 'consultaAsignados', 'fecha', 'pacientes', 'userAdmins'));
     }
 
     public function add(ConsultaAsignado $consultaAsignado, $hora, $fecha)
@@ -58,6 +64,7 @@ class CitasController extends Controller
 
     public function setCita($fecha, $iddoctor)
     {
+        
         //Buscar si existe un dia sin actividad para el consultorio
         $fechasEspeciales  = FechaEspeciales::getByDate($fecha);
         $consultaAsignados = ConsultaAsignado::getByDate($fecha, $iddoctor);
@@ -67,7 +74,6 @@ class CitasController extends Controller
             'consultaAsignados' => $consultaAsignados,
             'totalConsulta' => count($consultaAsignados),
         );
-        //dd($data);
         $view = \View::make('administracion.citas.viewHours', $data)->render();
         return response()->json(['view' => $view, 'data' => $data]);
     }

@@ -40,12 +40,12 @@
             <div class="col-12">
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-consulta"
-                            type="button" role="tab" aria-controls="nav-consulta" aria-selected="true">
-                           
-                            CONSULTAS</button>
-                        <button class="nav-link" id="nav-estudio-tab" data-bs-toggle="tab" data-bs-target="#nav-estudio"
-                            type="button" role="tab" aria-controls="nav-estudio" aria-selected="false">ESTUDIOS</button>
+                        <button class="nav-link active" id="nav-consulta-tab" data-bs-toggle="tab" data-bs-target="#nav-consulta"
+                        type="button" role="tab" aria-controls="nav-consulta" aria-selected="true" onclick="updateSelectedTab('consultas')">
+                       
+                        CONSULTAS</button>
+                    <button class="nav-link" id="nav-estudio-tab" data-bs-toggle="tab" data-bs-target="#nav-estudio"
+                        type="button" role="tab" aria-controls="nav-estudio" aria-selected="false"onclick="updateSelectedTab('estudios')">ESTUDIOS</button>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
@@ -114,7 +114,7 @@
                             </div>
                         </div>
                         <div class="col-12 mt-5">
-                            <livewire:consulta-livewire :limit="10" :pacienteId="$paciente->id" />
+                            <livewire:consulta-livewire :limit="10" :pacienteId="$paciente->id" :isExpedient="$isExpedient"/>
                         </div>
                     </div>
                     
@@ -153,45 +153,16 @@
                                 </form>
                             </div>
                         </div>
+                      
                         <div class="col-12 mt-5">
-                            <livewire:estudio-livewire :limit="10" :pacienteId="$paciente->id" />
+                            <livewire:estudio-livewire :limit="10" :pacienteId="$paciente->id" :isExpedient="$isExpedient" />
+                            
                         </div>
-
                     </div>
                 </div>
             </div>
             <input type="hidden" id="consultaAsignadoId" value="{{ $consultaAsignadoId }}">
-            <div class="col-12 mt-3">
-                <form method="post" action="/admin/usuarios" id="frm-pendiente">
-                    {{--  @if ($user_id == null)
-            @else
-            <form method="post" action="/admin/usuarios" id="upd-frm-users">
-            @endif --}}
-                    {{-- <div class="col-12">
-                    <p class="text-info">Los campos marcados con * son requeridos</p>
-                </div> --}}
-
-                    @csrf
-                    <div class="row">
-                        {{--  <div class="col-12">
-                        <div class="mb-3">
-                            <label for="inputRecordatorio" class="form-label">*RECORDATORIO</label>
-                            <textarea name="data[pendiente]" id="inputRecordatorio" cols="30" rows="4" class="form-control" required>{{ $pendiente != null ? $pendiente->pendiente : null }}</textarea>
-                        </div>
-                    </div> --}}
-
-
-
-                        {{-- <div class="col-md-12 text-right">
-                            <div class="mb-3">
-                                <input type="hidden" id="pendiente_id" name="pendiente_id" value="{{ $pendiente_id }}" >
-                                <button class="btn btn-primary">Guardar</button>
-                            </div>
-                        </div> --}}
-                    </div>
-
-                </form>
-            </div>
+            
         </div>
     </div>
 

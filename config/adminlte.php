@@ -356,6 +356,11 @@ return [
             'icon'        => 'far fa-fw fa-file',
         ],
         [
+            'text'        => 'Expendientes',
+            'url'         => 'admin/expedientes',
+            'icon'        => 'far fa-fw fa-file',
+        ],
+        [
             'text'        => 'Actividades',
             'url'         => 'admin/actividades',
             'icon'        => 'far fa-fw fa-file',
@@ -514,6 +519,26 @@ return [
                 ],
             ],
         ],
+        'EasyAutocomplete' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '/vendor/EasyAutocomplete/easy-autocomplete.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => 'https://code.jquery.com/jquery-3.6.0.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '/vendor/EasyAutocomplete/jquery.easy-autocomplete.min.js',
+                ],
+            ],
+        ],
         'Sweetalert2' => [
             'active' => true,
             'files' => [
@@ -539,6 +564,7 @@ return [
                 ],
             ],
         ],
+        
         'webpack' => [
             'active' => true,
             'files' => [
@@ -554,6 +580,7 @@ return [
                 ],
             ],
         ],
+        
     ],
 
     /*

@@ -71,3 +71,9 @@ window.cancelEstudio = function()
 {
     $('#content-estudio').hide();
 }
+
+window.onload = function() {
+    if (document.getElementById('nav-estudio-tab')) {
+        document.getElementById('nav-consulta-tab').click();
+    }
+};

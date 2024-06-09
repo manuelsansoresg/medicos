@@ -60,7 +60,8 @@ class ConsultaAsignado extends Model
             $horaFormateada = sprintf("%02d:%02d", floor($horanueva), ($horanueva - floor($horanueva)) * 60);
             $horaSinFormato = date("g:i a", strtotime($horaFormateada));
             $userCita       = UserCita::where(['consulta_asignado_id' => $asignado->idconsultasignado,
-                                            'hora' => $horaSinFormato
+                                            'hora' => $horaSinFormato,
+                                            'status' => 1
                                         ])->first();
             $isDisponible   = $userCita != null && $userCita->hora == $horaSinFormato ? true : false;
 
@@ -206,15 +207,20 @@ class ConsultaAsignado extends Model
 
     public static function getByDay()
     {
-        
         $today = date('Y-m-d');
-        return ConsultaAsignado::select('idconsultasignado', 'iturno', 'ihorainicial', 'idconsultasignado', 'vnumconsultorio')
+        $idclinica     = Session()->get('clinica');
+        $idconsultorio = Session()->get('consultorio');
+        $consultaAsignado =  ConsultaAsignado::select('idconsultasignado', 'iturno', 'ihorainicial', 'idconsultasignado', 'vnumconsultorio')
                  ->join('consultorios', 'consultorios.idconsultorios', 'consultasignado.idconsultorio')
                 ->join('user_citas', 'user_citas.consulta_asignado_id', 'consultasignado.idconsultasignado')
                 ->where('ihorainicial', '>', 0) 
                 ->where('user_citas.fecha', $today)
-                ->groupBy('idconsultasignado')
-                ->get();
+                ->where('consultasignado.idclinica', $idclinica);
+            
+        if ($idconsultorio != 0) {
+            $consultaAsignado->where('consultasignado.idconsultorio', $idconsultorio);
+        }
+        return $consultaAsignado->groupBy('idconsultasignado')->get();
     }
 
     public static function saveEdit($request)

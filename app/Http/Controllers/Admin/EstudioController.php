@@ -31,17 +31,20 @@ class EstudioController extends Controller
         //
     }
 
-    public function recetaPdf(Consulta $consulta)
+    public function recetaPdf(Estudio $estudio)
     {
-        $getUserMedic = User::find($consulta->idusrregistra);
+        $getUserMedic = User::find($estudio->idusrregistra);
         $getMedico    = User::find($getUserMedic->usuario_principal);
         $medico       = $getMedico == null ? $getUserMedic : $getMedico;
-        $paciente     = User::find($consulta->paciente_id);
-        
+        $paciente     = User::find($estudio->paciente_id);
+        $ultimaConsulta = Consulta::getLastPesoEstaturta($paciente->id);
+
         $data         = array(
-            'consulta' => $consulta,
+            'estudio' => $estudio,
             'medico'   => $medico,
-            'paciente' => $paciente
+            'paciente' => $paciente,
+            'peso' => $ultimaConsulta['peso'],
+            'estatura' => $ultimaConsulta['estatura'],
         );
 
         $pdf = Pdf::loadView('administracion.consulta.estudio', $data);
@@ -55,7 +58,7 @@ class EstudioController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     */
+     */ 
     public function store(Request $request)
     {
         Estudio::saveEdit($request);

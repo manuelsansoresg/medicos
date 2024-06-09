@@ -60,7 +60,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('consulta/{consulta}/generate/pdf', [App\Http\Controllers\Admin\ConsultaController::class, 'recetaPdf'])->middleware('auth');
 
     Route::resource('estudio', '\App\Http\Controllers\Admin\EstudioController')->middleware('auth');
-    Route::get('estudio/{consulta}/generate/pdf', [App\Http\Controllers\Admin\EstudioController::class, 'recetaPdf'])->middleware('auth');
+    Route::get('estudio/{estudio}/generate/pdf', [App\Http\Controllers\Admin\EstudioController::class, 'recetaPdf'])->middleware('auth');
+
+    Route::resource('expedientes', '\App\Http\Controllers\Admin\ExpedienteController')->middleware('auth');
 });
 
 Auth::routes();

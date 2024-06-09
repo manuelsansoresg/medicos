@@ -23,6 +23,22 @@ class Consulta extends Model
         'indicaciones_generales',
     ];
 
+    public static function getLastPesoEstaturta($pacienteId)
+    {
+        $lastPeso =  Consulta::
+        where('paciente_id', $pacienteId)
+        ->where('peso', '!=', null)
+        ->orderBy('id', 'DESC')->first();
+        $peso = $lastPeso != null ? $lastPeso->peso : null;
+        
+        $lastEstatura =  Consulta::
+        where('paciente_id', $pacienteId)
+        ->where('estatura', '!=', null)
+        ->orderBy('id', 'DESC')->first();
+        $estatura = $lastEstatura != null ? $lastEstatura->estatura : null;
+        return array('peso' => $peso, 'estatura' => $estatura);
+    }
+
     public static function getByPaciente($pacienteId,  $search = null, $limit = null, $isPaginate = false)
     {
         $query =  Consulta::

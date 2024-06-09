@@ -27,7 +27,7 @@
                             @php
                                 $nombre = $paciente->name.' '. $paciente->vapellido;
                             @endphp
-                            <a href="#" onclick="SelecPaciente({{ $paciente->id  }}, '{{ $nombre }}')" class="btn btn-primary">Seleccionar</a>
+                            <a href="/admin/expedientes/{{ $paciente->id }}" class="btn btn-primary"><i class="far fa-folder-open"></i></a>
                         </td>
                     </tr>
                 @endforeach

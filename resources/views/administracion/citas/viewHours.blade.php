@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-12 text-center">
             @if ($fechasEspeciales == true)
-                <strong>Lo sentimos el d&iacute;a de hoy el medico seleccionado no tiene consultas</strong>
+                <strong>Lo sentimos el día de hoy el medico seleccionado no tiene consultas</strong>
             @endif
         </div>
         @php

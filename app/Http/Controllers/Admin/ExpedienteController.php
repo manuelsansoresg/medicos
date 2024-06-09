@@ -3,13 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Clinica;
-use App\Models\Consultorio;
+use App\Models\Consulta;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class ConsultoriosController extends Controller
+class ExpedienteController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,8 +16,7 @@ class ConsultoriosController extends Controller
      */
     public function index()
     {
-        $query = Consultorio::getAll();
-        return view('administracion.consultorio.list', compact('query'));
+        return view('administracion.expedientes.list');
     }
 
     /**
@@ -29,10 +26,7 @@ class ConsultoriosController extends Controller
      */
     public function create()
     {
-        $id       = null;
-        $query    = null;
-        $clinicas = Clinica::getAll();
-        return view('administracion.consultorio.frm', compact('query', 'id', 'clinicas'));
+        //
     }
 
     /**
@@ -43,7 +37,7 @@ class ConsultoriosController extends Controller
      */
     public function store(Request $request)
     {
-        Consultorio::saveEdit($request);
+        //
     }
 
     /**
@@ -52,19 +46,16 @@ class ConsultoriosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id, $userId = null)
+    public function show($id)
     {
-        $myUser = User::find(Auth::user()->id);
-        $data = array(
-            'idconsultorio' => $id,
-            'userId' => $userId,
-            'myUser' => $myUser,
-        );
-        $view = \View::make('administracion.consultorio.horarios', $data)->render();
-        return response()->json($view);
+        $paciente = User::find($id);
+        if (!$paciente->hasRole('paciente')) {
+            return abort(404);
+        }
+        $isExpedient = true;
+        $ultimaConsulta = Consulta::where('paciente_id', $paciente->id)->orderBy('created_at', 'DESC')->first();
+        return view('administracion.expedientes.show', compact('paciente', 'ultimaConsulta', 'isExpedient'));
     }
-
-    
 
     /**
      * Show the form for editing the specified resource.
@@ -74,10 +65,7 @@ class ConsultoriosController extends Controller
      */
     public function edit($id)
     {
-        $id   = $id;
-        $query      = Consultorio::find($id);
-        $clinicas = Clinica::getAll(); 
-        return view('administracion.consultorio.frm', compact('query', 'id', 'clinicas'));
+        //
     }
 
     /**
@@ -100,6 +88,6 @@ class ConsultoriosController extends Controller
      */
     public function destroy($id)
     {
-        Consultorio::find($id)->delete();
+        //
     }
 }

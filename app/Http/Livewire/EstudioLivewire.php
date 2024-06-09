@@ -13,11 +13,21 @@ class EstudioLivewire extends Component
     public    $search          = '';
     public    $limit;
     public    $pacienteId;
+    public    $isExpedient;
+    public $selectedTab = 'consultas'; // Valor inicial
 
-    public function mount($limit, $pacienteId)
+    protected $listeners = ['updateSelectedTab'];
+
+    public function updateSelectedTab($tabName)
     {
-        $this->limit      = $limit;
-        $this->pacienteId = $pacienteId;
+        $this->selectedTab = $tabName;
+    }
+
+    public function mount($limit, $pacienteId, $isExpedient)
+    {
+        $this->limit       = $limit;
+        $this->pacienteId  = $pacienteId;
+        $this->isExpedient = $isExpedient;
     }
 
     

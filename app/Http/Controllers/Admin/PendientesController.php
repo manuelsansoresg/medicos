@@ -15,7 +15,7 @@ class PendientesController extends Controller
      */
     public function index()
     {
-        $query = PendienteUsr::all();
+        $query = PendienteUsr::getAll();
         return view('pendientes.list', compact('query'));
     }
 

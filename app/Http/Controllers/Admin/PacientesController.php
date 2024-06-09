@@ -23,8 +23,8 @@ class PacientesController extends Controller
 
     public function search(Request $request)
     {
-        $pacientes =  Paciente::search($request->all());
-        return response()->json(['results' => $pacientes]);
+        $pacientes =  User::getUsersByRoles(['paciente'], $request->search);
+        return response()->json($pacientes);
     }
 
     /**

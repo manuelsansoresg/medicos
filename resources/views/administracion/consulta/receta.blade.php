@@ -54,22 +54,14 @@
         <div style="width: 100%; text-align:center">
             <h3>RECETA</h3>
         </div>
-        <table style="width: 100%">
-            <tr>
-                <td colspan="3">
-                    <p> <b>Dr. {{ $medico->name }} {{ $medico->vapellido }}</b></p>
-                </td>
 
-            </tr>
-            <tr>
-                <td>{{ $medico->especialidad }}</td>
-                <td>CED. PROF. {{ $medico->vcedula }}</td>
-                <td>
-                    <b> FECHA Y HORA DE ELABORACIÓN:</b> {{ date('Y-m-d H:i') }}
-                </td>
-            </tr>
-        </table>
+        <div style="width: 100%; text-align:right">
+            <b> FECHA Y HORA DE ELABORACIÓN:</b> {{ date('Y-m-d H:i') }}
+        </div>
         <hr class="hr">
+        <div style="width: 100%; text-align:center; padding-bottom: 10px">
+            <b>DATOS DEL PACIENTE </b>
+        </div>
         <table style="width: 100%">
             <tr>
                 <td> <b>NOMBRE:</b> </td>
@@ -107,11 +99,30 @@
                 <td>{{ $consulta->peso }}</td>
                 <td><b>ESTATURA</b></td>
                 <td>{{ $consulta->estatura }}</td>
-                <td><b>TEMPERATURA</b></td>
-                <td>{{ $consulta->temperatura }}</td>
+                
 
             </tr>
         </table>
+        <hr class="hr">
+        <div style="width: 100%; text-align:center; padding-bottom: 0px">
+            <b>DATOS DEL MÉDICO </b>
+        </div>
+
+        <table style="width: 100%">
+            <tr>
+                <td> <b>NOMBRE DEL MÉDICO</b> </td>
+                <td>
+                    <p> <b>Dr. {{ $medico->name }} {{ $medico->vapellido }}</b></p>
+                </td>
+
+            </tr>
+            <tr>
+                <td><b>CEDULA PROFESIONAL</b></td>
+                <td>  {{ $medico->vcedula }}</td>
+            </tr>
+        </table>
+        <hr class="hr">
+        
         <hr class="hr">
         <br>
         <table>

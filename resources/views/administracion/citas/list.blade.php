@@ -38,12 +38,24 @@
                         @endforeach
                     </select>
                     <small id="doctorHelp" class="form-text text-muted">Doctor que se le asignara la consulta.</small>
-                </div>
+                </div> 
+                @else
+                <input type="hidden" name="data[iddoctor]" id="iddoctor" value="{{ $iddoctor }}">
                 @endrole
                 <div class="form-group">
                     <label for="InputFecha">FECHA CITA</label>
                     <input type="date" class="form-control" id="InputFecha" name="data[fecha]" onchange="setCita()"  placeholder="Enter email" value="{{ $fecha  }}">
                     <small id="fechaHelp" class="form-text text-muted">Elige una fecha para ver las citas.</small>
+                </div>
+                <div class="form-group">
+                    <label for="InputFecha">SELECCIONA PACIENTE:</label>
+                    
+                    <div id="content-paciente-add" style="display: none">
+                        <span id="paciente-add"></span> <a href="#" onclick="changePacienteCita()" class="btn btn-primary">Actualizar</a>
+                    </div>
+                    <input type="search" id="busqueda-pacientes" name="search" class="form-control" placeholder="Buscar crédito">
+                    <input type="hidden" name="data[paciente_id]" id="paciente_id">
+                    
                 </div>
                 <input type="hidden" name="data[hora]" id="hora">
                 <input type="hidden" name="data[consulta_asignado_id]" id="consulta_asignado_id">
@@ -55,21 +67,8 @@
                     </div>
                     <div id="content-hoursCita">
                     </div>
-                    <div class="form-group">
-                        <label for="InputFecha">SELECCIONA PACIENTE:</label>
-                        {{-- <select name="data[paciente_id]"  class="form-control select2multiple">
-                            @foreach ($pacientes as $paciente)
-                                <option value="{{ $paciente->id }}"> {{ $paciente->vnombre }} {{ $paciente->vapellido }}</option>
-                            @endforeach
-                        </select> --}}
-                        {{-- <small id="fechaHelp" class="form-text text-muted">Ejemplo: OSUNA ANDRADE.</small> --}}
-                        <div id="content-paciente-add" style="display: none">
-                            <span id="paciente-add"></span> <a href="#" onclick="changePacienteCita()" class="btn btn-primary">Actualizar</a>
-                        </div>
-                        <div id="content-paciente-livewire" style="display: none">
-                            <livewire:paciente-livewire :limit="10" />
-                        </div>
-                    </div>
+                   
+                   
                     <div class="form-group">
                         <label for="InputFecha">MOTIVO  DE CONSULTA:</label>
                         <textarea name="data[motivo]" cols="30" rows="4" class="form-control"></textarea>

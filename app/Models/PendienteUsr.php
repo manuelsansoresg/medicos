@@ -23,23 +23,15 @@ class PendienteUsr extends Model
     public static function getAll()
     {
         $isAdmin    = Auth::user()->hasRole('administrador');
-        $isDoctor   = Auth::user()->hasRole('medico');
-        $isAuxiliar = Auth::user()->hasRole('auxiliar');
-        $myUser = User::find(Auth::user()->id);
+        $usuario_principal = User::getMyUserPrincipal();
         if ($isAdmin) {
             $query = PendienteUsr::all();
-        } 
-        if ($isDoctor === true) {
+        }  else {
             $query = PendienteUsr::
-                            where('idusrregistra', $myUser->usuario_principal)
-                            ->get();
+            where('idusrregistra', $usuario_principal)
+            ->get();
         }
-
-        if ($isAuxiliar === true) {
-            $query =  PendienteUsr::
-                        where('idusrregistra', Auth::user()->id)
-                        ->get();
-        }
+       
         return $query;
     }
 
@@ -60,29 +52,18 @@ class PendienteUsr extends Model
 
     public static function getByDay()
     {
-        $diadhoy  = date("Y-m-d"); 
-        $isAdmin    = Auth::user()->hasRole('administrador');
-        $isDoctor   = Auth::user()->hasRole('medico');
-        $isAuxiliar = Auth::user()->hasRole('auxiliar');
-        $myUser = User::find(Auth::user()->id);
+        $diadhoy           = date("Y-m-d");
+        $isAdmin           = Auth::user()->hasRole('administrador');
+        $usuario_principal = User::getMyUserPrincipal();
 
         if ($isAdmin) {
             $query = PendienteUsr::where('fecha', $diadhoy)->get();
-        } 
-        if ($isDoctor === true) {
+        } else {
             $query = PendienteUsr::
-                            where('idusrregistra', $myUser->usuario_principal)
-                            ->where('fecha', $diadhoy)
-                            ->get();
+            where('idusrregistra', $usuario_principal)
+            ->where('fecha', $diadhoy)
+            ->get();
         }
-
-        if ($isAuxiliar === true) {
-            $query =  PendienteUsr::
-                        where('idusrregistra', Auth::user()->id)
-                        ->where('fecha', $diadhoy)
-                        ->get();
-        }
-
         return $query;
     }
 }

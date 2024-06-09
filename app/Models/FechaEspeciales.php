@@ -19,17 +19,34 @@ class FechaEspeciales extends Model
 
     public static function getAll()
     {
-        return FechaEspeciales::all();
+        $consultorio = Session()->get('consultorio');
+        $clinica     = Session()->get('clinica');
+
+        if ($consultorio == 0) {
+            return FechaEspeciales::where([
+                'idclinica' => $clinica,
+            ])->get();
+        }
+        return FechaEspeciales::where([
+            'idclinica' => $clinica,
+            'idconsultorio' => $consultorio,
+        ])->get();
     }
 
     public static function getByDate($date)
     {
-        $doctor_id = Auth::user()->id;
-        $idclinica = session()->get('clinica');
+        $doctor_id   = Auth::user()->id;
+        $idclinica   = session()->get('clinica');
+        $consultorio = Session()->get('consultorio');
+        
         $fechas = FechaEspeciales::where(['iddoctor'=> $doctor_id, 'idclinica' => $idclinica])
                                 ->where('dfecha', '<=', $date)
-                                ->where('dfechafin', '>=', $date)->get();
-        return $fechas;
+                                ->where('dfechafin', '>=', $date);
+        if ($consultorio != 0) 
+        {
+            $fechas->where('iddoctor', $consultorio);
+        }
+        return $fechas = $fechas->get();
     }
 
     public static function saveEdit($request)
@@ -38,9 +55,12 @@ class FechaEspeciales extends Model
         $idfechaespeciales        = $request->id;
         $clinica                  = Session::get('clinica');
         $consultorio              = Session::get('consultorio');
+        if ($consultorio != 0) {
+            $data['idconsultorio']    = $consultorio;
+        }
 
         if ($idfechaespeciales == null) {
-            $data['idconsultorio']    = $consultorio;
+            
             $data['idclinica']        = $clinica;
             $data['iddoctor']         = Auth::user()->id;
             $fechas_especiales = FechaEspeciales::create($data);

@@ -67,6 +67,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public static function getMyUserPrincipal()
+    {
+        $user = User::find(Auth::user()->id);
+        if (Auth::user()->hasRole('administrador') || $user->usuario_principal == '') {
+            return Auth::user()->id;
+        }
+        return $user->usuario_principal;
+    }
+
     /**
      * get roles by user role
      */
@@ -99,6 +108,7 @@ class User extends Authenticatable
     }
     public static function getUsersByRoles($roles, $search = null, $limit = null, $isPaginate = false)
     {
+        $isAdmin = Auth::user()->hasRole('administrador');
         $users = User::
             whereHas('roles', function ($q) use($roles) {
             $q->whereIn('name', $roles);
@@ -109,6 +119,11 @@ class User extends Authenticatable
             $users->orWhere('vapellido', 'like', '%' . $search . '%');
             $users->orWhere('codigo_paciente', 'like', '%' . $search . '%');
         }
+
+        if (!$isAdmin) {
+            $usuarioPrincipal = User::getMyUserPrincipal();
+            $users->where('usuario_principal', $usuarioPrincipal);
+        }
         
         $limit = $limit === null ? 50 : $limit;
         if ($isPaginate === true) {
@@ -118,7 +133,34 @@ class User extends Authenticatable
         }
         return $users;
     }
-   
+
+    public static function getMyUsersByRoles($roles, $search = null, $limit = null, $isPaginate = false)
+    {
+        $isAdmin = Auth::user()->hasRole('administrador');
+        $myUser = User::find(Auth::user()->id);
+        $users = User::
+        whereHas('roles', function ($q) use($roles) {
+        $q->whereIn('name', $roles);
+        });
+
+        if ($search != '') {
+            $users->where('name', 'like', '%' . $search . '%');
+            $users->orWhere('vapellido', 'like', '%' . $search . '%');
+            $users->orWhere('codigo_paciente', 'like', '%' . $search . '%');
+        }
+        
+        $limit = $limit === null ? 50 : $limit;
+        if (!$isAdmin) {
+            $users->where('usuario_principal', $myUser->usuario_principal);
+        }
+        if ($isPaginate === true) {
+            $users = $users->paginate($limit);
+        } else {
+            $users = $users->get();
+        }
+        return $users;
+    }
+
     public static function getUsersByRol($rol)
     {
         $clinica     = Session::get('clinica');

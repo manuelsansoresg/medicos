@@ -42,6 +42,18 @@
                             <input type="date" class="form-control" name="data[dfechafin]" value="{{ $query != null ? $query->dfechafin : null }}" required>
                         </div>
                     </div>
+                    @if ($consultorio == 0)
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="inputNombre" class="form-label"> *CONSULTORIO </label>
+                            <select name="data[idconsultorio]" id="" class="form-control" required>
+                                @foreach ($consultorios as $getConsultorio)
+                                    <option value="{{ $getConsultorio->idconsultorios }}" {{ $query != null && $getConsultorio->idconsultorios == $query->idconsultorios ? 'selected': null }}> {{ $getConsultorio->vnumconsultorio }} </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    @endif
                    
                     <div class="col-md-6">
                         <div class="mb-3">
