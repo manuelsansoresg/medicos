@@ -28,6 +28,12 @@ class HomeController extends Controller
         return redirect('admin/actividades');
     }
 
+    public function editProfile()
+    {
+        $userId = Auth::user()->id;
+        return redirect('/admin/usuarios/'.$userId.'/edit');
+    }
+
     public function clinicaYConsultorio(Request $request)
     {
         // Verifica si la variable de sesión 'clinica' existe y tiene un valor
@@ -43,7 +49,7 @@ class HomeController extends Controller
             } else {
                 // La variable de sesión 'consultorio' no existe o no tiene valor
                 $response = [
-                    'status' => 500,
+                    'status' => 600,
                     'message' => 'La variable de sesión "consultorio" no existe o no tiene valor.'
                 ];
             }

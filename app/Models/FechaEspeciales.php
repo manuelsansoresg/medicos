@@ -21,11 +21,17 @@ class FechaEspeciales extends Model
     {
         $consultorio = Session()->get('consultorio');
         $clinica     = Session()->get('clinica');
-
+        $isAdmin     = Auth::user()->hasRole('administrador');
+        if ($isAdmin) {
+            return FechaEspeciales::all();
+        }
         if ($consultorio == 0) {
+            $getAsignedConsultories = Consultorio::getAsignedConsultories($clinica, true);
             return FechaEspeciales::where([
                 'idclinica' => $clinica,
-            ])->get();
+            ])
+            ->whereIn('idconsultorio', $getAsignedConsultories)    
+            ->get();
         }
         return FechaEspeciales::where([
             'idclinica' => $clinica,

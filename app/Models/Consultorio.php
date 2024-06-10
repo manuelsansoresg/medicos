@@ -28,13 +28,56 @@ class Consultorio extends Model
             return Consultorio::all();
         }
 
-        if ($consultorio == 0) {
-            return Consultorio::where('idclinica', $clinica)->get();
+        if ($consultorio == 0 && $consultorio != null) {
+            return Consultorio::getAsignedConsultories($clinica);
         }
         return Consultorio::where([
             'idconsultorios' => $consultorio,
             'idclinica' => $clinica,
         ])->get();
+    }
+
+    public static function getAsignedConsultories($clinicaId, $isArray = false)
+    {
+        $isAdmin           = Auth::user()->hasRole('administrador');
+        $isMedico          = Auth::user()->hasRole('medico');
+        $isAuxiliar        = Auth::user()->hasRole('auxiliar');
+        $usuario_principal = User::getMyUserPrincipal();
+        $idConsultorios    = array();
+
+        if ($isAdmin) {
+            $consultorios =  Consultorio::all();
+        } elseif ($isMedico) {
+            $getConsultaAsignado = ConsultaAsignado::select('idconsultorio')
+            ->where([
+                'idclinica' => $clinicaId
+            ])
+            ->where(function($query) use ($usuario_principal) {
+                $query->where('iddoctor', Auth::user()->id)
+                      ->orWhere('iddoctor', $usuario_principal);
+            })->groupBy('idconsultorio');
+            if ($getConsultaAsignado->count() > 0) {
+                $getConsultaAsignado = $getConsultaAsignado->get()->toArray();
+                $consultorios =  Consultorio::whereIn('idconsultorios', $getConsultaAsignado)->get();
+            }
+        } else {
+            $getConsultaAsignado = ConsultaAsignado::select('idconsultorio')
+            ->where([
+                'idclinica' => $clinicaId,
+                'iddoctor' => Auth::user()->id
+            ])->groupBy('idconsultorio');
+            if ($getConsultaAsignado->count() > 0) {
+                $getConsultaAsignado = $getConsultaAsignado->get()->toArray();
+                $consultorios =  Consultorio::whereIn('idconsultorios', $getConsultaAsignado)->get();
+            }
+        }
+        if ($isArray === true) {
+            foreach ($consultorios as $getConsultorio) {
+                $idConsultorios[] = $getConsultorio->idconsultorios;
+            }
+            return $idConsultorios;
+        }
+        return $consultorios; 
     }
 
     public static function getMyCon()

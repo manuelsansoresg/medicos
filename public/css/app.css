@@ -2,3 +2,7 @@
 .pointer {
   cursor: pointer;
 }
+
+.easy-autocomplete {
+  width: 100% !important;
+}

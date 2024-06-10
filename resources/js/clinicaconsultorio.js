@@ -6,6 +6,14 @@ if (!document.getElementById('isRedirect')) {
             if (result.status == 500) {
                 window.location = '/query/viewClinicaYConsultorio';
             }
+            /* if (result.status == 600) {
+                Swal.fire({
+                    title: "Sin consultorio asignado",
+                    text: "Si no es usuario doctor pedir que le asignen su consultorio",
+                    icon: "warning"
+                  }).then((result) => {
+                    });
+            } */
         })
         .catch(error => {
         });

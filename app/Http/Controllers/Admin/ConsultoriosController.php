@@ -8,6 +8,7 @@ use App\Models\Consultorio;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class ConsultoriosController extends Controller
 {
@@ -18,8 +19,16 @@ class ConsultoriosController extends Controller
      */
     public function index()
     {
-        $query = Consultorio::getAll();
-        return view('administracion.consultorio.list', compact('query'));
+        $query              = Consultorio::getAll();
+        $clinica            = Session::get('clinica');
+        $consultorio        = Session::get('consultorio');
+        $isEmptyConsultorio = $consultorio == null ? false : true;
+        $getAsignedConsultories = Consultorio::getAsignedConsultories($clinica);
+        $isChangeConsultorio = false;
+        if ($getAsignedConsultories != null && $isEmptyConsultorio == false) {
+            $isChangeConsultorio = true;
+        }
+        return view('administracion.consultorio.list', compact('isEmptyConsultorio', 'query', 'isChangeConsultorio'));
     }
 
     /**

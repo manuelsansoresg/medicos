@@ -98,15 +98,22 @@ class ConsultaAsignado extends Model
         $idclinica     = Session()->get('clinica');
         $idconsultorio = Session()->get('consultorio');
         $turnos = array(1=> 'mañana', 2=> 'tarde', 3 => 'noche');
-
-        //dd($idclinica, $doctor_id, $dayOfWeek);
+        $isAdmin    = Auth::user()->hasRole('administrador');
 
         $consulta = ConsultaAsignado::where([
             'consultasignado.idclinica' => $idclinica,
             'consultasignado.iddoctor' => $doctor_id,
             'consultasignado.idia' => $dayOfWeek
-        ])
-        ->where('ihorainicial', '>', '0')
+        ]);
+        if (!$isAdmin) {
+            if ($idconsultorio != 0) {
+                $consulta->where('idconsultorio', $idconsultorio);
+            } elseif ($idconsultorio == 0) {
+                $getAsignedConsultories = Consultorio::getAsignedConsultories($idclinica, true);
+                $consulta->whereIn('idconsultorio', $getAsignedConsultories);
+            }
+        }
+        $consulta->where('ihorainicial', '>', '0')
             ->where(function ($query) {
                 $query->whereIn('iturno', [1, 2, 3])
                     ->orWhereNull('iturno');
@@ -114,10 +121,13 @@ class ConsultaAsignado extends Model
             ->join('consultorios', 'consultorios.idconsultorios', '=', 'consultasignado.idconsultorio')
             ->orderBy('idconsultorio', 'ASC')
             ->orderBy('iturno', 'ASC')
-            ->get();
+            ;
+        $consulta = $consulta->get();
+        
+        //dd(\DB::getQueryLog()); // Show results of log
         
         $resultados = [];
-        //dd($consulta);
+        
         foreach ($consulta as $asignado) {
             $ihorainicial   = $asignado->ihorainicial;
             $ihorafinal     = $asignado->ihorafinal;
@@ -210,6 +220,8 @@ class ConsultaAsignado extends Model
         $today = date('Y-m-d');
         $idclinica     = Session()->get('clinica');
         $idconsultorio = Session()->get('consultorio');
+        $isAdmin     = Auth::user()->hasRole('administrador');
+
         $consultaAsignado =  ConsultaAsignado::select('idconsultasignado', 'iturno', 'ihorainicial', 'idconsultasignado', 'vnumconsultorio')
                  ->join('consultorios', 'consultorios.idconsultorios', 'consultasignado.idconsultorio')
                 ->join('user_citas', 'user_citas.consulta_asignado_id', 'consultasignado.idconsultasignado')
@@ -218,8 +230,14 @@ class ConsultaAsignado extends Model
                 ->where('consultasignado.idclinica', $idclinica);
             
         if ($idconsultorio != 0) {
-            $consultaAsignado->where('consultasignado.idconsultorio', $idconsultorio);
+            if (!$isAdmin) {
+                $consultaAsignado->where('consultasignado.idconsultorio', $idconsultorio);
+            }
+        } elseif ($idconsultorio == 0) {
+            $getAsignedConsultories = Consultorio::getAsignedConsultories($idclinica, true);
+            $consultaAsignado->whereIn('consultasignado.idconsultorio', $getAsignedConsultories);
         }
+
         return $consultaAsignado->groupBy('idconsultasignado')->get();
     }
 

@@ -53,7 +53,9 @@
                                     <td>
                                         @if ($horario['userCitaId'] != null)
                                             <a href="/admin/consulta/{{ $horario['userCitaId'] }}/{{ $consultaAsignadoId }}/registro" class="btn btn-primary"><i class="fas fa-people-arrows"></i></a>
-                                            <a href="" class="btn btn-danger"><i class="fas fa-user-times"></i></a>
+                                            <a onclick="liberarCita({{ $horario['userCitaId'] }})" class="btn btn-danger pointer"><i class="fas fa-user-times"></i></a>
+                                            @else
+                                            <a class="pointer btn btn-primary" onclick="addUserCita({{ $consultaAsignadoId }}, '{{  $horario['hora'] }}')"><i class="fas fa-user-plus"></i></a>
                                         @endif
                                     </td>
                                 </tr>
@@ -65,4 +67,65 @@
         </div>
     </div>
 </div>
+
+{{-- modal --}}
+<div class="modal fade" id="addUser" tabindex="-1" role="dialog" aria-labelledby="addUserLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addUserLabel">Agregar paciente</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="" method="GET" id="frm-cita">
+            <div class="modal-body">
+               <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        @hasrole('administrador')
+                        <div class="form-group">
+                            <label for="InputDoctor">DOCTOR</label>
+                            <select name="data[iddoctor]" id="iddoctor" class="form-control select2multiple">
+                                @foreach ($userAdmins as $userAdmin)
+                                    <option value="{{ $userAdmin->id }}">{{ $userAdmin->name }}</option>
+                                @endforeach
+                            </select>
+                            <small id="doctorHelp" class="form-text text-muted">Doctor que se le asignara la consulta.</small>
+                        </div> 
+                        @else
+                        <input type="hidden" name="data[iddoctor]" id="iddoctor" value="{{ $iddoctor }}">
+                        @endrole
+                        <div class="form-group col-12">
+                            <label for="InputFecha">SELECCIONA PACIENTE:</label>
+                            
+                            <div id="content-paciente-add" style="display: none">
+                                <span id="paciente-add"></span> <a href="#" onclick="changePacienteCita()" class="btn btn-primary">Actualizar</a>
+                            </div>
+                            <input type="search" id="busqueda-pacientes" name="search" class="form-control" placeholder="Buscar crédito">
+                            
+                        </div>
+                        <div class="form-group">
+                            <label for="InputFecha">MOTIVO  DE CONSULTA:</label>
+                            <textarea name="data[motivo]" cols="30" rows="4" class="form-control"></textarea>
+                            
+                        </div>
+        
+                        <input type="hidden" name="data[hora]" id="hora">
+                        <input type="hidden" name="data[consulta_asignado_id]" id="consulta_asignado_id">
+                        <input type="hidden" name="data[paciente_id]" id="paciente_id">
+                        <input type="hidden" name="data[fecha]" value="{{ date('Y-m-d') }}">
+                    </div>
+                </div>
+               </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+              <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
 @stop

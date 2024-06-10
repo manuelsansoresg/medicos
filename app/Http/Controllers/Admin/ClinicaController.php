@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Clinica;
+use App\Models\Consultorio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -24,7 +25,7 @@ class ClinicaController extends Controller
 
     public function consultorioGet(Clinica $clinica)
     {
-        $consultorios = $clinica->consultorios;
+        $consultorios = Consultorio::getAsignedConsultories($clinica->idclinica);
         return response()->json($consultorios);
     }
     

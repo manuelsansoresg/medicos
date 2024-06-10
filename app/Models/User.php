@@ -108,22 +108,26 @@ class User extends Authenticatable
     }
     public static function getUsersByRoles($roles, $search = null, $limit = null, $isPaginate = false)
     {
+        \DB::enableQueryLog(); // Enable query log
+
         $isAdmin = Auth::user()->hasRole('administrador');
         $users = User::
             whereHas('roles', function ($q) use($roles) {
             $q->whereIn('name', $roles);
         });
-
-        if ($search != '') {
-            $users->where('name', 'like', '%' . $search . '%');
-            $users->orWhere('vapellido', 'like', '%' . $search . '%');
-            $users->orWhere('codigo_paciente', 'like', '%' . $search . '%');
-        }
-
         if (!$isAdmin) {
             $usuarioPrincipal = User::getMyUserPrincipal();
             $users->where('usuario_principal', $usuarioPrincipal);
         }
+
+        if ($search != '') {
+            $users->where(function($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                      ->orWhere('vapellido', 'like', '%' . $search . '%')
+                      ->orWhere('codigo_paciente', 'like', '%' . $search . '%');
+            });
+        }
+       
         
         $limit = $limit === null ? 50 : $limit;
         if ($isPaginate === true) {
@@ -131,6 +135,7 @@ class User extends Authenticatable
         } else {
             $users = $users->get();
         }
+        //dd(\DB::getQueryLog()); // Show results of log
         return $users;
     }
 
@@ -226,14 +231,23 @@ class User extends Authenticatable
         $isAdmin    = Auth::user()->hasRole('administrador');
         $isDoctor   = Auth::user()->hasRole('medico');
         $isAuxiliar = Auth::user()->hasRole('auxiliar');
-        $myUser = User::find(Auth::user()->id);
+        $usuario_principal = User::getMyUserPrincipal();
+        $roles = ['administrador', 'medico', 'auxiliar', 'secretario'];
         $users =  null;
+        
         if ($isAdmin === true) {
-            $users = User::getUsersByRoles(['administrador', 'medico', 'auxiliar', 'secretario']);
+            $users = User::getUsersByRoles($roles);
         }
+        
         if ($isDoctor === true) {
-            $users = User::where('id', Auth::user()->id)
-                            ->orWhere('usuario_principal', $myUser->usuario_principal)
+            $roles = [ 'medico', 'auxiliar', 'secretario'];
+            $users = User::whereHas('roles', function ($q) use($roles) {
+                                $q->whereIn('name', $roles);
+                            })
+                            ->where(function($query) use ($usuario_principal) {
+                                $query->where('id', Auth::user()->id)
+                                      ->orWhere('usuario_principal', $usuario_principal);
+                            })
                             ->get();
         }
 
@@ -266,7 +280,10 @@ class User extends Authenticatable
         $password     = $request->password;
         $rol          = isset( $request->rol)?  $request->rol : 'paciente';
         $current_user = Auth::user();
-        
+
+        if ($current_user->hasRole('medico')) {
+            $data['usuario_principal'] = null;
+        }
         
         if ($password != null) {
             $data['password'] = bcrypt($password);

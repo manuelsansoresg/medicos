@@ -180,7 +180,15 @@ $("#busqueda-pacientes").easyAutocomplete({
    
 });
 
+window.addUserCita = function(consultaAsignadoId, hora)
+{
+  $('#consulta_asignado_id').val(consultaAsignadoId);
+  $('#hora').val(hora);
+  $('#addUser').modal('show');
+}
+
 window.updateSelectedTab = function (selectedTab)
 {
   Livewire.emit('updateSelectedTab', selectedTab);
 }
+

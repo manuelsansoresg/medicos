@@ -16,6 +16,7 @@ use DateTime;
 use DateInterval;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class CitasController extends Controller
 {
@@ -42,8 +43,17 @@ class CitasController extends Controller
         $consultaAsignados = ConsultaAsignado::getByDate($fecha);
         $pacientes         = User::getUsersByRoles(['paciente']);
         $userAdmins        = User::getUsersByRol('medico');
+
+        $clinica            = Session::get('clinica');
+        $consultorio        = Session::get('consultorio');
+        $isEmptyConsultorio = $consultorio == null ? false : true;
+        $getAsignedConsultories = Consultorio::getAsignedConsultories($clinica);
+        $isChangeConsultorio = false;
+        if ($getAsignedConsultories != null && $isEmptyConsultorio == false) {
+            $isChangeConsultorio = true;
+        }
         
-        return view('administracion.citas.list', compact('clinicas', 'iddoctor', 'consultorios', 'is_medico', 'fechasEspeciales', 'consultaAsignados', 'fecha', 'pacientes', 'userAdmins'));
+        return view('administracion.citas.list', compact('clinicas', 'iddoctor', 'isEmptyConsultorio', 'isChangeConsultorio', 'consultorios', 'is_medico', 'fechasEspeciales', 'consultaAsignados', 'fecha', 'pacientes', 'userAdmins'));
     }
 
     public function add(ConsultaAsignado $consultaAsignado, $hora, $fecha)
@@ -68,6 +78,7 @@ class CitasController extends Controller
         //Buscar si existe un dia sin actividad para el consultorio
         $fechasEspeciales  = FechaEspeciales::getByDate($fecha);
         $consultaAsignados = ConsultaAsignado::getByDate($fecha, $iddoctor);
+        
         $isBusy = count($fechasEspeciales) === 0 ? false : true;
         $data = array(
             'fechasEspeciales' => $isBusy,
@@ -82,7 +93,14 @@ class CitasController extends Controller
     {
         $horarios           = ConsultaAsignado::getHoursByConsulta($consultaAsignado);
         $consultaAsignadoId = $consultaAsignado->idconsultasignado;
-        return view('administracion.citas.HoraCitaUser', compact('horarios', 'consultaAsignadoId'));
+        $userAdmins        = User::getUsersByRol('medico');
+        $iddoctor = null;
+        if (!Auth::user()->hasRole('administrador')) {
+            $iddoctor = User::getMyUserPrincipal();
+        }
+        
+
+        return view('administracion.citas.HoraCitaUser', compact('horarios', 'consultaAsignadoId', 'iddoctor', 'userAdmins'));
     }
 
     /**

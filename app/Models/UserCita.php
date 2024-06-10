@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Mail\NotificationEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
 class UserCita extends Model
@@ -38,10 +40,29 @@ class UserCita extends Model
             'id_clinica'     => $data['id_clinica'],
             'status'         => 1,
             ]);
+        
         if ($exist->count() == 0) {
             $userCita = UserCita::create($data);
         } else {
             $userCita = $exist->update($data);
+        }
+        
+        $paciente = User::find($data['paciente_id']);
+        if ($paciente != null) {
+            $nombre = $paciente->name.' '.$paciente->vapellido;
+            $clinica = Clinica::find( $data['id_clinica']);
+            $consultorio = Consultorio::find($data['id_consultorio']);
+            $dataCita = array(
+                'type' => 'cita',
+                'nombre' => $nombre,
+                'fecha' => $data['fecha'],
+                'hora' => $data['hora'],
+                'clinica' => $clinica->tnombre,
+                'direccion' => $clinica->tdireccion,
+                'telefono' => $clinica->ttelefono,
+                'consultorio' => $consultorio->vnumconsultorio,
+            );
+            Mail::to($paciente->email)->send(new NotificationEmail($dataCita));
         }
         return $userCita;
     }

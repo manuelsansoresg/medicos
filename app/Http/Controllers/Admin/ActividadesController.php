@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ConsultaAsignado;
+use App\Models\Consultorio;
 use App\Models\PendienteUsr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class ActividadesController extends Controller
 {
@@ -16,9 +18,18 @@ class ActividadesController extends Controller
      */
     public function index()
     {
-        $sqlpend = PendienteUsr::getByDay();
-        $consultas = ConsultaAsignado::getByDay();
-        return view('actividades.list', compact('sqlpend', 'consultas'));
+        $sqlpend                = PendienteUsr::getByDay();
+        $consultas              = ConsultaAsignado::getByDay();
+        $clinica                = Session::get('clinica');
+        $consultorio            = Session::get('consultorio');
+        $isEmptyConsultorio     = $consultorio == null ? false : true;
+        $getAsignedConsultories = Consultorio::getAsignedConsultories($clinica);
+        $isChangeConsultorio    = false;
+        if ($getAsignedConsultories != null && $isEmptyConsultorio == false) {
+            $isChangeConsultorio = true;
+        }
+
+        return view('actividades.list', compact('sqlpend', 'consultas', 'isEmptyConsultorio', 'isChangeConsultorio'));
     }
 
     /**

@@ -17,8 +17,17 @@ class SinCitasController extends Controller
      */
     public function index()
     {
-        $query = FechaEspeciales::getAll();
-        return view('administracion.sin_citas.list', compact('query'));
+        $query                  = FechaEspeciales::getAll();
+        $clinica                = Session::get('clinica');
+        $consultorio            = Session::get('consultorio');
+        $isEmptyConsultorio     = $consultorio == null ? false : true;
+        $getAsignedConsultories = Consultorio::getAsignedConsultories($clinica);
+        $isChangeConsultorio    = false;
+        if ($getAsignedConsultories != null && $isEmptyConsultorio == false) {
+            $isChangeConsultorio = true;
+        }
+
+        return view('administracion.sin_citas.list', compact('query', 'isEmptyConsultorio', 'isChangeConsultorio'));
     }
 
     /**
