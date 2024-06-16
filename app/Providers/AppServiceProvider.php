@@ -32,5 +32,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('menu-users', function (User $user) {
             return $user->hasRole('medico') || $user->hasRole('auxiliar') === true;
         });
+        
+        
     }
 }

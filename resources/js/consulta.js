@@ -27,7 +27,7 @@ window.deleteConsulta = function(consultaId)
 
 $("#frm-consulta").submit(function (e) {
     e.preventDefault();
-    let user_cita_id = $('#user_cita_id').val();
+    let user_cita_id = $('#user_cita_id_origin').val();
     let consultaAsignadoId  = $('#consultaAsignadoId').val();
 
     const form = document.getElementById("frm-consulta");

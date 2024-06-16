@@ -38,16 +38,26 @@
                             <div class="tab-content" id="nav-tabContent">
                                 <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
                                     aria-labelledby="nav-home-tab">
-                                    <div class="mt-3">
-                                        @foreach ($sqlpend as $respend)
-                                            <li>
-                                                {{ $respend->pendiente }}
-                                                <p>
-                                                    {{ $respend->hora }}
-                                                </p>
-                                            </li>
-                                        @endforeach
-                                    </div>
+                                   <div class="row mt-3">
+                                        <div class="col-12 col-md-8">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Pendiente</th>
+                                                        <th>Hora</th>
+                                                    </tr>
+                                                </thead>
+                                                @foreach ($sqlpend as $respend)
+                                                    <tr>
+                                                        <td>
+                                                            {{ $respend->pendiente }}
+                                                        </td>
+                                                        <td>{{ $respend->hora }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </table>
+                                        </div>
+                                   </div>
                                 </div>
                                 <div class="tab-pane fade" id="nav-profile" role="tabpanel"
                                     aria-labelledby="nav-profile-tab">

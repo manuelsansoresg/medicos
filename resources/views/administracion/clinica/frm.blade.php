@@ -24,11 +24,14 @@
                 <form id="frm-clinica">
                     @csrf
                     <div class="row">
+                        <div class="col-12">
+                            <p class="text-info">Los campos marcados con * son requeridos</p>
+                        </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="inputNombre" class="form-label">NOMBRE</label>
+                                <label for="inputNombre" class="form-label">*NOMBRE</label>
                                 <input type="text" class="form-control" name="data[tnombre]" id="inputNombre"
-                                    value="{{ $clinica != null ? $clinica->tnombre : null }}">
+                                    value="{{ $clinica != null ? $clinica->tnombre : null }}" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -54,15 +57,15 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="inputFolio" class="form-label">FOLIO</label>
+                                <label for="inputFolio" class="form-label">*FOLIO</label>
                                 <input type="text" class="form-control" name="data[vfolioclinica]" id="inputFolio"
-                                    value="{{ $clinica != null ? $clinica->vfolioclinica : null }}">
+                                    value="{{ $clinica != null ? $clinica->vfolioclinica : null }}" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="inputEstatus" class="form-label">ACTIVO</label>
-                                <select name="data[istatus]" id="inputEstatus" class="form-control">
+                                <label for="inputEstatus" class="form-label">*ACTIVO</label>
+                                <select name="data[istatus]" id="inputEstatus" class="form-control" required>
 
                                     @foreach (config('enums.status') as $key => $item)
                                         <option value="{{ $key }}"

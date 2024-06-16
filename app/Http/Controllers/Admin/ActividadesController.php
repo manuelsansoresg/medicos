@@ -19,11 +19,17 @@ class ActividadesController extends Controller
     public function index()
     {
         $sqlpend                = PendienteUsr::getByDay();
-        $consultas              = ConsultaAsignado::getByDay();
         $clinica                = Session::get('clinica');
         $consultorio            = Session::get('consultorio');
+        $consultas              = null;
+        $getAsignedConsultories = null;
         $isEmptyConsultorio     = $consultorio == null ? false : true;
-        $getAsignedConsultories = Consultorio::getAsignedConsultories($clinica);
+        
+        if ($consultorio != null) {
+            $consultas              = ConsultaAsignado::getByDay();
+            $getAsignedConsultories = Consultorio::getAsignedConsultories($clinica);
+        }
+       
         $isChangeConsultorio    = false;
         if ($getAsignedConsultories != null && $isEmptyConsultorio == false) {
             $isChangeConsultorio = true;

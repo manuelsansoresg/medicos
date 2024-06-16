@@ -65,7 +65,7 @@ class ConsultaController extends Controller
         return view('administracion.consulta.form', compact('consultaAsignadoId', 'paciente', 'ultimaConsulta', 'consultas', 'userCitaId', 'isExpedient'));
     }
 
-    public function recetaPdf(Consulta $consulta)
+    public function recetaPdf(Consulta $consulta, $type)
     {
         $getUserMedic = User::find($consulta->idusrregistra);
         $getMedico    = User::find($getUserMedic->usuario_principal);
@@ -77,8 +77,12 @@ class ConsultaController extends Controller
             'medico'   => $medico,
             'paciente' => $paciente
         );
+        if ($type == 'consulta') {
+            $pdf = Pdf::loadView('administracion.consulta.consulta', $data);
+        } else {
+            $pdf = Pdf::loadView('administracion.consulta.receta', $data);
+        }
 
-        $pdf = Pdf::loadView('administracion.consulta.receta', $data);
         $pdf->setPaper('A4');
 
         return $pdf->stream();

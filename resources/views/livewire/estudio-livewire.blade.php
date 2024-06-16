@@ -1,6 +1,6 @@
 <div>
     @if ($selectedTab == 'estudios')
-
+   
         <div class="row justify-content-end">
             <div class="col-6 float-right py-2">
                 <div class="input-group mb-3">

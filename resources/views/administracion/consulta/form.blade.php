@@ -101,6 +101,7 @@
                                             </div>
                                         </div>
                                         <input type="hidden" name="data[user_cita_id]" id="user_cita_id" value="{{ $userCitaId }}">
+                                        <input type="hidden"  id="user_cita_id_origin" value="{{ $userCitaId }}">
                                         <input type="hidden" name="data[paciente_id]" id="paciente_id" value="{{ $paciente != null ? $paciente->id : null }}">
                                         <input type="hidden" name="consulta_id" id="consulta_id" value="">
                                         <div class="mb-3 text-right">
@@ -119,10 +120,11 @@
                     </div>
                     
                     <div class="tab-pane fade show active" id="nav-estudio" role="tabpanel" aria-labelledby="nav-estudio-tab">
-                        <div class="col-12 mt-3 py-3">
+                        <div class="col-12 mt-3 py-3" id="content-nuevo-estudio">
                             <a href="#" onclick="nuevoEstudio()" class="btn btn-primary float-right">Nuevo estudio</a>
                         </div>
                         <div class="row" id="content-estudio" style="display: none">
+                           
                             <div class="col-12">
                                 <form method="post" action="/admin/estudio" id="frm-estudio">
                                     <div class="col-12">

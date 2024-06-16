@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Clinica extends Model
 {
@@ -13,18 +14,30 @@ class Clinica extends Model
     protected $primaryKey   = 'idclinica';
     protected $table        = 'clinica';
     protected $fillable = [
-        'idclinica','tnombre','tdireccion','vrfc','ttelefono','logotipo','rutalogo','istatus','vfolioclinica'
+        'idclinica','tnombre','tdireccion','vrfc','ttelefono','logotipo','rutalogo','istatus','vfolioclinica', 'idusrregistra'
     ];
 
     public static function getAll()
     {
         //*cambiar listando las clinicas donde perteneces si no eres administrador
-        return Clinica::all();
+        $idusrregistra = User::getMyUserPrincipal();
+        $isAdmin = Auth::user()->hasRole('administrador');
+        $isMedico = Auth::user()->hasRole('medico');
+        $myUser = User::find(Auth::user()->id);
+
+        if ($isAdmin) {
+            return Clinica::all();
+        } else {
+            return Clinica::where('idusrregistra', $idusrregistra)->get();
+        }
+        
     }
 
     public static function saveEdit($request)
     {
         $data = $request->data;
+        $userPrincipal = User::getMyUserPrincipal();
+        $data['idusrregistra'] = $userPrincipal;
         $clinica_id = $request->clinica_id;
         if ($clinica_id == null) {
             $clinica = Clinica::create($data);

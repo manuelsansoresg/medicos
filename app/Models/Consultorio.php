@@ -44,6 +44,7 @@ class Consultorio extends Model
         $isAuxiliar        = Auth::user()->hasRole('auxiliar');
         $usuario_principal = User::getMyUserPrincipal();
         $idConsultorios    = array();
+        $consultorios      = null;
 
         if ($isAdmin) {
             $consultorios =  Consultorio::all();
@@ -71,9 +72,12 @@ class Consultorio extends Model
                 $consultorios =  Consultorio::whereIn('idconsultorios', $getConsultaAsignado)->get();
             }
         }
+
         if ($isArray === true) {
-            foreach ($consultorios as $getConsultorio) {
-                $idConsultorios[] = $getConsultorio->idconsultorios;
+            if ($consultorios != null) {
+                foreach ($consultorios as $getConsultorio) {
+                    $idConsultorios[] = $getConsultorio->idconsultorios;
+                }
             }
             return $idConsultorios;
         }

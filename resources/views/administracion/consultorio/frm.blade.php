@@ -25,10 +25,13 @@
             <form id="frm-consultorio">
                 @csrf
                 <div class="row">
+                    <div class="col-12">
+                        <p class="text-info">Los campos marcados con * son requeridos</p>
+                    </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="inputNombre" class="form-label">NOMBRE</label>
-                            <input type="text" class="form-control" name="data[vnumconsultorio]" id="inputNombre" value="{{ $query != null ? $query->vnumconsultorio : null }}">
+                            <label for="inputNombre" class="form-label">*NOMBRE</label>
+                            <input type="text" class="form-control" name="data[vnumconsultorio]" id="inputNombre" value="{{ $query != null ? $query->vnumconsultorio : null }}" required>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -45,8 +48,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="inputClinica" class="form-label">CLINICA</label>
-                            <select name="data[idclinica]" id="inputClinica" class="form-control">
+                            <label for="inputClinica" class="form-label">*CLINICA</label>
+                            <select name="data[idclinica]" id="inputClinica" class="form-control" required>
                                 <option value="">Seleccione una opción</option>
                                 @foreach ($clinicas as $clinica)
                                     <option value="{{ $clinica->idclinica }}" {{ $query!= null && $query->idclinica == $clinica->idclinica ? 'selected' : null }}>{{ $clinica->tnombre }}</option>

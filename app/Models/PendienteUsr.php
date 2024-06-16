@@ -25,10 +25,11 @@ class PendienteUsr extends Model
         $isAdmin    = Auth::user()->hasRole('administrador');
         $usuario_principal = User::getMyUserPrincipal();
         if ($isAdmin) {
-            $query = PendienteUsr::all();
+            $query = PendienteUsr::where('status', 1)->get();
         }  else {
             $query = PendienteUsr::
             where('idusrregistra', $usuario_principal)
+            ->where('status', 1)
             ->get();
         }
        

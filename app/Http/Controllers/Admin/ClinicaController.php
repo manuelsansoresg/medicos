@@ -17,7 +17,7 @@ class ClinicaController extends Controller
      */
     public function index()
     {
-        $clinicas = Clinica::where('idclinica', Session()->get('clinica'))->get();
+        $clinicas = Clinica::getAll();
         return view('administracion.clinica.list', compact('clinicas'));
     }
 

@@ -189,6 +189,10 @@ window.addUserCita = function(consultaAsignadoId, hora)
 
 window.updateSelectedTab = function (selectedTab)
 {
+  $('#content-nuevo-estudio').hide();
+  if (selectedTab == 'estudios') {
+    $('#content-nuevo-estudio').show();
+  }
   Livewire.emit('updateSelectedTab', selectedTab);
 }
 

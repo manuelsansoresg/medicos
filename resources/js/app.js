@@ -1,8 +1,3 @@
-if (document.getElementsByClassName('select2multiple')) {
-    $('.select2multiple').select2({
-        placeholder: "Escribe para buscar..",
-    });
-}
 
 
 require('./bootstrap');
@@ -19,3 +14,8 @@ require('./pendiente');
 require('./consulta');
 require('./estudio');
 
+document.addEventListener('DOMContentLoaded', function() {
+    $('.select2multiple').select2({
+        placeholder: "Escribe para buscar.."
+    });
+});
