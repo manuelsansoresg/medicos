@@ -28,7 +28,7 @@ class UserCita extends Model
         $data                   = $request->data;
         $clinica                = Session::get('clinica');
         $consultorio            = Session::get('consultorio');
-        $data['id_consultorio'] = $consultorio;
+        $data['id_consultorio'] = $consultorio == 0 ?  $data['id_consultorio'] : $consultorio ;
         $data['id_clinica']     = $clinica;
         $data['status']         = 1;
 
@@ -61,8 +61,14 @@ class UserCita extends Model
                 'direccion' => $clinica->tdireccion,
                 'telefono' => $clinica->ttelefono,
                 'consultorio' => $consultorio->vnumconsultorio,
+                'from' => $paciente->email,
             );
-            Mail::to($paciente->email)->send(new NotificationEmail($dataCita));
+            try {
+                Mail::to($paciente->email)->send(new NotificationEmail($dataCita));
+            } catch (\Exception $th) {
+                //throw $th;
+            }
+            
         }
         return $userCita;
     }

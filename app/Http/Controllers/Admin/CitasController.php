@@ -52,8 +52,8 @@ class CitasController extends Controller
         if ($getAsignedConsultories != null && $isEmptyConsultorio == false) {
             $isChangeConsultorio = true;
         }
-        
-        return view('administracion.citas.list', compact('clinicas', 'iddoctor', 'isEmptyConsultorio', 'isChangeConsultorio', 'consultorios', 'is_medico', 'fechasEspeciales', 'consultaAsignados', 'fecha', 'pacientes', 'userAdmins'));
+        //dd($getAsignedConsultories);
+        return view('administracion.citas.list', compact('clinicas', 'getAsignedConsultories', 'iddoctor', 'isEmptyConsultorio', 'isChangeConsultorio', 'consultorios', 'is_medico', 'fechasEspeciales', 'consultaAsignados', 'fecha', 'pacientes', 'userAdmins'));
     }
 
     public function add(ConsultaAsignado $consultaAsignado, $hora, $fecha)

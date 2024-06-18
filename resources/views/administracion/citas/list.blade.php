@@ -21,6 +21,7 @@
 @stop
 
 @inject('MconsultaAsignado', 'App\Models\ConsultaAsignado')
+@inject('Mconsultorio', 'App\Models\Consultorio')
 
 @section('content')
 
@@ -44,6 +45,20 @@
                     @else
                     <input type="hidden" name="data[iddoctor]" id="iddoctor" value="{{ $iddoctor }}">
                     @endrole
+                    @php
+                        $consultorio = Session::get('consultorio');
+                        
+                    @endphp
+                   
+                    @if ($consultorio == 0)
+                        <select name="data[id_consultorio]" id="" class="form-control select2multiple">
+                            @foreach ($getAsignedConsultories as $getAsignedConsultory)
+                               
+                                    <option value="{{  $getAsignedConsultory->idconsultorios }}">{{ $getAsignedConsultory->vnumconsultorio }}</option>
+                               
+                            @endforeach
+                        </select>
+                    @endif
                     <div class="form-group">
                         <label for="InputFecha">FECHA CITA</label>
                         <input type="date" class="form-control" id="InputFecha" name="data[fecha]" onchange="setCita()"  placeholder="Enter email" value="{{ $fecha  }}">
@@ -85,11 +100,11 @@
             </div>
             @else
             <div class="col-12">
-                <div class="alert alert-danger" role="alert">
+               {{--  <div class="alert alert-danger" role="alert">
                     No se encuentron consultorios relacionados con su cuenta.
                 <br>
                 Favor de revisar si tiene asignado un consultorio en el apartado de Usuarios del menú izquierdo
-                </div>
+                </div> --}}
             </div>
             @endif
         @else

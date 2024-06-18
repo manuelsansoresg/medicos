@@ -36,7 +36,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="inputNombre" class="form-label">*CLINICAS</label>
-                                        <select name="clinica" id="setClinica"  onchange="changeConsultorio()" class="form-control">
+                                        <select name="clinica" id="setClinica"  onchange="changeConsultorio()" class="form-control" required>
                                             <option value="">Seleccione una opción</option>
                                             @foreach ($my_clinics as $my_clinic)
                                             @php
@@ -50,7 +50,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="inputApellido" class="form-label">*CONSULTORIOS</label>
-                                        <select name="consultorio" id="setConsultorio" disabled  class="form-control">
+                                        <select name="consultorio" id="setConsultorio" disabled  class="form-control" required>
                                             <option value="">Seleccione una opción</option>
                                         </select>
                                     </div>
@@ -58,6 +58,7 @@
                 
                                 <div class="col-md-12 text-right">
                                     <div class="mb-3">
+                                        <a href="/logout" class="btn btn-danger">Salir</a>
                                         <button class="btn btn-primary">Guardar</button>
                                     </div>
                                 </div>

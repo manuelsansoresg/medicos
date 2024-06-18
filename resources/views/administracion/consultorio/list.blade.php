@@ -64,11 +64,11 @@
             </div>
         @else 
             <div class="col-12">
-                <div class="alert alert-danger" role="alert">
+                {{-- <div class="alert alert-danger" role="alert">
                     No se encuentron consultorios relacionados con su cuenta.
                 <br>
                 Favor de revisar si tiene asignado un consultorio en el apartado de Usuarios del menú izquierdo
-                </div>
+                </div> --}}
             </div>
         @endif
             @else
