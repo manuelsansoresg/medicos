@@ -211,13 +211,34 @@ class User extends Authenticatable
     {
         $percentage = $users / $limit * 100;
         $color = 'bg-success'; // Verde si falta menos de la mitad o ninguno
-        if ($percentage > 0 &&  $percentage < 25) {
+        if ($percentage > 0 &&  $percentage == 100) {
             $color = 'bg-danger'; // Rojo si falta más de la mitad
         } elseif ($percentage > 0 && $percentage < 50) {
             $color = 'bg-warning'; // Naranja si falta la mitad
         }
 
         return $color;
+    }
+
+    public static function limitAllUsers($access, $userId)
+    {
+        $limitDoctor   = $access->num_doctor;
+        $limitAuxiliar = $access->num_auxiliar;
+        $userCount     = User::countUsersCreate($userId);
+        $usersDoctor   = $userCount['medico'];
+        $usersAuxiliar = $userCount['auxiliar'];
+
+        // Validar los límites
+        $doctorLimitReached = $usersDoctor >= $limitDoctor;
+        $auxiliarLimitReached = $usersAuxiliar >= $limitAuxiliar;
+
+        // Si ambos límites han sido alcanzados, devolver true
+        if ($doctorLimitReached && $auxiliarLimitReached) {
+            return true;
+        }
+
+        // Si no, devolver false
+        return false;
     }
 
     public static function getMyUsers($userId)

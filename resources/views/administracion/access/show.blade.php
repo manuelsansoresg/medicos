@@ -36,8 +36,19 @@
                                     <td>
                                         {{ $user->name }}
                                     </td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>
+                                        @php
+                                             $getRoleName = $user->getRoleNames();
+                                        @endphp
+                                        {{ ucfirst($getRoleName[0]) }}
+                                    </td>
+                                    <td>
+                                        @if ($user->status == 1)
+                                        <span class="badge bg-success">Sí</span>
+                                            @else
+                                            <span class="badge bg-danger">NO</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

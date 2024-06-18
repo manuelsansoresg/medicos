@@ -48,7 +48,7 @@
                                             $usersDoctor   = $userCount['medico'];
                                             $usersAuxiliar = $userCount['auxiliar'];
                                             $colorDoctor   = $Muser::colorUsersCreate($usersDoctor, $query->num_doctor);
-                                            $colorAuxiliar   = $Muser::colorUsersCreate($usersAuxiliar, $query->num_doctor);
+                                            $colorAuxiliar   = $Muser::colorUsersCreate($usersAuxiliar, $query->num_auxiliar);
                                         @endphp
                                         <span class="badge {{ $colorDoctor }}"> {{ $usersDoctor }} </span> - <span class="badge bg-success"> {{ $query->num_doctor }} </span>
                                     </td>

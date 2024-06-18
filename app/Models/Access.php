@@ -20,6 +20,13 @@ class Access extends Model
         'status',
     ];
 
+    public static function getMyAccess()
+    {
+        $userPrincipalId = User::getMyUserPrincipal();
+        $access = Access::where('user_id', $userPrincipalId)->first();
+        return $access;
+    }
+
     public static function getAll()
     {
         return Access::select( 'access.id', 'name', 'user_id', 'num_doctor', 'num_auxiliar', 'fecha_vencimiento', 'costo', 'is_pagado', 'access.status')
