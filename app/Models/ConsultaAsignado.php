@@ -238,7 +238,7 @@ class ConsultaAsignado extends Model
             $consultaAsignado->whereIn('consultasignado.idconsultorio', $getAsignedConsultories);
         }
 
-        return $consultaAsignado->groupBy('idconsultasignado')->get();
+        return $consultaAsignado->groupBy('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio')->get();
     }
 
     public static function saveEdit($request)
