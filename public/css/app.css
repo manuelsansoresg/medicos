@@ -6,3 +6,10 @@
 .easy-autocomplete {
   width: 100% !important;
 }
+
+.square-img {
+  width: 100px;
+  height: 100px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}

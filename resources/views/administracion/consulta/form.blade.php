@@ -157,7 +157,8 @@
                         </div>
                       
                         <div class="col-12 mt-5">
-                            <livewire:estudio-livewire :limit="10" :pacienteId="$paciente->id" :isExpedient="$isExpedient" />
+                            @livewire('estudio-livewire', ['limit' => 10, 'pacienteId' => $paciente->id, 'userCitaId' => $userCitaId, 'ConsultaAsignado' => $consultaAsignadoId, 'isExpedient' => $isExpedient ])
+
                             
                         </div>
                     </div>

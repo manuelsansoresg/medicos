@@ -13,9 +13,11 @@ require('./access');
 require('./pendiente');
 require('./consulta');
 require('./estudio');
+require('./imagenEstudio');
 
 document.addEventListener('DOMContentLoaded', function() {
     $('.select2multiple').select2({
-        placeholder: "Escribe para buscar.."
+        placeholder: "Escribe para buscar..",
+          width: '100%'
     });
 });

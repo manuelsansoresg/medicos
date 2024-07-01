@@ -35,6 +35,7 @@
                                 <a href="/admin/estudio/{{ $consulta->id }}/generate/pdf" target="_blank"
                                     class="btn btn-secondary pointer"><i class="fas fa-print"></i></a>
                                     @if (!$isExpedient)
+                                        <a  href="/admin/estudio-imagenes/{{ $consulta->id }}/{{ $userCitaId }}/{{ $ConsultaAsignado }}" class="btn btn-success pointer"><i class="fas fa-images"></i> </a>
                                         <a onclick="editarEstudio({{ $consulta->id }})" class="btn btn-primary pointer"><i
                                                 class="fas fa-edit"></i></a>
                                         <a onclick="deleteEstudio({{ $consulta->id }})" class="btn btn-danger pointer"><i

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -171,12 +172,12 @@ class User extends Authenticatable
         $clinica     = Session::get('clinica');
         $consultorio = Session::get('consultorio');
         
-        return User::select('users.id', 'users.name', 'iddoctor', 'idconsultorio')
-                    ->join('consultasignado', 'consultasignado.iddoctor', 'users.id')
-                    ->whereHas('roles', function ($q) use($rol) {
+        return User::select('users.id', 'users.name', DB::raw('MIN(consultasignado.iddoctor) as iddoctor'), DB::raw('MIN(consultasignado.idconsultorio) as idconsultorio'))
+                ->join('consultasignado', 'consultasignado.iddoctor', '=', 'users.id')
+                ->whereHas('roles', function ($q) use ($rol) {
                     $q->where('name', $rol);
                 })
-                ->groupBy('iddoctor', 'idconsultorio')
+                ->groupBy('users.id', 'users.name')
                 ->get();
     }
 

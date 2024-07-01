@@ -85,12 +85,16 @@
                     <div class="col-12">
                         @hasrole('administrador')
                         <div class="form-group">
-                            <label for="InputDoctor">DOCTOR</label>
-                            <select name="data[iddoctor]" id="iddoctor" class="form-control select2multiple">
-                                @foreach ($userAdmins as $userAdmin)
-                                    <option value="{{ $userAdmin->id }}">{{ $userAdmin->name }}</option>
-                                @endforeach
-                            </select>
+                            <div class="col-12">
+                                <label for="InputDoctor">DOCTOR</label>
+                            </div>
+                            <div class="col-12">
+                                <select name="data[iddoctor]" id="iddoctor" class="form-control select2multiple">
+                                    @foreach ($userAdmins as $userAdmin)
+                                        <option value="{{ $userAdmin->id }}">{{ $userAdmin->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <small id="doctorHelp" class="form-text text-muted">Doctor que se le asignara la consulta.</small>
                         </div> 
                         @else

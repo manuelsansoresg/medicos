@@ -93,14 +93,20 @@
                 <td>
                     {{ $fechaNacimiento }}
                 </td>
+                
             </tr>
             <tr>
                 <td><b>PESO</b></td>
                 <td>{{ $consulta->peso }}</td>
                 <td><b>ESTATURA</b></td>
                 <td>{{ $consulta->estatura }}</td>
-                
-
+                @if ($consulta->temperatura != '')
+                <td><b>TEMPERATURA</b></td>
+                <td>
+                    {{ $consulta->temperatura }}
+                </td>
+                @endif
+               
             </tr>
         </table>
         <hr class="hr">
@@ -123,12 +129,18 @@
         </table>
         <hr class="hr">
         
-        <hr class="hr">
         <br>
         <table>
             <tr>
+                <td><b>EXPLORACIÓN MEDICA</b></td>
+            </tr>
+            <tr>
+                <td>{{ $consulta->exploracion }}</td>
+            </tr>
+            <tr>
                 <td><b>TRATAMIENTO</b></td>
             </tr>
+           
             <tr>
                 <td>{{ $consulta->receta }}</td>
             </tr>

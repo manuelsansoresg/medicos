@@ -13,6 +13,8 @@ class EstudioLivewire extends Component
     public    $search          = '';
     public    $limit;
     public    $pacienteId;
+    public    $userCitaId;
+    public    $ConsultaAsignado;
     public    $isExpedient;
     public $selectedTab = 'consultas'; // Valor inicial
 
@@ -23,11 +25,13 @@ class EstudioLivewire extends Component
         $this->selectedTab = $tabName;
     }
 
-    public function mount($limit, $pacienteId, $isExpedient)
+    public function mount($limit, $pacienteId, $userCitaId, $ConsultaAsignado, $isExpedient)
     {
-        $this->limit       = $limit;
-        $this->pacienteId  = $pacienteId;
-        $this->isExpedient = $isExpedient;
+        $this->limit              = $limit;
+        $this->pacienteId         = $pacienteId;
+        $this->isExpedient        = $isExpedient;
+        $this->userCitaId         = $userCitaId;
+        $this->ConsultaAsignado = $ConsultaAsignado;
     }
 
     
