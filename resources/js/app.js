@@ -14,6 +14,7 @@ require('./pendiente');
 require('./consulta');
 require('./estudio');
 require('./imagenEstudio');
+require('./configuracion');
 
 document.addEventListener('DOMContentLoaded', function() {
     $('.select2multiple').select2({

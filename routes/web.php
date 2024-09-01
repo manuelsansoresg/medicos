@@ -71,6 +71,15 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/estudio-imagenes/{estudioId}/{userCitaId}/{ConsultaAsignado}/create', [App\Http\Controllers\Admin\EstudioImagenesController::class, 'create'])->middleware('auth');
     Route::get('/estudio-imagenes/{imagenId}/{estudioId}/{userCitaId}/{ConsultaAsignado}/edit', [App\Http\Controllers\Admin\EstudioImagenesController::class, 'edit'])->middleware('auth');
     
+    Route::resource('template-formulario', '\App\Http\Controllers\Admin\FormularioConfigurationController');
+    Route::get('template-formulario/{configuration}/edit', [FormularioConfigurationController::class, 'edit'])->name('template-formulario.edit');
+    Route::put('template-formulario/{configuration}', [FormularioConfigurationController::class, 'update'])->name('template-formulario.update');
+    Route::get('template-formulario/{configuration}/delete', [FormularioConfigurationController::class, 'destroy'])->name('template-formulario.destroy');
+
+    Route::get('template-formulario/{configurationId}/consulta/{consultaId}', [FormularioConfigurationController::class, 'showFormulario'])->name('template-formulario.showFormulario'); //mostrar por primera vez
+    Route::post('template-formulario/{configurationId}/consulta/{consultaId}', [FormularioConfigurationController::class, 'storeFormulario'])->name('template-formulario.storeFormulario');
+
+
 });
 
 Auth::routes();
@@ -81,15 +90,10 @@ Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout
 
 
 ///administracion formulario consulta
-Route::resource('formulario_configurations', FormularioConfigurationController::class);
+
 Route::get('formularios/{id}/{consultaId}', [FormularioController::class, 'show'])->name('formularios.show');
 Route::post('formularios/{id}/{consultaId}', [FormularioController::class, 'store'])->name('formularios.store');
 
-Route::get('formulario_configurations/{configuration}/edit', [FormularioConfigurationController::class, 'edit'])->name('formulario_configurations.edit');
-Route::put('formulario_configurations/{configuration}', [FormularioConfigurationController::class, 'update'])->name('formulario_configurations.update');
 
-Route::get('formulario_configurations/{configurationId}/consulta/{consultaId}', [FormularioConfigurationController::class, 'showFormulario'])->name('formulario_configurations.showFormulario');
-Route::post('formulario_configurations/{configurationId}/consulta/{consultaId}', [FormularioConfigurationController::class, 'storeFormulario'])->name('formulario_configurations.storeFormulario');
-
-Route::get('formulario_entries/{entryId}/show_saved', [FormularioConfigurationController::class, 'showFormularioGuardado'])->name('formulario_entries.show_saved');
+Route::get('formulario_entries/{entryId}/show_saved', [FormularioConfigurationController::class, 'showFormularioGuardado'])->name('formulario_entries.show_saved'); //mostrar lo que se guardo
 Route::put('formulario_entries/{entryId}', [FormularioConfigurationController::class, 'updateFormularioConsulta'])->name('formulario_entries.update');

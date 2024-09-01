@@ -149,6 +149,7 @@ class ConsultaAsignado extends Model
                 $isDisponible = UserCita::where([
                                 'consulta_asignado_id' => $asignado->idconsultasignado,
                                 'hora' => $horaampm,
+                                'fecha' => date('Y-m-d'),
                                 'status' => 1,
                                 ])
                                 ->first();

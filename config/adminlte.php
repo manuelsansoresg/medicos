@@ -365,20 +365,28 @@ return [
             'url'         => 'admin/actividades',
             'icon'        => 'far fa-fw fa-file',
         ],
+        
+        ['header' => 'CONFIGURACIÓN'],
         [
-            'text'       => 'Contrtol acceso',
+            'text'       => 'Control acceso',
             'icon_color' => 'green',
             'url'        => '/admin/acceso',
             'can'  => 'menu-admin',
         ],
+        [
+            'text'       => 'Plantilla consulta',
+            'icon_color' => 'green',
+            'url'        => '/admin/template-formulario',
+            'can'  => 'menu-admin',
+        ],
+        
         ['header' => 'account_settings'],
         [
             'text' => 'profile',
             'url'  => 'editProfile',
             'icon' => 'fas fa-fw fa-user',
         ],
-        
-        
+       
        
         /* ['header' => 'labels'],
         [

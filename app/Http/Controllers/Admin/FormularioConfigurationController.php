@@ -7,6 +7,7 @@ use App\Models\FormularioConfiguration;
 use App\Models\FormularioEntry;
 use App\Models\FormularioEntryField;
 use App\Models\FormularioField;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class FormularioConfigurationController extends Controller
@@ -42,7 +43,7 @@ class FormularioConfigurationController extends Controller
             ]);
         }
 
-        return redirect()->route('formulario_configurations.index');
+        return redirect()->route('template-formulario.index');
     }
     
     public function index()
@@ -53,12 +54,13 @@ class FormularioConfigurationController extends Controller
 
     public function create()
     {
-        return view('formulario_configurations.create');
+        $userAdmins = User::getUsersByRol('medico');
+        return view('formulario_configurations.create', compact('userAdmins'));
     }
 
     public function store(Request $request)
     {
-        $configuration = FormularioConfiguration::create(['name' => $request->name]);
+        $configuration = FormularioConfiguration::create(['name' => $request->name, 'user_id' => $request->user_id]);
         
         foreach ($request->fields as $field) {
             FormularioField::create([
@@ -70,14 +72,15 @@ class FormularioConfigurationController extends Controller
             ]);
         }
 
-        return redirect()->route('formulario_configurations.index');
+        return redirect()->route('template-formulario.index');
     }
 
     public function edit($configurationId)
     {
         $configuration = FormularioConfiguration::find($configurationId);
         $configuration->load('fields');
-        return view('formulario_configurations.edit', compact('configuration'));
+        $userAdmins = User::getUsersByRol('medico');
+        return view('formulario_configurations.edit', compact('configuration', 'userAdmins'));
     }
 
     public function updateFormularioConsulta(Request $request, $entryId)
@@ -103,7 +106,7 @@ class FormularioConfigurationController extends Controller
     public function update(Request $request, $configurationId)
     {
         $configuration = FormularioConfiguration::find($configurationId);
-        $configuration->update(['name' => $request->name]);
+        $configuration->update(['name' => $request->name, 'user_id' => $request->user_id]);
         $configuration->fields()->delete();
     
         foreach ($request->fields as $field) {
@@ -116,13 +119,13 @@ class FormularioConfigurationController extends Controller
             ]);
         }
     
-        return redirect()->route('formulario_configurations.index');
+        return redirect()->route('template-formulario.index');
     }
 
     public function destroy($configurationId)
     {
         $configuration = FormularioConfiguration::find($configurationId);
         $configuration->delete();
-        return redirect()->route('formulario_configurations.index');
+        return redirect()->route('template-formulario.index');
     }
 }
