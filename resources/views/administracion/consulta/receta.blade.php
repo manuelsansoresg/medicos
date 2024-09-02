@@ -95,19 +95,7 @@
                 </td>
                 
             </tr>
-            <tr>
-                <td><b>PESO</b></td>
-                <td>{{ $consulta->peso }}</td>
-                <td><b>ESTATURA</b></td>
-                <td>{{ $consulta->estatura }}</td>
-                @if ($consulta->temperatura != '')
-                <td><b>TEMPERATURA</b></td>
-                <td>
-                    {{ $consulta->temperatura }}
-                </td>
-                @endif
-               
-            </tr>
+            
         </table>
         <hr class="hr">
         <div style="width: 100%; text-align:center; padding-bottom: 0px">
@@ -130,34 +118,38 @@
         <hr class="hr">
         
         <br>
-        <table>
-            <tr>
-                <td><b>EXPLORACIÓN MEDICA</b></td>
-            </tr>
-            <tr>
-                <td>{{ $consulta->exploracion }}</td>
-            </tr>
-            <tr>
-                <td><b>TRATAMIENTO</b></td>
-            </tr>
-           
-            <tr>
-                <td>{{ $consulta->receta }}</td>
-            </tr>
-            <tr>
-                <td><b>ALERGIAS</b></td>
-            </tr>
-            <tr>
-                <td>{{ $paciente->alergias }}</td>
-            </tr>
-
-        </table>
-        <br>
-        <div style="border: 0.5px solid black; padding: 5px">
-            <b>INDICACIONES GENERALES</b>
-            <p>{{ $consulta->indicaciones_generales }}</p>
-            <p><b>FAVOR DE TOMAR EL TRATAMIENTO COMPLETO </b></p>
+        @foreach($entry->fields as $entryField)
+        @php
+            $field = $entryField->field;
+        @endphp
+        <div class="field">
+            <b>{{ $field->field_name }}: </b>
+            @if($field->field_type == 'text')
+                <span>{{ $entryField->value }}</span>
+            @elseif($field->field_type == 'date')
+                <span>
+                    {{ $entryField->value }}
+                </span>
+            @elseif($field->field_type == 'textarea')
+                <span>
+                    {{ $entryField->value }}
+                </span>
+            @elseif($field->field_type == 'select')
+            @foreach(explode(',', $field->options) as $option)
+            @if ($entryField->value == $option)
+                <span>
+                    {{ $option }}
+                </span>
+            @endif
+        @endforeach
+            @elseif($field->field_type == 'image')
+               
+            @endif
         </div>
+        
+    @endforeach
+        <br>
+        
     </div>
     <div class="footer">
         

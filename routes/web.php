@@ -79,6 +79,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('template-formulario/{configurationId}/consulta/{consultaId}', [FormularioConfigurationController::class, 'showFormulario'])->name('template-formulario.showFormulario'); //mostrar por primera vez
     Route::post('template-formulario/{configurationId}/consulta/{consultaId}', [FormularioConfigurationController::class, 'storeFormulario'])->name('template-formulario.storeFormulario');
 
+    Route::get('template-formulario/{configurationId}/{consultaId}/{userCitaId}/showTemplate', [FormularioConfigurationController::class, 'showTemplate']);
 
 });
 

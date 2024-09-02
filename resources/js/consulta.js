@@ -44,24 +44,18 @@ $("#frm-consulta").submit(function (e) {
 
 window.editarConsulta = function(id)
 {
-    $('#content-consulta').show('slow');
-    const element = document.getElementById("content-consulta");
-    element.focus();
-
+    $('#selectPlantilla').hide();
+    $('#content-form-template').html('');
+    
+    /* const element = document.getElementById("content-consulta");
+    element.focus(); */
     axios
         .get("/admin/consulta/"+id)
         .then(function (response) {
             let result = response.data;
-            $('#motivo').val(result.motivo);
-            $('#peso').val(result.peso);
-            $('#exploracion').val(result.exploracion);
-            $('#temperatura').val(result.temperatura);
-            $('#estatura').val(result.estatura);
-            $('#receta').val(result.receta);
-            $('#user_cita_id').val(result.user_cita_id);
-            $('#paciente_id').val(result.paciente_id);
-            $('#consulta_id').val(result.id);
-            $('#indicaciones_generales').val(result.indicaciones_generales);
+            
+            $('#content-form-template').html(result);
+            $('#content-consulta').show('slow');
            
         })
         .catch(e => { });
@@ -78,4 +72,24 @@ window.nuevaConsulta = function(peso, temperatura, estatura)
 window.cancelConsulta = function()
 {
     $('#content-consulta').hide();
+}
+
+window.changeTemplateConsulta = function()
+{
+    let templateConsulta = $('#templateConsulta').val();
+    let consultaAsignadoId = $('#consultaAsignadoId').val();
+    let estudio_user_cita_id = $('#estudio_user_cita_id').val();
+    $('#selectPlantilla').show();
+
+    $('#content-form-template').html('');
+    axios
+        .get('/admin/template-formulario/'+templateConsulta+'/'+consultaAsignadoId+'/'+estudio_user_cita_id+'/showTemplate')
+        .then(function (result) {
+            $('#content-form-template').html(result.data);
+        })
+        .catch(e => { 
+
+        });
+    
+    console.log(templateConsulta);
 }

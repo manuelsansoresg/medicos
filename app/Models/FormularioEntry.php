@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class FormularioEntry extends Model
 {
     use HasFactory;
-    protected $fillable = ['consulta_id', 'formulario_configuration_id'];
+    protected $fillable = ['consulta_id', 'formulario_configuration_id', 'paciente_id', 'user_cita_id', 'idusrregistra'];
 
 
     public function configuration()

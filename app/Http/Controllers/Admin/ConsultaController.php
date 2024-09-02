@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Consulta;
+use App\Models\FormularioConfiguration;
+use App\Models\FormularioEntry;
 use App\Models\User;
 use App\Models\UserCita;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -51,32 +53,45 @@ class ConsultaController extends Controller
      */
     public function show($id)
     {
-        $consulta = Consulta::find($id);
-        return response()->json($consulta);
+
+        $entryId = $id;
+        $entry = FormularioEntry::with('fields.field')->findOrFail($entryId);
+        return view('formulario_configurations.show_saved', compact('entry'));
+        //return \View::make('formulario_configurations.show_saved', compact('configuration', 'consultaId', 'userCitaId', 'paciente'))->render();
+        
     }
 
-    public function registroConsulta($userCitaId, $consultaAsignadoId)
+    public function registroConsulta($userCitaId, $consultaId)
     {
         $userCita       = UserCita::find($userCitaId);
         $paciente       = User::find($userCita->paciente_id);
         $ultimaConsulta = Consulta::where('paciente_id', $paciente->id)->orderBy('created_at', 'DESC')->first();
-        $consultas      = Consulta::getByPaciente($paciente->id);
+        //$consultas      = Consulta::getByPaciente($paciente->id);
         $isExpedient    = false;
-        return view('administracion.consulta.form', compact('consultaAsignadoId', 'paciente', 'ultimaConsulta', 'consultas', 'userCitaId', 'isExpedient'));
+        $myTemplates    = FormularioConfiguration::getMyTemplates();
+        if (count($myTemplates) > 1) {
+            $configuration = null;
+        } elseif (count($myTemplates) == 1) {
+            $configuration = FormularioConfiguration::with('fields')->findOrFail($myTemplates->id);
+        }
+        $consultas = FormularioEntry::where('consulta_id', $consultaId)->get();
+        return view('administracion.consulta.form', compact('consultaId', 'paciente', 'ultimaConsulta', 'consultas', 'userCitaId', 'isExpedient', 'myTemplates'));
     }
 
-    public function recetaPdf(Consulta $consulta, $type)
+    public function recetaPdf($entryId, $type)
     {
-        $getUserMedic = User::find($consulta->idusrregistra);
+        $entry = FormularioEntry::with('fields.field')->findOrFail($entryId);
+        $getUserMedic = User::find($entry->idusrregistra);
         $getMedico    = User::find($getUserMedic->usuario_principal);
         $medico       = $getMedico == null ? $getUserMedic : $getMedico;
-        $paciente     = User::find($consulta->paciente_id);
+        $paciente     = User::find($entry->paciente_id);
         
         $data         = array(
-            'consulta' => $consulta,
+            'entry' => $entry,
             'medico'   => $medico,
             'paciente' => $paciente
         );
+        
         if ($type == 'consulta') {
             $pdf = Pdf::loadView('administracion.consulta.consulta', $data);
         } else {
@@ -119,6 +134,6 @@ class ConsultaController extends Controller
      */
     public function destroy($id)
     {
-        Consulta::where('id', $id)->delete();
+        FormularioEntry::where('id', $id)->delete();
     }
 }

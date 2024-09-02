@@ -64,57 +64,59 @@ window.changeConsultorio = function () {
         });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const selectClinica = document.getElementById('setClinica');
-    const selectConsultorio = document.getElementById('setConsultorio');
-
-    selectClinica.addEventListener('change', function() {
-        if (selectClinica.value) {
-            selectConsultorio.removeAttribute('disabled');
-            // Aquí puedes agregar la lógica para cargar los consultorios asociados a la clínica seleccionada
-        } else {
-            selectConsultorio.setAttribute('disabled', 'disabled');
-            selectConsultorio.value = "";
+if (document.getElementById('setClinica')) {
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectClinica = document.getElementById('setClinica');
+        const selectConsultorio = document.getElementById('setConsultorio');
+    
+        selectClinica.addEventListener('change', function() {
+            if (selectClinica.value) {
+                selectConsultorio.removeAttribute('disabled');
+                // Aquí puedes agregar la lógica para cargar los consultorios asociados a la clínica seleccionada
+            } else {
+                selectConsultorio.setAttribute('disabled', 'disabled');
+                selectConsultorio.value = "";
+            }
+        });
+    
+        if (document.getElementById('frm-selection')) {
+            document.getElementById('frm-selection').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevenir el envío normal del formulario
+    
+                // Validar si ambos selects tienen un valor seleccionado
+                if (!selectClinica.value || !selectConsultorio.value) {
+                    Swal.fire({
+                        title: "Sin consultorio asignado",
+                        text: "Pedirle al usuario administrador que le asigne un consultorio",
+                        icon: "warning"
+                    });
+                    return; // No continuar con el envío del formulario
+                }
+    
+                // Obtener el formulario y sus valores
+                let formulario = event.target;
+                let formData = new FormData(formulario);
+    
+                // Realizar la solicitud POST utilizando Axios
+                axios.post('/admin/clinica/consultorio/set', formData)
+                    .then(function(response) {
+                        // Manejar la respuesta si es necesario
+                        Swal.fire({
+                            text: "Los valores se han almacenado con éxito. A partir de ahora, los filtros en todo el panel administrativo estarán basados en esta selección.",
+                            icon: "warning"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location = '/home';
+                            }
+                        });
+                    })
+                    .catch(function(error) {
+                        // Manejar errores si es necesario
+                        console.error(error);
+                    });
+            });
         }
     });
-
-    if (document.getElementById('frm-selection')) {
-        document.getElementById('frm-selection').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevenir el envío normal del formulario
-
-            // Validar si ambos selects tienen un valor seleccionado
-            if (!selectClinica.value || !selectConsultorio.value) {
-                Swal.fire({
-                    title: "Sin consultorio asignado",
-                    text: "Pedirle al usuario administrador que le asigne un consultorio",
-                    icon: "warning"
-                });
-                return; // No continuar con el envío del formulario
-            }
-
-            // Obtener el formulario y sus valores
-            let formulario = event.target;
-            let formData = new FormData(formulario);
-
-            // Realizar la solicitud POST utilizando Axios
-            axios.post('/admin/clinica/consultorio/set', formData)
-                .then(function(response) {
-                    // Manejar la respuesta si es necesario
-                    Swal.fire({
-                        text: "Los valores se han almacenado con éxito. A partir de ahora, los filtros en todo el panel administrativo estarán basados en esta selección.",
-                        icon: "warning"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location = '/home';
-                        }
-                    });
-                })
-                .catch(function(error) {
-                    // Manejar errores si es necesario
-                    console.error(error);
-                });
-        });
-    }
-});
+}
 
 

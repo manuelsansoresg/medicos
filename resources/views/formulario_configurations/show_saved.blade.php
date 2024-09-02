@@ -1,7 +1,4 @@
-@extends('adminlte::page')
 
-@section('content')
-<h1>Valores guardados</h1>
 <form action="{{ route('formulario_entries.update', $entry->id) }}" method="POST">
     @csrf
     @method('PUT')
@@ -12,20 +9,20 @@
         <div class="field">
             <label for="{{ $field->field_name }}">{{ $field->field_name }}</label>
             @if($field->field_type == 'text')
-                <input type="text" name="fields[{{ $field->id }}]" value="{{ $entryField->value }}">
+                <input type="text" class="form-control" name="fields[{{ $field->id }}]" value="{{ $entryField->value }}">
             @elseif($field->field_type == 'date')
-                <input type="date" name="fields[{{ $field->id }}]" value="{{ $entryField->value }}">
+                <input type="date" class="form-control" name="fields[{{ $field->id }}]" value="{{ $entryField->value }}">
             @elseif($field->field_type == 'textarea')
-                <textarea name="fields[{{ $field->id }}]">{{ $entryField->value }}</textarea>
+                <textarea class="form-control" name="fields[{{ $field->id }}]">{{ $entryField->value }}</textarea>
             @elseif($field->field_type == 'select')
-                <select name="fields[{{ $field->id }}]">
+                <select class="form-control" name="fields[{{ $field->id }}]">
                     @foreach(explode(',', $field->options) as $option)
                         <option value="{{ $option }}" @if($entryField->value == $option) selected @endif>{{ $option }}</option>
                     @endforeach
                 </select>
             @elseif($field->field_type == 'image')
                 <!-- Aquí podrías mostrar una imagen previa si el valor es una URL de imagen -->
-                <input type="file" name="fields[{{ $field->id }}]">
+                <input class="form-control" type="file" name="fields[{{ $field->id }}]">
                 @if(filter_var($entryField->value, FILTER_VALIDATE_URL) !== false)
                     <img src="{{ $entryField->value }}" alt="Imagen">
                 @else
@@ -33,7 +30,10 @@
                 @endif
             @endif
         </div>
+        
+        <input type="hidden" name="consulta_id" id="consulta_id" value="{{ $entry->id }}">
     @endforeach
-    <button type="submit">Guardar cambios</button>
+    <div class="col-12 text-right mt-3">
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    </div>
 </form>
-@endsection

@@ -39,10 +39,12 @@ class Consulta extends Model
         return array('peso' => $peso, 'estatura' => $estatura);
     }
 
+    //pivote para realizar la consulta a travez de FormularioEntry
     public static function getByPaciente($pacienteId,  $search = null, $limit = null, $isPaginate = false)
     {
-        $query =  Consulta::
-                        where('paciente_id', $pacienteId);
+        $query =  FormularioEntry::select('formulario_entries.id', 'formulario_entries.created_at')
+                        ->join('users', 'users.id', 'formulario_entries.paciente_id')
+                        ->where('paciente_id', $pacienteId);
         if ($search != '') {
             $query->where('motivo', 'like', '%' . $search . '%');
             $query->orWhere('fecha', 'like', '%' . $search . '%');

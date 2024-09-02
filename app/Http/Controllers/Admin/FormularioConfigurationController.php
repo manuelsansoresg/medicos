@@ -8,7 +8,9 @@ use App\Models\FormularioEntry;
 use App\Models\FormularioEntryField;
 use App\Models\FormularioField;
 use App\Models\User;
+use App\Models\UserCita;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FormularioConfigurationController extends Controller
 {
@@ -20,6 +22,7 @@ class FormularioConfigurationController extends Controller
     }
     public function showFormulario($configurationId, $consultaId)
     {
+        
         $configuration = FormularioConfiguration::with('fields')->findOrFail($configurationId);
         return view('formulario_configurations.show', compact('configuration', 'consultaId'));
     }
@@ -32,6 +35,7 @@ class FormularioConfigurationController extends Controller
         $entry = FormularioEntry::create([
             'consulta_id' => $consultaId,
             'formulario_configuration_id' => $configurationId,
+        
         ]);
 
         // Guardar los valores de los campos del formulario
@@ -43,7 +47,7 @@ class FormularioConfigurationController extends Controller
             ]);
         }
 
-        return redirect()->route('template-formulario.index');
+        //return redirect()->route('template-formulario.index');
     }
     
     public function index()
@@ -83,6 +87,16 @@ class FormularioConfigurationController extends Controller
         return view('formulario_configurations.edit', compact('configuration', 'userAdmins'));
     }
 
+    public function showTemplate($configurationId, $consultaId, $userCitaId)
+    {
+        $userCita       = UserCita::find($userCitaId);
+        $paciente       = User::find($userCita->paciente_id);
+        
+        $configuration = FormularioConfiguration::with('fields')->findOrFail($configurationId);
+        
+        return \View::make('formulario_configurations.show', compact('configuration', 'consultaId', 'userCitaId', 'paciente'))->render();
+    }
+
     public function updateFormularioConsulta(Request $request, $entryId)
     {
         $entry = FormularioEntry::findOrFail($entryId);
@@ -99,8 +113,9 @@ class FormularioConfigurationController extends Controller
             }
         }
 
-        return redirect()->route('formulario_entries.show_saved', $entry->id)
-            ->with('success', 'Los cambios han sido guardados correctamente.');
+        return redirect()->back()
+        ->with('success', 'Los cambios han sido guardados correctamente.');
+    
     }
 
     public function update(Request $request, $configurationId)

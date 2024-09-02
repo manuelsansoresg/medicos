@@ -8,7 +8,7 @@
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item" aria-current="page"><a href="/">INICIO</a></li>
                         <li class="breadcrumb-item"><a href="/admin/actividades">ACTIVIDADES</a></li>
-                        <li class="breadcrumb-item active"> <a href="/admin/citas/{{ $consultaAsignadoId }}/list">CITAS</a>
+                        <li class="breadcrumb-item active"> <a href="/admin/citas/{{ $consultaId }}/list">CITAS</a>
                         </li>
                         <li class="breadcrumb-item active">CONSULTA</li>
                     </ol>
@@ -55,7 +55,34 @@
                         </div>
                         <div class="row" id="content-consulta" style="display: none">
                             <div class="col-12">
-                                <form method="post" action="/admin/consulta" id="frm-consulta">
+                                @if (count($myTemplates) == 0) {{-- si es 0 indicar que falta asignar un template --}}
+                                    <h5>Sin plantilla configurada</h5>
+                                    
+                                @else
+                                    
+                                @if (count($myTemplates) > 1) {{-- es admin y tiene varias plantillas activas --}}
+                                
+                                    <div class="col-12">
+                                        <div class="mb-3" id="selectPlantilla">
+                                            <label for="inputRecordatorio" class="form-label">*SELECCIONAR PLANTILLA</label>
+                                            <select name="" id="templateConsulta" class="form-control select2multiple" onchange="changeTemplateConsulta()">
+                                                <option value="">Seleccione una opción</option>
+                                                @foreach ($myTemplates as $myTemplate)
+                                                    <option value="{{ $myTemplate->id }}">{{ $myTemplate->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-12" id="content-form-template">
+
+                                        </div>
+                                    </div>
+                                    @else {{-- es un usuario no admin y tiene una plantilla activa --}}
+                                        @php
+                                            @include('formulario_configurations.show')
+                                        @endphp
+                                    @endif
+                                @endif
+                                <form method="post" action="/admin/consulta" id="frm-consulta" style="display: none">
                                     <div class="col-12">
                                         <p class="text-info">Los campos marcados con * son requeridos</p>
                                         <div class="col-12">
@@ -115,6 +142,10 @@
                             </div>
                         </div>
                         <div class="col-12 mt-5">
+                            <input type="hidden" id="origin_user_cita_id" value="{{ $userCitaId }}">
+                            <input type="hidden" id="origin_user_cita_id_origin" value="{{ $userCitaId }}">
+                            <input type="hidden" id="origin_paciente_id" value="{{ $paciente != null ? $paciente->id : null }}">
+
                             <livewire:consulta-livewire :limit="10" :pacienteId="$paciente->id" :isExpedient="$isExpedient"/>
                         </div>
                     </div>
@@ -157,14 +188,14 @@
                         </div>
                       
                         <div class="col-12 mt-5">
-                            @livewire('estudio-livewire', ['limit' => 10, 'pacienteId' => $paciente->id, 'userCitaId' => $userCitaId, 'ConsultaAsignado' => $consultaAsignadoId, 'isExpedient' => $isExpedient ])
+                            @livewire('estudio-livewire', ['limit' => 10, 'pacienteId' => $paciente->id, 'userCitaId' => $userCitaId, 'ConsultaAsignado' => $consultaId, 'isExpedient' => $isExpedient ])
 
                             
                         </div>
                     </div>
                 </div>
             </div>
-            <input type="hidden" id="consultaAsignadoId" value="{{ $consultaAsignadoId }}">
+            <input type="hidden" id="consultaAsignadoId" value="{{ $consultaId }}">
             
         </div>
     </div>

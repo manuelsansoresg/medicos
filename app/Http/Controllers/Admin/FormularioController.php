@@ -7,6 +7,7 @@ use App\Models\FormularioConfiguration;
 use App\Models\FormularioEntry;
 use App\Models\FormularioEntryField;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FormularioController extends Controller
 {
@@ -16,6 +17,7 @@ class FormularioController extends Controller
         return view('formularios.show', compact('configuration', 'consultaId'));
     }
 
+    //* guardar consulta que viene del template dinamico
     public function store(Request $request, $id, $consultaId)
     {
         $configuration = FormularioConfiguration::with('fields')->findOrFail($id);
@@ -23,7 +25,10 @@ class FormularioController extends Controller
         // Crear una nueva entrada del formulario
         $entry = FormularioEntry::create([
             'consulta_id' => $consultaId,
-            'formulario_configuration_id' => $id
+            'formulario_configuration_id' => $id,
+            'idusrregistra' => Auth::user()->id,
+            'paciente_id' => $request->paciente_id,
+            'user_cita_id' => $request->user_cita_id,
         ]);
 
         // Guardar los valores de cada campo del formulario
