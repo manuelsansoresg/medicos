@@ -122,30 +122,24 @@
         @php
             $field = $entryField->field;
         @endphp
-        <div class="field">
-            <b>{{ $field->field_name }}: </b>
+        <table style="width: 100%">
+            <td><b>{{ $field->field_name }} </b> </td> 
             @if($field->field_type == 'text')
-                <span>{{ $entryField->value }}</span>
+                <td>{{ $entryField->value }}</td>
             @elseif($field->field_type == 'date')
-                <span>
-                    {{ $entryField->value }}
-                </span>
+                <td>{{ $entryField->value }}</td>
             @elseif($field->field_type == 'textarea')
-                <span>
-                    {{ $entryField->value }}
-                </span>
+                <td>{{ $entryField->value }}</td>
             @elseif($field->field_type == 'select')
             @foreach(explode(',', $field->options) as $option)
             @if ($entryField->value == $option)
-                <span>
-                    {{ $option }}
-                </span>
+                <td>{{ $option }}</td>
             @endif
         @endforeach
             @elseif($field->field_type == 'image')
                
             @endif
-        </div>
+        </table>
         
     @endforeach
         <br>

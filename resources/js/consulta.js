@@ -63,9 +63,14 @@ window.editarConsulta = function(id)
 
 window.nuevaConsulta = function(peso, temperatura, estatura)
 {
+    if (document.getElementById('selectPlantilla')) {
+        $('#selectPlantilla').show();
+        $('#content-form-template').html('');
+    }
     $('#peso').val(peso);
     $('#temperatura').val(temperatura);
     $('#estatura').val(estatura);
+    
     $('#content-consulta').show('slow');
 }
 

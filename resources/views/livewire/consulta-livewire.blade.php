@@ -38,10 +38,12 @@
                     </td>
                     <td>
                         {{-- <a  href="/admin/consulta/{{ $consulta->id }}/consulta/generate/pdf" target="_blank" class="btn btn-secondary pointer"><i class="far fa-folder-open"></i></a> --}}
+                        <a  href="/admin/consulta/{{ $consulta->id }}/consulta/generate/pdf" target="_blank" class="btn btn-secondary pointer"><i class="fas fa-print"></i></a>
                         @if (!$isExpedient)
-                            <a  href="/admin/consulta/{{ $consulta->id }}/receta/generate/pdf" target="_blank" class="btn btn-secondary pointer"><i class="fas fa-print"></i></a>
+                            
                             <a  onclick="editarConsulta({{ $consulta->id }})" class="btn btn-primary pointer"><i class="fas fa-edit"></i></a>
                             <a  onclick="deleteConsulta({{ $consulta->id }})" class="btn btn-danger pointer"><i class="fas fa-trash"></i></a>
+                            @else
                         @endif
                     </td>
                 </tr>

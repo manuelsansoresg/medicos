@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Receta</title>
+    <title>Consulta</title>
 </head>
 
 <body>
@@ -52,7 +52,7 @@
     </style>
     <div class="content">
         <div style="width: 100%; text-align:center">
-            <h3>RECETA</h3>
+            <h3>CONSULTA</h3>
         </div>
 
         <div style="width: 100%; text-align:right">
@@ -94,14 +94,7 @@
                     {{ $fechaNacimiento }}
                 </td>
             </tr>
-            <tr>
-                <td><b>PESO</b></td>
-                <td>{{ $consulta->peso }}</td>
-                <td><b>ESTATURA</b></td>
-                <td>{{ $consulta->estatura }}</td>
-                
-
-            </tr>
+           
         </table>
         <hr class="hr">
         <div style="width: 100%; text-align:center; padding-bottom: 0px">
@@ -121,36 +114,47 @@
                 <td>  {{ $medico->vcedula }}</td>
             </tr>
         </table>
+        
         <hr class="hr">
         
         <br>
-        <table>
+        @foreach($entry->fields as $entryField)
+        @php
+            $field = $entryField->field;
+        @endphp
+        <table style="width: 100%">
             <tr>
-                <td><b>EXPLORACIÓN MEDICA</b></td>
+                <td><b>{{ $field->field_name }} </b> </td> 
             </tr>
-            <tr>
-                <td>{{ $consulta->exploracion }}</td>
-            </tr>
-            <tr>
-                <td><b>RECETA MEDICA</b></td>
-            </tr>
-            <tr>
-                <td>{{ $consulta->receta }}</td>
-            </tr>
-            <tr>
-                <td><b>ALERGIAS</b></td>
-            </tr>
-            <tr>
-                <td>{{ $paciente->alergias }}</td>
-            </tr>
-
+                @if($field->field_type == 'text')
+                <tr>
+                    <td>{{ $entryField->value }}</td>
+                </tr>
+                @elseif($field->field_type == 'date')
+                <tr>
+                    <td>{{ $entryField->value }}</td>
+                    </tr>
+                @elseif($field->field_type == 'textarea')
+                <tr>
+                    <td>{{ $entryField->value }}</td>
+                    </tr>
+                @elseif($field->field_type == 'select')
+                @foreach(explode(',', $field->options) as $option)
+                @if ($entryField->value == $option)
+                <tr>
+                    <td>{{ $option }}</td>
+                    </tr>
+                @endif
+            
+        @endforeach
+            @elseif($field->field_type == 'image')
+               
+            @endif
         </table>
+        
+    @endforeach
         <br>
-        <div style="border: 0.5px solid black; padding: 5px">
-            <b>INDICACIONES GENERALES</b>
-            <p>{{ $consulta->indicaciones_generales }}</p>
-            <p><b>FAVOR DE TOMAR EL TRATAMIENTO COMPLETO </b></p>
-        </div>
+       
     </div>
     <div class="footer">
         

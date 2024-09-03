@@ -28,11 +28,6 @@
                     </div>
                     <div class="col-10">
                         <h6>Nombre: {{ $paciente->name }} {{ $paciente->fecha_nacimiento }}</h6>
-                        <h6>Peso:
-                            @if ($ultimaConsulta != null)
-                                {{ $ultimaConsulta != null ? $ultimaConsulta->peso : null }} ({{ Carbon\Carbon::parse($ultimaConsulta->created_at)->format('Y-m-d h:i a') }})
-                            @endif
-                        </h6>
                         <h6>Alergias: {{ $paciente->alergias }} </h6>
                     </div>
                 </div>

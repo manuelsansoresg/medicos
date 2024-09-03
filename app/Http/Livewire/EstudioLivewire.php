@@ -25,7 +25,7 @@ class EstudioLivewire extends Component
         $this->selectedTab = $tabName;
     }
 
-    public function mount($limit, $pacienteId, $userCitaId, $ConsultaAsignado, $isExpedient)
+    public function mount($limit, $pacienteId, $userCitaId = null, $ConsultaAsignado = null, $isExpedient = null)
     {
         $this->limit              = $limit;
         $this->pacienteId         = $pacienteId;

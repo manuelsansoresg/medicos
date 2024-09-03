@@ -91,12 +91,12 @@ class ConsultaController extends Controller
             'medico'   => $medico,
             'paciente' => $paciente
         );
-        
-        if ($type == 'consulta') {
+        $pdf = Pdf::loadView('administracion.consulta.consulta', $data);
+        /* if ($type == 'consulta') {
             $pdf = Pdf::loadView('administracion.consulta.consulta', $data);
         } else {
             $pdf = Pdf::loadView('administracion.consulta.receta', $data);
-        }
+        } */
 
         $pdf->setPaper('A4');
 
