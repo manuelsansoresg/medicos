@@ -26,6 +26,7 @@ class CheckUserStatus
             if (!$isAdmin) {
                 $userAccess = User::getMyUserPrincipal();
                 $access     = Access::where('user_id', $userAccess)->first();
+                
                 $fechaVencimiento = $access!=null ? $access->fecha_vencimiento : null;
                 if ($access == null) {
                     abort(404);

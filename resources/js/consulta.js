@@ -61,16 +61,17 @@ window.editarConsulta = function(id)
         .catch(e => { });
 }
 
-window.nuevaConsulta = function(peso, temperatura, estatura)
+window.nuevaConsulta = function()
 {
     if (document.getElementById('selectPlantilla')) {
         $('#selectPlantilla').show();
         $('#content-form-template').html('');
     }
-    $('#peso').val(peso);
-    $('#temperatura').val(temperatura);
-    $('#estatura').val(estatura);
-    
+    let myTemplate = $('#myTemplate').val();
+    if (myTemplate != 'null') {
+        $('#templateConsulta').val(myTemplate);
+        changeTemplateConsulta();
+    }
     $('#content-consulta').show('slow');
 }
 

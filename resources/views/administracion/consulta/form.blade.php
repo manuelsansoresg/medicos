@@ -46,17 +46,17 @@
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-consulta" role="tabpanel" aria-labelledby="nav-consulta-tab">
                         <div class="col-12 mt-3 py-3">
-                            <a href="#" onclick="nuevaConsulta('{{ $ultimaConsulta != null ? $ultimaConsulta->peso : null }}', '{{ $ultimaConsulta != null ? $ultimaConsulta->temperatura : null }}', '{{ $ultimaConsulta != null ? $ultimaConsulta->estatura : null }}')" class="btn btn-primary float-right">Nueva consulta</a>
+                            <a href="#" onclick="nuevaConsulta()" class="btn btn-primary float-right">Nueva consulta</a>
                         </div>
                         <div class="row" id="content-consulta" style="display: none">
                             <div class="col-12">
-                                @if (count($myTemplates) == 0) {{-- si es 0 indicar que falta asignar un template --}}
+                                @if ($totalTemplates == 0) {{-- si es 0 indicar que falta asignar un template --}}
                                     <h5>Sin plantilla configurada</h5>
-                                    
+                                    <input type="hidden" id="myTemplate" value="null">
                                 @else
                                     
-                                @if (count($myTemplates) > 1) {{-- es admin y tiene varias plantillas activas --}}
-                                
+                                @if ($totalTemplates > 1) {{-- es admin y tiene varias plantillas activas --}}
+                                    <input type="hidden" id="myTemplate" value="null">
                                     <div class="col-12">
                                         <div class="mb-3" id="selectPlantilla">
                                             <label for="inputRecordatorio" class="form-label">*SELECCIONAR PLANTILLA</label>
@@ -72,9 +72,11 @@
                                         </div>
                                     </div>
                                     @else {{-- es un usuario no admin y tiene una plantilla activa --}}
-                                        @php
-                                            @include('formulario_configurations.show')
-                                        @endphp
+                                    <input type="hidden" id="myTemplate" value="{{ $myTemplates->id }}">
+                                    <input type="hidden" id="templateConsulta">
+                                    <div class="col-12" id="content-form-template">
+
+                                    </div>
                                     @endif
                                 @endif
                                 <form method="post" action="/admin/consulta" id="frm-consulta" style="display: none">

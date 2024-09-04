@@ -69,13 +69,17 @@ class ConsultaController extends Controller
         //$consultas      = Consulta::getByPaciente($paciente->id);
         $isExpedient    = false;
         $myTemplates    = FormularioConfiguration::getMyTemplates();
+        $totalTemplates = 0;
         if (count($myTemplates) > 1) {
             $configuration = null;
+            $totalTemplates = count($myTemplates);
         } elseif (count($myTemplates) == 1) {
+            $myTemplates = $myTemplates[0];
             $configuration = FormularioConfiguration::with('fields')->findOrFail($myTemplates->id);
+            $totalTemplates = 1;
         }
         $consultas = FormularioEntry::where('consulta_id', $consultaId)->get();
-        return view('administracion.consulta.form', compact('consultaId', 'paciente', 'ultimaConsulta', 'consultas', 'userCitaId', 'isExpedient', 'myTemplates'));
+        return view('administracion.consulta.form', compact('consultaId', 'paciente', 'ultimaConsulta', 'consultas', 'userCitaId', 'isExpedient', 'myTemplates', 'totalTemplates'));
     }
 
     public function recetaPdf($entryId, $type)

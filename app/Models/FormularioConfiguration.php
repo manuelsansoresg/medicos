@@ -18,8 +18,8 @@ class FormularioConfiguration extends Model
         if ($isAdmin) {
             $myTemplate = FormularioConfiguration::where(['active' => 1])->get();
         } else {
-            $myTemplate     = FormularioConfiguration::where(['user_id' => $userPrincipal, 'active' => 1])->first();
-            //$myfields       = $myTemplate != null ? $myTemplate->fields : null;
+            $myTemplates     = FormularioConfiguration::where(['user_id' => $userPrincipal, 'active' => 1])->first();
+            $myTemplate = $myTemplates ? [$myTemplates] : [];
         }
         return $myTemplate;
     }

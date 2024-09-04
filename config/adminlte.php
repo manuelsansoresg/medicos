@@ -377,7 +377,7 @@ return [
             'text'       => 'Plantilla consulta',
             'icon_color' => 'green',
             'url'        => '/admin/template-formulario',
-            'can'  => 'menu-admin',
+            'can'  => 'menu-users',
         ],
         
         ['header' => 'account_settings'],
