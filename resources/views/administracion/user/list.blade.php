@@ -52,7 +52,7 @@
                                        @endif
 
                                     @endif
-                                   
+                                    <a href="/admin/configuracion-descargas/{{ $user->id }}" class="btn btn-success"><i class="fas fa-users-cog"></i></a>
                                     <a href="#" onclick="deleteUser({{ $user->id }})" class="btn btn-danger"><i
                                             class="fas fa-trash"></i></a>
                                 </td>

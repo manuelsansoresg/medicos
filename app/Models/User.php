@@ -223,23 +223,62 @@ class User extends Authenticatable
 
     public static function limitAllUsers($access, $userId)
     {
-        $limitDoctor   = $access->num_doctor;
-        $limitAuxiliar = $access->num_auxiliar;
-        $userCount     = User::countUsersCreate($userId);
-        $usersDoctor   = $userCount['medico'];
-        $usersAuxiliar = $userCount['auxiliar'];
-
-        // Validar los límites
-        $doctorLimitReached = $usersDoctor >= $limitDoctor;
-        $auxiliarLimitReached = $usersAuxiliar >= $limitAuxiliar;
-
-        // Si ambos límites han sido alcanzados, devolver true
-        if ($doctorLimitReached && $auxiliarLimitReached) {
-            return true;
+        if ($access != null) {
+            $limitDoctor   = $access->num_doctor;
+            $limitAuxiliar = $access->num_auxiliar;
+            $userCount     = User::countUsersCreate($userId);
+            $usersDoctor   = $userCount['medico'];
+            $usersAuxiliar = $userCount['auxiliar'];
+    
+            // Validar los límites
+            $doctorLimitReached = $usersDoctor >= $limitDoctor;
+            $auxiliarLimitReached = $usersAuxiliar >= $limitAuxiliar;
+    
+            // Si ambos límites han sido alcanzados, devolver true
+            if ($doctorLimitReached && $auxiliarLimitReached) {
+                return true;
+            }
         }
+       
 
         // Si no, devolver false
         return false;
+    }
+
+    public static function savePermisionDownloadExpedient($request)
+    {
+        $permisosDescarga = isset($request->permisosDescarga) ? $request->permisosDescarga : 0;
+        $userId           = $request->id;
+        $user             = User::find($userId);
+
+        if ($permisosDescarga == 1) {
+            $user->givePermissionTo('Descargar consulta');
+            if ($user->hasPermissionTo('Descargar todos') == true) {
+                $user->revokePermissionTo('Descargar todos');
+            }
+        } elseif ($permisosDescarga == 3) {
+            if ($user->hasPermissionTo('Descargar consulta') == true) {
+                $user->revokePermissionTo('Descargar consulta');
+            }
+            $user->givePermissionTo('Descargar todos');
+        }else {
+            if ($user->hasPermissionTo('Descargar consulta') == true) {
+                $user->revokePermissionTo('Descargar consulta');
+            }
+            
+            if ($user->hasPermissionTo('Descargar todos') == true) {
+                $user->revokePermissionTo('Descargar todos');
+            }
+        }
+        $permisosDescargaEstudios = isset($request->permisosDescargaEstudios) ? $request->permisosDescargaEstudios : 0;
+        
+        if ($permisosDescargaEstudios == 1) {
+            $user->givePermissionTo('Descargar estudios con imagenes');
+        } else {
+            $user->revokePermissionTo('Descargar estudios con imagenes');
+        }
+
+        echo $permisosDescargaEstudios;
     }
 
     public static function getMyUsers($userId)

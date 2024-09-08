@@ -15,6 +15,7 @@ require('./consulta');
 require('./estudio');
 require('./imagenEstudio');
 require('./configuracion');
+require('./config_download_expedient');
 
 document.addEventListener('DOMContentLoaded', function() {
     $('.select2multiple').select2({

@@ -75,11 +75,13 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('template-formulario/{configuration}/edit', [FormularioConfigurationController::class, 'edit'])->name('template-formulario.edit');
     Route::put('template-formulario/{configuration}', [FormularioConfigurationController::class, 'update'])->name('template-formulario.update');
     Route::get('template-formulario/{configuration}/delete', [FormularioConfigurationController::class, 'destroy'])->name('template-formulario.destroy');
-
+    
     Route::get('template-formulario/{configurationId}/consulta/{consultaId}', [FormularioConfigurationController::class, 'showFormulario'])->name('template-formulario.showFormulario'); //mostrar por primera vez
     Route::post('template-formulario/{configurationId}/consulta/{consultaId}', [FormularioConfigurationController::class, 'storeFormulario'])->name('template-formulario.storeFormulario');
-
+    
     Route::get('template-formulario/{configurationId}/{consultaId}/{userCitaId}/showTemplate', [FormularioConfigurationController::class, 'showTemplate']);
+    
+    Route::resource('configuracion-descargas', '\App\Http\Controllers\Admin\UserConfigDownload');
 
 });
 
