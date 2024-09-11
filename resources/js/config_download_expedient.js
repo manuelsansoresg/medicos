@@ -1,6 +1,5 @@
-window.configDownloads = function()
-{
-
+$("#frm-config-download-expedient").submit(function (e) {
+    e.preventDefault();
     const form = document.getElementById("frm-config-download-expedient");
     const data = new FormData(form);
     
@@ -10,12 +9,4 @@ window.configDownloads = function()
             
         })
         .catch(e => { });
-}
-
-if (document.getElementById('consulta1')) {
-    document.querySelectorAll('input[type=radio]').forEach(function(radio) {
-        radio.addEventListener('click', function() {
-            configDownloads(); // Llama a la función cuando se hace clic en un radio
-        });
-    });
-}
+});

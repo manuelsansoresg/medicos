@@ -20,6 +20,7 @@ class CreateUserConfigs extends Migration
             
             $table->unsignedBigInteger('formulario_field_id')->nullable(); // id que indica el campo del formulario
             $table->smallInteger('is_download')->nullable();
+            $table->timestamps();
             
             $table->foreign('formulario_field_id')->references('id')->on('formulario_fields')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -250,6 +250,7 @@ class User extends Authenticatable
         $permisosDescarga = isset($request->permisosDescarga) ? $request->permisosDescarga : 0;
         $userId           = $request->id;
         $user             = User::find($userId);
+        $permitirDescarga = isset($request->permitirDescarga)? $request->permitirDescarga : null; //formulario template dinamico
 
         if ($permisosDescarga == 1) {
             $user->givePermissionTo('Descargar consulta');
@@ -277,8 +278,18 @@ class User extends Authenticatable
         } else {
             $user->revokePermissionTo('Descargar estudios con imagenes');
         }
-
-        echo $permisosDescargaEstudios;
+        FieldConfigDownload::where('user_id', $userId)->delete();
+        if ($permitirDescarga != null) {
+            foreach ($permitirDescarga as  $permitirDescarga) {
+                
+                FieldConfigDownload::create([
+                    'user_id' => $userId,
+                    'idusrregistra' => Auth::user()->id,
+                    'formulario_field_id' => $permitirDescarga,
+                    'is_download' => 1,
+                ]);
+            }
+        }
     }
 
     public static function getMyUsers($userId)

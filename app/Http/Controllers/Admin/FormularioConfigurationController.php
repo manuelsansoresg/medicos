@@ -52,7 +52,9 @@ class FormularioConfigurationController extends Controller
     
     public function index()
     {
-        $configurations = FormularioConfiguration::with('fields')->get();
+        $myUserPrincipal = User::getMyUserPrincipal();
+        
+        $configurations = FormularioConfiguration::getAllMyTemplates();
         return view('formulario_configurations.index', compact('configurations'));
     }
 

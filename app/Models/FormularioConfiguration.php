@@ -11,6 +11,18 @@ class FormularioConfiguration extends Model
     use HasFactory;
     protected $fillable = ['name', 'user_id', 'active'];
 
+    public static function getAllMyTemplates($isActive = 1)
+    {
+        $userPrincipal  = User::getMyUserPrincipal();
+        $isAdmin = Auth::user()->hasRole('administrador');
+        if ($isAdmin) {
+            $myTemplates = FormularioConfiguration::where('active', $isActive)->with('fields')->get();
+        } else {
+            $myTemplates     = FormularioConfiguration::where('active', $isActive)->where('user_id', $userPrincipal)->with('fields')->get();
+        }
+        return $myTemplates;
+    }
+
     public static function getMyTemplates()
     {
         $userPrincipal  = User::getMyUserPrincipal();

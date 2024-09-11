@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\FormularioConfiguration;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -48,7 +49,10 @@ class UserConfigDownload extends Controller
     public function show($id)
     {
         $userId = $id;
-        return view('administracion.user.expedients_download.index', compact('userId'));
+        $user = User::find($id);
+        //get list of users by template
+        $configurations = FormularioConfiguration::where(['active' =>  1, 'user_id' => $id])->with('fields')->first();
+        return view('administracion.user.expedients_download.index', compact('userId', 'user', 'configurations'));
     }
 
     /**
