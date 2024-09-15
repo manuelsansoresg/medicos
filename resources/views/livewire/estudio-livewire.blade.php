@@ -1,4 +1,5 @@
 <div>
+    @inject('Mestudio', 'App\Models\Estudio')
     @if ($selectedTab == 'estudios')
    
         <div class="row justify-content-end">
@@ -31,8 +32,10 @@
                             <td>{{ $consulta->estudios }}</td>
                             <td>{{ $consulta->diagnosticos }}</td>
                             <td>
-
-                                <a href="/admin/estudio/{{ $consulta->id }}/generate/pdf" target="_blank"
+                                @php
+                                    $estudioPdf = $Mestudio::getPdf($consulta->paciente_id);
+                                @endphp
+                                <a href="{{ $estudioPdf }}" target="_blank"
                                     class="btn btn-secondary pointer"><i class="fas fa-print"></i></a>
                                     @if (!$isExpedient)
                                         <a  href="/admin/estudio-imagenes/{{ $consulta->id }}/{{ $userCitaId }}/{{ $ConsultaAsignado }}" class="btn btn-success pointer"><i class="fas fa-images"></i> </a>

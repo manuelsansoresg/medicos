@@ -32,7 +32,37 @@ class EstudioController extends Controller
         //
     }
 
-    public function estudioPdf(Estudio $estudio, $isDownload = false)
+    public function saveEstudioPdf($estudioId, $isPermission)
+    {
+        $estudio        = Estudio::find($estudioId);
+        $getUserMedic   = User::find($estudio->idusrregistra);
+        $getMedico      = User::find($getUserMedic->usuario_principal);
+        $medico         = $getMedico == null ? $getUserMedic : $getMedico;
+        $paciente       = User::find($estudio->paciente_id);
+        $ultimaConsulta = Consulta::getLastPesoEstaturta($paciente->id);
+        $images         = EstudioImagen::where('estudio_id', $estudio->id)->get();
+        $prefijo = $isPermission == false ? 's_i-' : null;
+        $nameExpedient = $prefijo.$paciente->id.'-'.$paciente->name.' '.$paciente->vapellido.'.pdf';
+        $userPermisions = User::find($paciente->usuario_principal);
+
+        $data         = array(
+            'estudio'    => $estudio,
+            'medico'     => $medico,
+            'paciente'   => $paciente,
+            'images'     => $images,
+            'peso'       => $ultimaConsulta['peso'],
+            'estatura'   => $ultimaConsulta['estatura'],
+            'isPermission' => $isPermission,
+            'userPermisions' => $userPermisions,
+        );
+
+        $pdf = Pdf::loadView('administracion.consulta.estudio', $data);
+        $pdf->setPaper('A4');
+
+        return $pdf->save('estudios/'.$nameExpedient);
+    }
+
+    public function estudioPdf(Estudio $estudio)
     {
         $getUserMedic   = User::find($estudio->idusrregistra);
         $getMedico      = User::find($getUserMedic->usuario_principal);
@@ -40,20 +70,23 @@ class EstudioController extends Controller
         $paciente       = User::find($estudio->paciente_id);
         $ultimaConsulta = Consulta::getLastPesoEstaturta($paciente->id);
         $images         = EstudioImagen::where('estudio_id', $estudio->id)->get();
+        
+        $userPermisions = User::find($paciente->usuario_principal);
 
         $data         = array(
-            'estudio'    => $estudio,
-            'medico'     => $medico,
-            'paciente'   => $paciente,
-            'images'     => $images,
-            'isDownload' => $isDownload,
-            'peso'       => $ultimaConsulta['peso'],
-            'estatura'   => $ultimaConsulta['estatura'],
+            'estudio'        => $estudio,
+            'medico'         => $medico,
+            'paciente'       => $paciente,
+            'images'         => $images,
+            'userPermisions' => $userPermisions,
+            'peso'           => $ultimaConsulta['peso'],
+            'estatura'       => $ultimaConsulta['estatura'],
         );
 
         $pdf = Pdf::loadView('administracion.consulta.estudio', $data);
         $pdf->setPaper('A4');
-
+        
+        //return $pdf->save('expedientes/'.$nameExpedient);
         return $pdf->stream();
     }
 
@@ -65,7 +98,9 @@ class EstudioController extends Controller
      */ 
     public function store(Request $request)
     {
-        Estudio::saveEdit($request);
+        $estudio = Estudio::saveEdit($request);
+        self::saveEstudioPdf($estudio->id, false);
+        self::saveEstudioPdf($estudio->id, true);
     }
 
     /**

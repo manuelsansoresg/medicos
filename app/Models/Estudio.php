@@ -23,10 +23,19 @@ class Estudio extends Model
         $estudio_id = $request->estudio_id;
         if ($estudio_id == null) {
             $data['idusrregistra'] = Auth::user()->id;
-            Estudio::create($data);
+            $estudio = Estudio::create($data);
         } else {
             Estudio::where('id', $estudio_id)->update($data);
+            $estudio = Estudio::find($estudio_id);
         }
+        return $estudio;
+    }
+
+    public static function getPdf($pacienteId)
+    {
+        $paciente = User::find($pacienteId);
+        $nameExpedient = asset('estudios/s_i-'.$paciente->id.'-'.$paciente->name.' '.$paciente->vapellido.'.pdf');
+        return $nameExpedient;
     }
 
     public static function getByPaciente($pacienteId,  $search = null, $limit = null, $isPaginate = false)

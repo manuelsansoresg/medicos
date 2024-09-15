@@ -131,12 +131,15 @@
             <tr>
                 <td>{{ $estudio->estudios }}</td>
             </tr>
-            <tr>
-                <td><b>DIAGNOSTICOS</b></td>
-            </tr>
-            <tr>
-                <td>{{ $estudio->diagnosticos }}</td>
-            </tr>
+            @if ($isPermission == true)
+                
+                <tr>
+                    <td><b>DIAGNOSTICOS</b></td>
+                </tr>
+                <tr>
+                    <td>{{ $estudio->diagnosticos }}</td>
+                </tr>
+            @endif
 
         </table>
         <br>
@@ -153,12 +156,14 @@
         
         
     </div>
-
-    @if ($isDownload == true)
-        @foreach ($images as $image)
-            <img src="{{ asset('image/estudios/'. $image->image)}}" alt="">
+    @if($userPermisions->hasPermissionTo('Descargar estudios con imagenes') && $isPermission == true)
+    @foreach ($images as $image)
+            <div style="width: 100%">
+                <img src="{{ asset('image/estudios/'. $image->image)}}" alt="" style="width: 100%; height: auto;">
+            </div>
         @endforeach
     @endif
+    
 </body>
 
 </html>

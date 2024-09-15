@@ -1,6 +1,8 @@
 
 <div>
     @inject('formularioEntryField', 'App\Models\FormularioEntryField')
+    @inject('Mconsulta', 'App\Models\Consulta')
+
     <div class="row justify-content-end">
         <div class="col-6 float-right py-2">
             <div class="input-group mb-3">
@@ -25,8 +27,9 @@
                 @foreach ($consultas as $consulta)
                     @php
                         $fields = $formularioEntryField::getFields($consulta->id);
-                        
+                        $consultaPdf = $Mconsulta::getPdf($consulta->paciente_id);
                     @endphp
+                   
                    <tr>
                     <td>{{ Carbon\Carbon::parse($consulta->created_at)->format('Y-m-d h:i a') }}</td>
 
@@ -42,7 +45,7 @@
                     </td>
                     <td>
                         {{-- <a  href="/admin/consulta/{{ $consulta->id }}/consulta/generate/pdf" target="_blank" class="btn btn-secondary pointer"><i class="far fa-folder-open"></i></a> --}}
-                        <a  href="/admin/consulta/{{ $consulta->id }}/consulta/generate/pdf" target="_blank" class="btn btn-secondary pointer"><i class="fas fa-print"></i></a>
+                        <a  href="{{ $consultaPdf }}" target="_blank" class="btn btn-secondary pointer"><i class="fas fa-print"></i></a>
                         @if (!$isExpedient)
                             
                             <a  onclick="editarConsulta({{ $consulta->id }})" class="btn btn-primary pointer"><i class="fas fa-edit"></i></a>
