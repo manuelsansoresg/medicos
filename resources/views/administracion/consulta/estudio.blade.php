@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Receta</title>
+    <title>Estudio</title>
 </head>
 
 <body>
@@ -34,7 +34,7 @@
         }
 
         .footer {
-            position: fixed;
+            position: absolute;
             left: 0;
             bottom: 0;
             width: 100%;
@@ -142,6 +142,9 @@
         <br>
        
     </div>
+
+    
+
     <div class="footer">
         
         <div class="line">
@@ -150,6 +153,12 @@
         
         
     </div>
+
+    @if ($isDownload == true)
+        @foreach ($images as $image)
+            <img src="{{ asset('image/estudios/'. $image->image)}}" alt="">
+        @endforeach
+    @endif
 </body>
 
 </html>

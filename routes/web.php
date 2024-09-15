@@ -63,7 +63,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('consulta/{consulta}/{type}/generate/pdf', [App\Http\Controllers\Admin\ConsultaController::class, 'recetaPdf'])->middleware('auth');
 
     Route::resource('estudio', '\App\Http\Controllers\Admin\EstudioController')->middleware('auth');
-    Route::get('estudio/{estudio}/generate/pdf', [App\Http\Controllers\Admin\EstudioController::class, 'recetaPdf'])->middleware('auth');
+    Route::get('estudio/{estudio}/generate/pdf', [App\Http\Controllers\Admin\EstudioController::class, 'estudioPdf'])->middleware('auth');
 
     Route::resource('expedientes', '\App\Http\Controllers\Admin\ExpedienteController')->middleware('auth');
     Route::resource('estudio-imagenes', '\App\Http\Controllers\Admin\EstudioImagenesController')->middleware('auth');
@@ -96,7 +96,7 @@ Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout
 
 Route::get('formularios/{id}/{consultaId}', [FormularioController::class, 'show'])->name('formularios.show');
 Route::post('formularios/{id}/{consultaId}', [FormularioController::class, 'store'])->name('formularios.store');
+Route::put('formulario_entries/{entryId}', [FormularioController::class, 'updateFormularioConsulta'])->name('formulario_entries.update');
 
 
 Route::get('formulario_entries/{entryId}/show_saved', [FormularioConfigurationController::class, 'showFormularioGuardado'])->name('formulario_entries.show_saved'); //mostrar lo que se guardo
-Route::put('formulario_entries/{entryId}', [FormularioConfigurationController::class, 'updateFormularioConsulta'])->name('formulario_entries.update');

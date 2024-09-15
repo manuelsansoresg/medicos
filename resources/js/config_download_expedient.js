@@ -6,7 +6,7 @@ $("#frm-config-download-expedient").submit(function (e) {
     axios
         .post("/admin/configuracion-descargas", data)
         .then(function (response) {
-            
+            window.location = '/admin/usuarios';
         })
         .catch(e => { });
 });

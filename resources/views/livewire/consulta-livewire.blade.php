@@ -31,10 +31,14 @@
                     <td>{{ Carbon\Carbon::parse($consulta->created_at)->format('Y-m-d h:i a') }}</td>
 
                     <td>
-                        <b>{{ isset($fields[0])? $fields[0]['name']: null }} : </b> {{ isset($fields[0])? $fields[0]['value']: null }}
+                        <b>{{ isset($fields[0])? $fields[0]['name']: null }} : </b> {{ isset($fields[0])? $fields[0]['value']: null }} 
                     </td>
                     <td>
-                        <b>{{ isset($fields[1])? $fields[1]['name']: null }} : </b> {{ isset($fields[1])? $fields[1]['value']: null }}
+                        @if (isset($fields[1]))
+                        <b>
+                            {{ isset($fields[1])? $fields[1]['name']: null }} : </b> {{ isset($fields[1])? $fields[1]['value']: null }}
+                        @endif
+                      
                     </td>
                     <td>
                         {{-- <a  href="/admin/consulta/{{ $consulta->id }}/consulta/generate/pdf" target="_blank" class="btn btn-secondary pointer"><i class="far fa-folder-open"></i></a> --}}

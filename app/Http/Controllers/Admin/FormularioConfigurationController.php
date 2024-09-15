@@ -95,35 +95,15 @@ class FormularioConfigurationController extends Controller
         $paciente       = User::find($userCita->paciente_id);
         
         $configuration = FormularioConfiguration::with('fields')->findOrFail($configurationId);
-        
         return \View::make('formulario_configurations.show', compact('configuration', 'consultaId', 'userCitaId', 'paciente'))->render();
     }
 
-    public function updateFormularioConsulta(Request $request, $entryId)
-    {
-        $entry = FormularioEntry::findOrFail($entryId);
-
-        // Validar y actualizar los campos editables
-        foreach ($request->input('fields', []) as $fieldId => $value) {
-            $entryField = FormularioEntryField::where('formulario_entry_id', $entry->id)
-                ->where('formulario_field_id', $fieldId)
-                ->first();
-
-            if ($entryField) {
-                $entryField->value = $value;
-                $entryField->save();
-            }
-        }
-
-        return redirect()->back()
-        ->with('success', 'Los cambios han sido guardados correctamente.');
     
-    }
 
     public function update(Request $request, $configurationId)
     {
         $configuration = FormularioConfiguration::find($configurationId);
-        $configuration->update(['name' => $request->name, 'user_id' => $request->user_id]);
+        $configuration->update(['name' => $request->name]);
         $configuration->fields()->delete();
     
         foreach ($request->fields as $field) {

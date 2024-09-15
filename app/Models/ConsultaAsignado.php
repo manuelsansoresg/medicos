@@ -61,6 +61,7 @@ class ConsultaAsignado extends Model
             $horaSinFormato = date("g:i a", strtotime($horaFormateada));
             $userCita       = UserCita::where(['consulta_asignado_id' => $asignado->idconsultasignado,
                                             'hora' => $horaSinFormato,
+                                            'fecha' => date('Y-m-d'),
                                             'status' => 1
                                         ])->first();
             $isDisponible   = $userCita != null && $userCita->hora == $horaSinFormato ? true : false;

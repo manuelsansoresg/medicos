@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\FormularioConfiguration;
 use App\Models\FormularioEntry;
 use App\Models\FormularioEntryField;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class FormularioController extends Controller
 {
@@ -15,6 +17,29 @@ class FormularioController extends Controller
     {
         $configuration = FormularioConfiguration::with('fields')->findOrFail($id);
         return view('formularios.show', compact('configuration', 'consultaId'));
+    }
+
+    public function saveExpedient($entryId)
+    {
+        $entry = FormularioEntry::with('fields.field')->findOrFail($entryId);
+        $getForms = FormularioEntry::getFieldByEntryId($entryId);
+        $getUserMedic = User::find($entry->idusrregistra);
+        $getMedico    = User::find($getUserMedic->usuario_principal);
+        $medico       = $getMedico == null ? $getUserMedic : $getMedico;
+        $paciente     = User::find($entry->paciente_id);
+
+        $nameExpedient = $paciente->id.'-'.$paciente->name.' '.$paciente->vapellido.'.pdf';
+        
+        $data         = array(
+            'entry' => $entry,
+            'getForms' => $getForms,
+            'medico'   => $medico,
+            'paciente' => $paciente
+        );
+        $pdf = Pdf::loadView('administracion.consulta.consulta', $data);
+        $pdf->setPaper('A4');
+
+        return $pdf->save('expedientes/'.$nameExpedient);
     }
 
     //* guardar consulta que viene del template dinamico
@@ -39,7 +64,28 @@ class FormularioController extends Controller
                 'value' => $request->input('field_' . $field->id)
             ]);
         }
-
+        self::saveExpedient($entry->id);
         return redirect()->back()->with('success', 'Formulario guardado correctamente');
+    }
+
+    public function updateFormularioConsulta(Request $request, $entryId)
+    {
+        $entry = FormularioEntry::findOrFail($entryId);
+
+        // Validar y actualizar los campos editables
+        foreach ($request->input('fields', []) as $fieldId => $value) {
+            $entryField = FormularioEntryField::where('formulario_entry_id', $entry->id)
+                ->where('formulario_field_id', $fieldId)
+                ->first();
+
+            if ($entryField) {
+                $entryField->value = $value;
+                $entryField->save();
+            }
+        }
+        self::saveExpedient($entryId);
+        return redirect()->back()
+        ->with('success', 'Los cambios han sido guardados correctamente.');
+    
     }
 }

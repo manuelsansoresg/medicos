@@ -68,15 +68,17 @@ class ConsultaController extends Controller
         $ultimaConsulta = Consulta::where('paciente_id', $paciente->id)->orderBy('created_at', 'DESC')->first();
         //$consultas      = Consulta::getByPaciente($paciente->id);
         $isExpedient    = false;
-        $myTemplates    = FormularioConfiguration::getMyTemplates();
+        $myTemplates    = FormularioConfiguration::getMyTemplates($paciente->usuario_principal);
         $totalTemplates = 0;
-        if (count($myTemplates) > 1) {
-            $configuration = null;
-            $totalTemplates = count($myTemplates);
-        } elseif (count($myTemplates) == 1) {
-            $myTemplates = $myTemplates[0];
-            $configuration = FormularioConfiguration::with('fields')->findOrFail($myTemplates->id);
-            $totalTemplates = 1;
+        if ($myTemplates != null) {
+            if (count($myTemplates) > 1) {
+                $configuration = null;
+                $totalTemplates = count($myTemplates);
+            } elseif (count($myTemplates) == 1) {
+                $myTemplates = $myTemplates[0];
+                $configuration = FormularioConfiguration::with('fields')->findOrFail($myTemplates->id);
+                $totalTemplates = 1;
+            }
         }
         $consultas = FormularioEntry::where('consulta_id', $consultaId)->get();
         return view('administracion.consulta.form', compact('consultaId', 'paciente', 'ultimaConsulta', 'consultas', 'userCitaId', 'isExpedient', 'myTemplates', 'totalTemplates'));
@@ -85,6 +87,7 @@ class ConsultaController extends Controller
     public function recetaPdf($entryId, $type)
     {
         $entry = FormularioEntry::with('fields.field')->findOrFail($entryId);
+        $getForms = FormularioEntry::getFieldByEntryId($entryId);
         $getUserMedic = User::find($entry->idusrregistra);
         $getMedico    = User::find($getUserMedic->usuario_principal);
         $medico       = $getMedico == null ? $getUserMedic : $getMedico;
@@ -92,16 +95,11 @@ class ConsultaController extends Controller
         
         $data         = array(
             'entry' => $entry,
+            'getForms' => $getForms,
             'medico'   => $medico,
             'paciente' => $paciente
         );
         $pdf = Pdf::loadView('administracion.consulta.consulta', $data);
-        /* if ($type == 'consulta') {
-            $pdf = Pdf::loadView('administracion.consulta.consulta', $data);
-        } else {
-            $pdf = Pdf::loadView('administracion.consulta.receta', $data);
-        } */
-
         $pdf->setPaper('A4');
 
         return $pdf->stream();

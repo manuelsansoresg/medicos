@@ -9,7 +9,7 @@
                 @elseif($field->field_type == 'date')
                     <input type="date" class="form-control" name="field_{{ $field->id }}" @if($field->is_required) required @endif>
                 @elseif($field->field_type == 'textarea')
-                    <textarea name="field_{{ $field->id }}" @if($field->is_required) class="form-control" required @endif></textarea>
+                    <textarea name="field_{{ $field->id }}" class="form-control" @if($field->is_required)  required @endif></textarea>
                 @elseif($field->field_type == 'select')
                     <select name="field_{{ $field->id }}" class="form-control" @if($field->is_required) required @endif>
                         @foreach(explode(',', $field->options) as $option)

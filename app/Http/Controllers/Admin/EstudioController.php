@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Consulta;
 use App\Models\Estudio;
+use App\Models\EstudioImagen;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -31,20 +32,23 @@ class EstudioController extends Controller
         //
     }
 
-    public function recetaPdf(Estudio $estudio)
+    public function estudioPdf(Estudio $estudio, $isDownload = false)
     {
-        $getUserMedic = User::find($estudio->idusrregistra);
-        $getMedico    = User::find($getUserMedic->usuario_principal);
-        $medico       = $getMedico == null ? $getUserMedic : $getMedico;
-        $paciente     = User::find($estudio->paciente_id);
+        $getUserMedic   = User::find($estudio->idusrregistra);
+        $getMedico      = User::find($getUserMedic->usuario_principal);
+        $medico         = $getMedico == null ? $getUserMedic : $getMedico;
+        $paciente       = User::find($estudio->paciente_id);
         $ultimaConsulta = Consulta::getLastPesoEstaturta($paciente->id);
+        $images         = EstudioImagen::where('estudio_id', $estudio->id)->get();
 
         $data         = array(
-            'estudio' => $estudio,
-            'medico'   => $medico,
-            'paciente' => $paciente,
-            'peso' => $ultimaConsulta['peso'],
-            'estatura' => $ultimaConsulta['estatura'],
+            'estudio'    => $estudio,
+            'medico'     => $medico,
+            'paciente'   => $paciente,
+            'images'     => $images,
+            'isDownload' => $isDownload,
+            'peso'       => $ultimaConsulta['peso'],
+            'estatura'   => $ultimaConsulta['estatura'],
         );
 
         $pdf = Pdf::loadView('administracion.consulta.estudio', $data);

@@ -1,3 +1,5 @@
+@inject('fieldConfigDownload', 'App\Models\FieldConfigDownload')
+@inject('user', 'App\Models\User')
 <!DOCTYPE html>
 <html lang="en">
 
@@ -118,13 +120,46 @@
         <hr class="hr">
         
         <br>
-        @foreach($entry->fields as $entryField)
+        @foreach ($getForms as $field)
+        <table style="width: 100%">
+            <tr>
+                <td>
+                    <b>{{ $field->field_name }} </b> </td> 
+            </tr>
+                @if($field->field_type == 'text')
+                <tr>
+                    <td>{{ $field->value }}</td>
+                </tr>
+                @elseif($field->field_type == 'date')
+                <tr>
+                    <td>{{ $field->value }}</td>
+                    </tr>
+                @elseif($field->field_type == 'textarea')
+                <tr>
+                    <td>{{ $field->value }}</td>
+                    </tr>
+                @elseif($field->field_type == 'select')
+                @foreach(explode(',', $field->options) as $option)
+                @if ($field->value == $option)
+                <tr>
+                    <td>{{ $option }}</td>
+                    </tr>
+                @endif
+            
+        @endforeach
+            @elseif($field->field_type == 'image')
+               
+            @endif
+        </table>
+        @endforeach
+        {{-- @foreach($entry->fields as $entryField)
         @php
-            $field = $entryField->field;
+          $field = $entryField->field;
         @endphp
         <table style="width: 100%">
             <tr>
-                <td><b>{{ $field->field_name }} </b> </td> 
+                <td>
+                    <b>{{ $field->field_name }} </b> </td> 
             </tr>
                 @if($field->field_type == 'text')
                 <tr>
@@ -152,7 +187,7 @@
             @endif
         </table>
         
-    @endforeach
+    @endforeach --}}
         <br>
        
     </div>

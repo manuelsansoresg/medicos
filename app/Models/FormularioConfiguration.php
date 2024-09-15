@@ -23,13 +23,23 @@ class FormularioConfiguration extends Model
         return $myTemplates;
     }
 
-    public static function getMyTemplates()
+    public static function getUserTemplate($userId)
     {
-        $userPrincipal  = User::getMyUserPrincipal();
+
+    }
+
+    public static function getMyTemplates($userId)
+    {
+        $myTemplate = null;
         $isAdmin = Auth::user()->hasRole('administrador');
         if ($isAdmin) {
-            $myTemplate = FormularioConfiguration::where(['active' => 1])->get();
+            //obtener el usuario principal
+            $myConfiguration  = FormularioConfiguration::where('user_id', $userId)->first();
+            if ($myConfiguration != null) {
+                $myTemplate = FormularioConfiguration::where(['active' => 1, 'user_id' => $myConfiguration->user_id ])->get();
+            }
         } else {
+            $userPrincipal  = User::getMyUserPrincipal();
             $myTemplates     = FormularioConfiguration::where(['user_id' => $userPrincipal, 'active' => 1])->first();
             $myTemplate = $myTemplates ? [$myTemplates] : [];
         }
