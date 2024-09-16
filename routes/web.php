@@ -66,6 +66,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('estudio/{estudio}/generate/pdf', [App\Http\Controllers\Admin\EstudioController::class, 'estudioPdf'])->middleware('auth');
 
     Route::resource('expedientes', '\App\Http\Controllers\Admin\ExpedienteController')->middleware('auth');
+    Route::post('expedientes/select/download', [App\Http\Controllers\Admin\ExpedienteController::class, 'downloadExpedient'])->middleware('auth');
+
     Route::resource('estudio-imagenes', '\App\Http\Controllers\Admin\EstudioImagenesController')->middleware('auth');
     Route::get('estudio-imagenes/{estudioId}/{userCitaId}/{ConsultaAsignado}', [App\Http\Controllers\Admin\EstudioImagenesController::class, 'show'])->middleware('auth');
     Route::get('/estudio-imagenes/{estudioId}/{userCitaId}/{ConsultaAsignado}/create', [App\Http\Controllers\Admin\EstudioImagenesController::class, 'create'])->middleware('auth');
@@ -82,6 +84,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('template-formulario/{configurationId}/{consultaId}/{userCitaId}/showTemplate', [FormularioConfigurationController::class, 'showTemplate']);
     
     Route::resource('configuracion-descargas', '\App\Http\Controllers\Admin\UserConfigDownload');
+
+    
+
 
 });
 

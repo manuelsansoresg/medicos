@@ -68,6 +68,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public static function getIsPermissionDownload()
+    {
+        $getPrincipal = User::getMyUserPrincipal();
+        $user = User::find($getPrincipal);
+        if ($user->hasAnyPermission(['Descargar consulta', 'Descargar todos', 'Descargar estudios con imagenes']) || Auth::user()->hasRole('administrador')) {
+            return true;
+        }
+        return false;
+    }
+
     public static function getMyUserPrincipal()
     {
         $user = User::find(Auth::user()->id);
@@ -75,6 +85,21 @@ class User extends Authenticatable
             return Auth::user()->id;
         }
         return $user->usuario_principal;
+    }
+
+    public static function getMyExpedients($expedients)
+    {
+        
+        if (Auth::user()->hasRole('medico')) {
+            if (Auth::user()->hasAnyPermission(['Descargar consulta', 'Descargar todos', 'Descargar estudios con imagenes'])) {
+                return $expedients;
+            }
+        }
+
+        if (Auth::user()->hasRole('administrador')) {
+            return $expedients;
+        }
+        return null;
     }
 
     /**
@@ -262,7 +287,14 @@ class User extends Authenticatable
                 $user->revokePermissionTo('Descargar consulta');
             }
             $user->givePermissionTo('Descargar todos');
-        }else {
+        }elseif ($permisosDescarga == 4) {
+            $user->revokePermissionTo('Descargar consulta');
+            $user->revokePermissionTo('Descargar estudios con imagenes');
+            $user->revokePermissionTo('Descargar todos');
+           
+        }
+        
+        else {
             if ($user->hasPermissionTo('Descargar consulta') == true) {
                 $user->revokePermissionTo('Descargar consulta');
             }

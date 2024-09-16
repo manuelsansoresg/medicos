@@ -12,11 +12,15 @@ class PacienteLivewire extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
     public    $search          = '';
+    public    $isList          = '';
+    public    $isDownload      = false;
     public    $limit;
 
-    public function mount($limit)
+    public function mount($limit, $isList = false)
     {
-        $this->limit = $limit;
+        $this->limit  = $limit;
+        $this->isList = $isList;
+        $this->isDownload = User::getIsPermissionDownload();
     }
     public function render()
     {

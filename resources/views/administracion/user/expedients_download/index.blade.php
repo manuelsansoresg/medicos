@@ -17,7 +17,7 @@
 @stop
 
 @section('content')
-
+@inject('MmyFieldConfigDownload', 'App\Models\FieldConfigDownload') 
 <div class="container bg-white py-2">
     <form id="frm-config-download-expedient">
 
@@ -26,6 +26,7 @@
                 <div class="form-check">
                     @php
                         $permissionDownload     = $user->hasPermissionTo('Descargar consulta') == 1 ? 1: 0 ;
+                        $permissionAny     = $user->hasPermissionTo('Descargar ninguno') == 1 ? 1: 0 ;
                         $permisionDownloadAll   = $user->hasPermissionTo('Descargar todos')    == 1 ? 1: 0 ;
                         $permisionDownloadStudy = $user->hasPermissionTo('Descargar estudios con imagenes')    == 1 ? 1 : 0 ;
                     @endphp
@@ -56,6 +57,12 @@
                         DESCARGAR TODOS 
                     </label>
                   </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="permisosDescarga" id="ambos4" value="1" {{ $permissionAny == 1 ? 'checked' : null}}>
+                    <label class="form-check-label" for="ambos3">
+                        DESCARGAR NINGUNO
+                    </label>
+                  </div>
             </div>
             <div class="col-12">
                 <hr>
@@ -82,11 +89,15 @@
                     </thead>
                     <tbody>
                         @foreach ($fields as $field)
+                            @php
+                                $getConfigField = $MmyFieldConfigDownload::where(['user_id' => $myConfiguration->user_id, 'formulario_field_id' => $field->id])->first();
+                            @endphp
                             <tr>
-                                <td>{{ $field->field_name }}</td>
+                                <td>{{ $field->field_name }}
+                                </td>
                                 <td>
                                     <div class="form-group form-check">
-                                        <input type="checkbox" class="form-check-input" id="permitirDescarga{{ $field->id }}" name="permitirDescarga[]" value="{{ $field->id }}">
+                                        <input type="checkbox" class="form-check-input" id="permitirDescarga{{ $field->id }}" name="permitirDescarga[]" value="{{ $field->id }}" {{ $getConfigField != null ? 'checked' : null}}>
                                         <label class="form-check-label" for="permitirDescarga{{ $field->id }}">SÍ</label>
                                       </div>
                                 </td>

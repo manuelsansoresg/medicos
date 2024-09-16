@@ -52,6 +52,7 @@ class UserConfigDownload extends Controller
         $user = User::find($id);
         //get list of users by template
         $configurations = FormularioConfiguration::where(['active' =>  1, 'user_id' => $id])->with('fields')->first();
+        
         return view('administracion.user.expedients_download.index', compact('userId', 'user', 'configurations'));
     }
 

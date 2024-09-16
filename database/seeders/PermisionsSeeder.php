@@ -14,7 +14,7 @@ class PermisionsSeeder extends Seeder
      */
     public function run()
     {
-        $permissions = array('Descargar consulta', 'Descargar todos', 'Descargar estudios con imagenes');
+        $permissions = array('Descargar consulta', 'Descargar todos', 'Descargar estudios con imagenes', 'Descargar ninguno');
         foreach ($permissions as $permision) {
             if (Permission::where('name', $permision)->count() == 0) {
                 Permission::create(['name' => $permision]);

@@ -64,6 +64,8 @@ class EstudioImagenesController extends Controller
         return view('administracion.consulta.formImagenesEstudio', compact('ConsultaAsignado', 'userCitaId',  'estudioId', 'imagenId', 'image'));
     }
 
+   
+
     /**
      * Update the specified resource in storage.
      *

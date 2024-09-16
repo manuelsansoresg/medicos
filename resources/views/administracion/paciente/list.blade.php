@@ -33,7 +33,7 @@
                     <tbody>
                         @foreach ($users as $user)
                             <tr>
-                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->name }} {{  $user->vapellido }} </td>
                                 <td> {{ $user->email }} </td>
                                 <td class="col-3">
                                     <a href="/admin/pacientes/{{ $user->id }}/edit" class="btn btn-primary"><i
