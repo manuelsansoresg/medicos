@@ -70,7 +70,8 @@ class ConsultasignadoController extends Controller
         $user = User::find($id);
         $offices = Consultorio::getMyCon(); //consultorios
         $myUser = User::find(Auth::user()->id);
-        return view('administracion.user.consultorioAsignado.frm', compact('offices', 'myUser', 'user', 'idConsultorio'));
+        $lastConsultaAsignado = ConsultaAsignado::where('iddoctor', $id)->orderBy('idconsultasignado', 'DESC')->first();
+        return view('administracion.user.consultorioAsignado.frm', compact('offices', 'myUser', 'user', 'idConsultorio', 'lastConsultaAsignado'));
     }
 
     /**

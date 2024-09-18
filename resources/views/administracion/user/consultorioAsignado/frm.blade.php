@@ -66,9 +66,9 @@
                                 <label class="form-label">DURACIÓN CONSULTA</label>
                                 <div class="form-control-wrap">
                                     <select name="duraconsulta" id="duraconsulta" class="form-control">
-                                        <option value="15">15 MINUTOS</option>
-                                        <option value="20">20 MINUTOS</option>
-                                        <option value="30">30 MINUTOS</option><!--
+                                        <option value="15" {{ $lastConsultaAsignado!= null && $lastConsultaAsignado->itiempo ==15 ? 'selected': null }}>15 MINUTOS</option>
+                                        <option value="20" {{ $lastConsultaAsignado!= null && $lastConsultaAsignado->itiempo ==20 ? 'selected': null }}>20 MINUTOS</option>
+                                        <option value="30" {{ $lastConsultaAsignado!= null && $lastConsultaAsignado->itiempo ==30 ? 'selected': null }}>30 MINUTOS</option><!--
                                         <option value="40">40 MINUTOS</option>
                                         <option value="50">50 MINUTOS</option>
                                         <option value="60">60 MINUTOS</option>-->
