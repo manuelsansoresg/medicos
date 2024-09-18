@@ -29,13 +29,16 @@ class CitasController extends Controller
     {
         //$is_medico =  Auth::user()->hasRole('administrador');
         $fecha             = isset($_GET['fecha'])? $_GET['fecha'] : date('Y-m-d');
-        $user              = Auth::user();
+        $user              = User::find(Auth::user()->id);
         $is_medico         = Auth::user()->hasRole('medico');
         $iddoctor = null;
-        if (!Auth::user()->hasRole('administrador')) {
+        if (!Auth::user()->hasRole('administrador') && !Auth::user()->hasRole('auxiliar')) {
             $iddoctor = User::getMyUserPrincipal();
         }
         
+        if (Auth::user()->hasRole('auxiliar')) {
+            $iddoctor = $user->id;
+        }
 
         $clinicas          = Clinica::getAll();
         $consultorios      = Consultorio::getAll();
@@ -78,7 +81,6 @@ class CitasController extends Controller
         //Buscar si existe un dia sin actividad para el consultorio
         $fechasEspeciales  = FechaEspeciales::getByDate($fecha);
         $consultaAsignados = ConsultaAsignado::getByDate($fecha, $iddoctor);
-        
         $isBusy = count($fechasEspeciales) === 0 ? false : true;
         $data = array(
             'fechasEspeciales' => $isBusy,

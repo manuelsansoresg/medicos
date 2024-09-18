@@ -70,7 +70,7 @@
                         <div id="content-paciente-add" style="display: none">
                             <span id="paciente-add"></span> <a href="#" onclick="changePacienteCita()" class="btn btn-primary">Actualizar</a>
                         </div>
-                        <input type="search" id="busqueda-pacientes" name="search" class="form-control" placeholder="Buscar crédito">
+                        <input type="search" id="busqueda-pacientes" name="search" class="form-control" placeholder="Buscar paciente">
                         
                     </div>
                     <input type="hidden" name="data[hora]" id="hora">
