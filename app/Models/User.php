@@ -454,4 +454,45 @@ class User extends Authenticatable
         $caja1 = $caja1."-".$userId;
         return $caja1;
     }
+
+    public static function getPersentClinic()
+    {
+        $idusrregistra = User::getMyUserPrincipal();
+        return Clinica::where('idusrregistra', $idusrregistra)->where('istatus', 1)->count() > 0 ? true : false;
+        
+    }
+    
+    public static function getPersentConsult()
+    {
+        $getConsult = Consultorio::getAll();
+        return count($getConsult) > 0 ? true : false;
+        
+    }
+    
+    public static function getPersentUser()
+    {
+        $getUsers = User::GetListUsers();
+        $totalConsultaAsignado = true; // Inicializamos la variable como true
+        foreach ($getUsers as $user) {
+            $isConsultaAsignado = ConsultaAsignado::where('iddoctor', $user->id)->count();
+            // Si algún usuario no tiene consultas asignadas, cambiamos la variable a false y rompemos el ciclo
+            if ($isConsultaAsignado < 1) {
+                $totalConsultaAsignado = false;
+                break; // Rompemos el ciclo ya que no se cumple la condición
+            }
+        }
+        return $totalConsultaAsignado;
+    }
+
+    public static function isConsultAssign($userId)
+    {
+        $isConsultaAsignado = ConsultaAsignado::where('iddoctor', $userId)->count();
+        return $isConsultaAsignado > 0 ? true : false;
+    }
+    
+    public static function getPercentPacient()
+    {
+        $getPercent = User::getUsersByRoles(['paciente']);
+        return count($getPercent) > 0 ? true : false;
+    }
 }

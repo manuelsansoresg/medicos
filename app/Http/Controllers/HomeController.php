@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClinicaUser;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +26,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return redirect('admin/actividades');
+        $statusClinic  = User::getPersentConsult();
+        $statusConsult = User::getPersentClinic();
+        $statusUser    = User::getPersentUser();
+        $statusPacient    = User::getPercentPacient();
+        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'statusPacient'));
     }
 
     public function editProfile()

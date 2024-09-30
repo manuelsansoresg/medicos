@@ -43,6 +43,8 @@ class ConsultaAsignado extends Model
         return $query;
     }
 
+    
+
     public static function getHoursByConsulta($asignado)
     {
         //$asignado     = ConsultaAsignado::find($userCita->consulta_asignado_id);

@@ -28,6 +28,7 @@
                         <tr>
                             <th>NOMBRE</th>
                             <th>CORREO</th>
+                            <th>CONSULTORIO ASIGNADO</th>
                             <th>ACCIONES</th>
                         </tr>
                     </thead>
@@ -36,6 +37,16 @@
                             <tr>
                                 <td>{{ $user->name }}</td>
                                 <td> {{ $user->email }} </td>
+                                <td>
+                                    @php
+                                        $isConsultorio = $Muser::isConsultAssign($user->id);
+                                    @endphp
+                                    @if ($isConsultorio == true)
+                                        <span class="text-primary">SÍ</span>
+                                    @else
+                                        <span class="text-warning">NO</span>
+                                    @endif
+                                </td>
                                 <td class="col-3">
                                     {{-- solo puede editar admin, medico, auxiliar --}}
                                     @php

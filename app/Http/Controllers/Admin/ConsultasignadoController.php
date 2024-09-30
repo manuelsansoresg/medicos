@@ -31,7 +31,8 @@ class ConsultasignadoController extends Controller
     {
         $offices = Consultorio::getMyCon(); //consultorios
         $myUser = User::find(Auth::user()->id);
-        return view('administracion.user.consultorioAsignado.frm', compact('offices', 'myUser', 'user'));
+        $lastConsultaAsignado = null;
+        return view('administracion.user.consultorioAsignado.frm', compact('offices', 'myUser', 'user', 'lastConsultaAsignado'));
     }
 
     /**

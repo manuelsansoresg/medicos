@@ -299,6 +299,14 @@ return [
             'topnav_right' => true,
         ], */
         [
+            'text'        => 'Inicio',
+            'url'         => '/home',
+            'icon'        => 'far fa-fw fa-file',
+            'label' => 0,
+            'label_color' => 'success',
+            'id' => 'home',
+        ],
+        [
             'text'        => 'Mi clinica y consultorio',
             'url'         => '/query/viewClinicaYConsultorio',
             'icon'        => 'far fa-fw fa-file',
