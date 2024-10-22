@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.template')
 
 @section('content_header')
     <div class="container">
@@ -27,6 +27,7 @@
                             <tr>
                                 <th>USUARIO</th>
                                 <th>TIPO</th>
+                                <th>CORREO</th>
                                 <th>ACTIVO</th>
                             </tr>
                         </thead>
@@ -36,11 +37,15 @@
                                     <td>
                                         {{ $user->name }}
                                     </td>
+                                    
                                     <td>
                                         @php
                                              $getRoleName = $user->getRoleNames();
                                         @endphp
                                         {{ ucfirst($getRoleName[0]) }}
+                                    </td>
+                                    <td>
+                                        {{ $user->email }}
                                     </td>
                                     <td>
                                         @if ($user->status == 1)

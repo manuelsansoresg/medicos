@@ -20,20 +20,22 @@ class PendienteUsr extends Model
         'idusrregistra',
     ];
 
-    public static function getAll()
+    public static function getAll($paginate = null)
     {
         $isAdmin    = Auth::user()->hasRole('administrador');
         $usuario_principal = User::getMyUserPrincipal();
         if ($isAdmin) {
-            $query = PendienteUsr::where('status', 1)->get();
+            $query = PendienteUsr::where('status', 1);
         }  else {
             $query = PendienteUsr::
             where('idusrregistra', $usuario_principal)
             ->where('status', 1)
-            ->get();
+            ;
         }
-       
-        return $query;
+        if ($paginate != null) {
+            $query->paginate($paginate);
+        }
+        return $query->get();
     }
 
     public static function saveEdit($request)
@@ -51,20 +53,23 @@ class PendienteUsr extends Model
         }
     }
 
-    public static function getByDay()
+    public static function getByDay($paginate = null)
     {
         $diadhoy           = date("Y-m-d");
         $isAdmin           = Auth::user()->hasRole('administrador');
         $usuario_principal = User::getMyUserPrincipal();
 
         if ($isAdmin) {
-            $query = PendienteUsr::where('fecha', $diadhoy)->get();
+            $query = PendienteUsr::where('fecha', $diadhoy);
         } else {
             $query = PendienteUsr::
             where('idusrregistra', $usuario_principal)
             ->where('fecha', $diadhoy)
-            ->get();
+            ;
         }
-        return $query;
+        if ($paginate != null) {
+            return $query->paginate($paginate);
+        }
+        return $query->get();
     }
 }

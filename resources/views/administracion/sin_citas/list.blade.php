@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.template')
 @section('content_header')
     <div class="container">
         <div class="row mt-3">
@@ -28,7 +28,8 @@
         @if ($isChangeConsultorio == false)
             @if ($isEmptyConsultorio)
                 <div class="row mt-3">
-                    <div class="col-12 text-right">
+                    <div class="col-12 text-end">
+                        <a href="/" class="btn btn-primary"><i class="fas fa-home"></i></a>
                         <a href="/admin/sin_citas/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
                     </div>
 

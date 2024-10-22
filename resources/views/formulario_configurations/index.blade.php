@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.template')
 
 @section('content_header')
     <div class="container">
@@ -18,7 +18,8 @@
 @section('content')
 <div class="container bg-white py-2">
     <div class="row mt-3">
-        <div class="col-12 text-right">
+        <div class="col-12 text-end">
+            <a href="/" class="btn btn-primary"><i class="fas fa-home"></i></a>
             <a href="{{ route('template-formulario.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i></a>
         </div>
         <div class="col-12">

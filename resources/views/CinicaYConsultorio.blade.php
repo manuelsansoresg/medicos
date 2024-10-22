@@ -56,7 +56,7 @@
                                     </div>
                                 </div>
                 
-                                <div class="col-md-12 text-right">
+                                <div class="col-md-12 text-end">
                                     <div class="mb-3">
                                         <a href="/logout" class="btn btn-danger">Salir</a>
                                         <button class="btn btn-primary">Guardar</button>

@@ -201,15 +201,15 @@ class ConsultaAsignado extends Model
 
     
 
-    public static function getByDay()
+    public static function getByDay($paginate = null)
     {
         $today = date('Y-m-d');
         $idclinica     = Session()->get('clinica');
         $idconsultorio = Session()->get('consultorio');
         $isAdmin     = Auth::user()->hasRole('administrador');
 
-        $consultaAsignado =  ConsultaAsignado::select('idconsultasignado', 'iturno', 'ihorainicial', 'idconsultasignado', 'vnumconsultorio')
-                 ->join('consultorios', 'consultorios.idconsultorios', 'consultasignado.idconsultorio')
+        $consultaAsignado =  ConsultaAsignado::select('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio')  // Elimina el segundo 'idconsultasignado'
+                ->join('consultorios', 'consultorios.idconsultorios', 'consultasignado.idconsultorio')
                 ->join('user_citas', 'user_citas.consulta_asignado_id', 'consultasignado.idconsultasignado')
                 ->where('ihorainicial', '>', 0) 
                 ->where('user_citas.fecha', $today)
@@ -223,8 +223,18 @@ class ConsultaAsignado extends Model
             $getAsignedConsultories = Consultorio::getAsignedConsultories($idclinica, true);
             $consultaAsignado->whereIn('consultasignado.idconsultorio', $getAsignedConsultories);
         }
+    
+        $consultaAsignado->groupBy('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio');  // Elimina la columna duplicada en el select
+        
+        // Si se ha pasado un valor para la paginación
+        if ($paginate != null) {
+            // Devuelve los resultados paginados
+            return $consultaAsignado->paginate($paginate);
+        }
 
-        return $consultaAsignado->groupBy('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio')->get();
+        // Devuelve los resultados sin paginación
+        return $consultaAsignado->get();
+
     }
 
     public static function saveEdit($request)

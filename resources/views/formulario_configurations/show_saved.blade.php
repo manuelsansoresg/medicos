@@ -33,7 +33,7 @@
         
         <input type="hidden" name="consulta_id" id="consulta_id" value="{{ $entry->id }}">
     @endforeach
-    <div class="col-12 text-right mt-3">
+    <div class="col-12 text-end mt-3">
         <button type="submit" class="btn btn-primary">Guardar cambios</button>
     </div>
 </form>

@@ -1,4 +1,4 @@
-if (!document.getElementById('isRedirect')) {
+/* if (!document.getElementById('isRedirect')) {
     axios
         .get("/query/clinicaYConsultorio")
         .then(function (response) {
@@ -6,19 +6,12 @@ if (!document.getElementById('isRedirect')) {
             if (result.status == 500) {
                 window.location = '/query/viewClinicaYConsultorio';
             }
-            /* if (result.status == 600) {
-                Swal.fire({
-                    title: "Sin consultorio asignado",
-                    text: "Si no es usuario doctor pedir que le asignen su consultorio",
-                    icon: "warning"
-                  }).then((result) => {
-                    });
-            } */
+           
         })
         .catch(error => {
         });
 }
-
+ */
 if (document.getElementById('setClinica')) {
     axios
         .get("/admin/clinica/consultorio/myConfiguration")
@@ -31,7 +24,7 @@ if (document.getElementById('setClinica')) {
         });
 }
 
-window.changeConsultorio = function () {
+window.changeConsultorio = function (valorConsultorio) {
     let clinica = $('#setClinica').val();
     let selectConsultorio = document.getElementById('setConsultorio');
 
@@ -56,12 +49,38 @@ window.changeConsultorio = function () {
                 });
                 let optionTodos = new Option('Todos', 0);
                 selectConsultorio.add(optionTodos)
-
+                if (valorConsultorio != null) {
+                    $('#setConsultorio').val(valorConsultorio);
+                }
             }
         })
         .catch(error => {
             // Manejar errores si es necesario
         });
+}
+
+window.aplicarConsultorio = function ()
+
+{
+    let consultorio = $('#setClinica').val();
+    let clinica = $('#setConsultorio').val();
+
+    axios.post('/admin/clinica/consultorio/set', {consultorio:consultorio, clinica:clinica})
+    .then(function(response) {
+        // Manejar la respuesta si es necesario
+        Swal.fire({
+            text: "Los valores se han almacenado con éxito. A partir de ahora, los filtros en todo el panel administrativo estarán basados en esta selección.",
+            icon: "warning"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.reload();
+            }
+        });
+    })
+    .catch(function(error) {
+        // Manejar errores si es necesario
+        console.error(error);
+    });
 }
 
 if (document.getElementById('setClinica')) {
@@ -120,3 +139,22 @@ if (document.getElementById('setClinica')) {
 }
 
 
+$(document).ready(function() {
+     function setValClinic () {
+        axios.get('/admin/clinica/consultorio/get')
+        .then(function(response) {
+            let result = response.data;
+            // id select clinica setClinica
+            $('#setClinica').val(result.clinica);
+            // id select consultorio setConsultorio
+            changeConsultorio(result.consultorio);
+        })
+        .catch(function(error) {
+            // Manejar errores si es necesario
+            console.error(error);
+        });
+    };
+
+    // Llama a la función setValClinic cuando el DOM esté completamente cargado
+    setValClinic();
+});

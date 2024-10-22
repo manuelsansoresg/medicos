@@ -26,7 +26,7 @@
         <input type="hidden" name="paciente_id" id="paciente_id" value="{{ isset($paciente) && $paciente != null ? $paciente->id : null }}">
         <input type="hidden" name="consulta_id" id="consulta_id" value="">
         
-        <div class="col-12 text-right mt-3">
+        <div class="col-12 text-end mt-3">
             <button type="submit" class="btn btn-primary">Guardar</button>
         </div>
     </form>

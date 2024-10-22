@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.template')
 
 @section('content_header')
 <div class="container">
@@ -78,7 +78,7 @@
                         </div>
                     </div>
                    
-                    <div class="col-md-12 text-right">
+                    <div class="col-md-12 text-end">
                         <div class="mb-3">
                             {{-- <input type="hidden" id="user_id" name="user_id" value="{{ $user_id }}" > --}}
                             <input name="tipo" id="tipo" value="1" type="hidden" />

@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.template')
 @section('content_header')
     <div class="container">
         <div class="row mt-3">
@@ -90,7 +90,7 @@
                             <textarea name="data[motivo]" cols="30" rows="4" class="form-control"></textarea>
                             
                         </div>
-                        <div class="col-md-12 text-right">
+                        <div class="col-md-12 text-end">
                             <div class="mb-3">
                                 <button class="btn btn-primary" id="btn-add-office-user">Guardar</button>
                             </div>

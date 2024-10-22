@@ -10,7 +10,7 @@
                 </div>
             </div>
         </div>
-       <div class="col-12 text-right py-3">
+       <div class="col-12 text-end py-3">
             @if ($isDownload)
                 <button class="btn btn-primary disabled" id="btn-download-expedient">DESCARGAR EXPEDIENTES SELECCIONADOS</button>
             @endif

@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.template')
 
 @section('content_header')
     <div class="container">
@@ -128,7 +128,7 @@
                                         <input type="hidden"  id="user_cita_id_origin" value="{{ $userCitaId }}">
                                         <input type="hidden" name="data[paciente_id]" id="paciente_id" value="{{ $paciente != null ? $paciente->id : null }}">
                                         <input type="hidden" name="consulta_id" id="consulta_id" value="">
-                                        <div class="mb-3 text-right">
+                                        <div class="mb-3 text-end">
                                             <a class="btn btn-danger pointer" onclick="cancelConsulta()">Cancelar</a>
                                             <button class="btn btn-primary">Guardar</button>
                                         </div>
@@ -173,7 +173,7 @@
                                         <input type="hidden" name="data[user_cita_id]" id="estudio_user_cita_id" value="{{ $userCitaId }}">
                                         <input type="hidden" name="data[paciente_id]" id="estudio_paciente_id" value="{{ $paciente != null ? $paciente->id : null }}">
                                         <input type="hidden" name="estudio_id" id="estudio_diagnostico_id" value="">
-                                        <div class="mb-3 text-right">
+                                        <div class="mb-3 text-end">
                                             <a class="btn btn-danger pointer" onclick="cancelEstudio()">Cancelar</a>
                                             <button class="btn btn-primary">Guardar</button>
                                         </div>

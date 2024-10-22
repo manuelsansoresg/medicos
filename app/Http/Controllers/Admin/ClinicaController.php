@@ -46,6 +46,16 @@ class ClinicaController extends Controller
         Session::put('consultorio', $consultorio);
     }
 
+    public function getClinicaConsultorio()
+    {
+        $clinica = Session::get('clinica');
+        $consultorio = Session::get('consultorio');
+        return response()->json([
+            'clinica' => $clinica,
+            'consultorio' => $consultorio,
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

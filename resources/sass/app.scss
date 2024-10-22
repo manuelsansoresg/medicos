@@ -4,6 +4,40 @@
 // Variables
 @import 'variables';
 
+.bg-primary {
+    background-color: #38b6ff !important;
+}
+
+.navbar-light .nav-link{
+    color: white !important;
+}
+
+.color-primary {
+    color: #38b6ff !important;
+}
+
+.color-secondary, .h6, .card-title {
+    color: #1a73e8 !important;
+}
+
+.color-gray {
+    color: #f2f2f2;
+}
+
+
+
+p, label{
+    color: #38b6ff !important;
+}
+
+.table>:not(caption)>*>* { 
+    color: #38b6ff ;
+}
+
+thead > tr > th {
+    color: #1a73e8 !important;
+}
+
 .pointer{
     cursor: pointer;
 }

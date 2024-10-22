@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.template')
 
 @section('content_header')
     <div class="container">
@@ -52,7 +52,7 @@
                     <input type="hidden" id="ConsultaAsignado" value="{{ $ConsultaAsignado }}">
                     <input type="hidden" id="userCitaId" value="{{ $userCitaId }}">
                    
-                    <div class="col-md-12 text-right">
+                    <div class="col-md-12 text-end">
                         <div class="mb-3">
                             
                             <button class="btn btn-primary">Guardar</button>

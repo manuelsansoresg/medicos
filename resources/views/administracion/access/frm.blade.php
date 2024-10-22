@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.template')
 
 @section('content_header')
 <div class="container">
@@ -99,7 +99,7 @@
                     </div>
                   
                     @endhasrole
-                    <div class="col-md-12 text-right">
+                    <div class="col-md-12 text-end">
                         <div class="mb-3">
                             <input type="hidden" id="acces_id" name="acces_id" value="{{ $acces_id }}" >
                             <button class="btn btn-primary">Guardar</button>

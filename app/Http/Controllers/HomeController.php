@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClinicaUser;
+use App\Models\ConsultaAsignado;
+use App\Models\Consultorio;
+use App\Models\PendienteUsr;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
@@ -30,7 +34,14 @@ class HomeController extends Controller
         $statusConsult = User::getPersentClinic();
         $statusUser    = User::getPersentUser();
         $statusPacient    = User::getPercentPacient();
-        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'statusPacient'));
+        $earrings = PendienteUsr::getByDay(5);
+        $consultorio            = Session::get('consultorio');
+        $consultas = null;
+        if ($consultorio != null) {
+            $consultas              = ConsultaAsignado::getByDay(5);
+        }
+
+        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'statusPacient', 'earrings', 'consultas'));
     }
 
     public function editProfile()
