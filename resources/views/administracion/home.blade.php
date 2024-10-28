@@ -10,6 +10,8 @@
         <h6 class="color-secondary">PANEL PRINCIPAL</h6>
        </div>
         <!-- Primera columna -->
+        @hasrole(['medico','auxiliar'])
+        
         <div class="col-md-4 mb-4">
             <div class="card h-100 d-flex flex-column">
                 <div class="card-body flex-grow-1">
@@ -46,7 +48,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Segunda columna -->
         <div class="col-md-4 mb-4">
             <div class="card h-100 d-flex flex-column">
@@ -73,7 +74,7 @@
                 </div>
             </div>
         </div>
-        <!-- Segunda columna -->
+        <!-- tercera columna -->
         <div class="col-md-4 mb-4">
             <div class="card h-100 d-flex flex-column">
                 <div class="card-body flex-grow-1">
@@ -102,39 +103,53 @@
                 </div>
             </div>
         </div>
+        @endrole
+
         
     </div>
     
     <div class="row mt-3">
         <div class="col-12">
             <div class="col-12 text-center">
-                <p class="h6"> SOlICITUDES </p>
+                <p class="h6"> SOlICITUDES <a href="/admin/solicitudes/create"  class="color-primary"><i class="fas fa-plus"></i></a> </p>
             </div>
             <table class="table">
                 <tr>
                     <th>NOMBRE</th>
-                    <th>CONSULTORIOS</th>
-                    <th>USUARIOS</th>
+                    <th>FECHA SOLICITUD</th>
+                    <th>CANTIDAD</th>
                     <th>VENCIMIENTO</th>
                     <th>ESTATUS</th>
                     <th>ACCIONES</th>
                 </tr>
-                <tr>
-                    <td>PLAN BASICO</td>
-                    <td>2</td>
-                    <td>2</td>
-                    <td>24- 12-2024</td>
-                    <td>ACTIVO</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>USUARIO EXTRA</td>
-                    <td>N/A</td>
-                    <td>2</td>
-                    <td>24- 12-2024</td>
-                    <td>EN ESPERA</td>
-                    <td></td>
-                </tr>
+               @foreach ($solicitudes as $solicitud)
+                   <tr>
+                    <td>{{ $solicitud->nombre }}</td>
+                    <td>{{ date('d-m-Y', strtotime($solicitud->created_at)) }}</td>
+                    <td>{{ $solicitud->cantidad }}</td>
+                    <td>
+                        @if ($solicitud->estatus != 1 )
+                            Pendiente
+                            @else
+                        @endif
+                    </td>
+                    <td>
+                        @switch($solicitud->estatus)
+                            @case(1)
+                                
+                                @break
+                            @case(2)
+                                
+                                @break
+                            @default
+                                Pendiente
+                        @endswitch
+                    </td>
+                    <td>
+                        <a href="/admin/solicitudes/{{ $solicitud->id }}"  class="color-primary"><i class="fas fa-eye"></i></a>
+                    </td>
+                   </tr>
+               @endforeach
             </table>
         </div>
     </div>

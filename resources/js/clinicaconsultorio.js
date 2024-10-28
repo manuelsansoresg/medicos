@@ -26,44 +26,46 @@ if (document.getElementById('setClinica')) {
 
 window.changeConsultorio = function (valorConsultorio) {
     let clinica = $('#setClinica').val();
-    let selectConsultorio = document.getElementById('setConsultorio');
-
-    // Limpiar el select excepto la primera opción
-    selectConsultorio.options.length = 1;
-
-    axios
-        .get("/admin/clinica/" + clinica + "/consultorio/get")
-        .then(function (response) {
-            let result = response.data;
-
-            if (result.length > 0) {
-                // Desbloquear el select
-                selectConsultorio.disabled = false;
-
-                // Llenar el select con los datos obtenidos
-                result.forEach(function (consultorio) {
-                    let option = document.createElement('option');
-                    option.value = consultorio.idconsultorios;
-                    option.text = consultorio.vnumconsultorio;
-                    selectConsultorio.add(option);
-                });
-                let optionTodos = new Option('Todos', 0);
-                selectConsultorio.add(optionTodos)
-                if (valorConsultorio != null) {
-                    $('#setConsultorio').val(valorConsultorio);
+    if (clinica != null) {
+        let selectConsultorio = document.getElementById('setConsultorio');
+    
+        // Limpiar el select excepto la primera opción
+        selectConsultorio.options.length = 1;
+    
+        axios
+            .get("/admin/clinica/" + clinica + "/consultorio/get")
+            .then(function (response) {
+                let result = response.data;
+    
+                if (result.length > 0) {
+                    // Desbloquear el select
+                    selectConsultorio.disabled = false;
+    
+                    // Llenar el select con los datos obtenidos
+                    result.forEach(function (consultorio) {
+                        let option = document.createElement('option');
+                        option.value = consultorio.idconsultorios;
+                        option.text = consultorio.vnumconsultorio;
+                        selectConsultorio.add(option);
+                    });
+                    let optionTodos = new Option('Todos', 0);
+                    selectConsultorio.add(optionTodos)
+                    if (valorConsultorio != null) {
+                        $('#setConsultorio').val(valorConsultorio);
+                    }
                 }
-            }
-        })
-        .catch(error => {
-            // Manejar errores si es necesario
-        });
+            })
+            .catch(error => {
+                // Manejar errores si es necesario
+            });
+    }
 }
 
 window.aplicarConsultorio = function ()
 
 {
-    let consultorio = $('#setClinica').val();
-    let clinica = $('#setConsultorio').val();
+    let consultorio = $('#setConsultorio').val();
+    let clinica = $('#setClinica').val();
 
     axios.post('/admin/clinica/consultorio/set', {consultorio:consultorio, clinica:clinica})
     .then(function(response) {
@@ -73,7 +75,7 @@ window.aplicarConsultorio = function ()
             icon: "warning"
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.reload();
+                //window.location.reload();
             }
         });
     })

@@ -49,6 +49,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/consultorio/{id}/{userId}/show', [App\Http\Controllers\Admin\ConsultoriosController::class, 'show'])->middleware('auth');
 
     Route::resource('usuarios', '\App\Http\Controllers\Admin\UserController')->middleware('auth');
+    Route::resource('solicitudes', '\App\Http\Controllers\Admin\SolicitudController')->middleware('auth');
+    Route::post('solicitudes/{solicitudId}/adjuntarComprobante', [\App\Http\Controllers\Admin\SolicitudController::class, 'adjuntarComprobante'])->middleware('auth');
     
 
     Route::resource('sin_citas', '\App\Http\Controllers\Admin\SinCitasController')->middleware('auth');

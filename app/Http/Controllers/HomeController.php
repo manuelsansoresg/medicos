@@ -6,6 +6,7 @@ use App\Models\ClinicaUser;
 use App\Models\ConsultaAsignado;
 use App\Models\Consultorio;
 use App\Models\PendienteUsr;
+use App\Models\Solicitud;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,15 +34,16 @@ class HomeController extends Controller
         $statusClinic  = User::getPersentConsult();
         $statusConsult = User::getPersentClinic();
         $statusUser    = User::getPersentUser();
-        $statusPacient    = User::getPercentPacient();
-        $earrings = PendienteUsr::getByDay(5);
-        $consultorio            = Session::get('consultorio');
-        $consultas = null;
+        $statusPacient = User::getPercentPacient();
+        $earrings      = PendienteUsr::getByDay(5);
+        $consultorio   = Session::get('consultorio');
+        $consultas     = null;
         if ($consultorio != null) {
             $consultas              = ConsultaAsignado::getByDay(5);
         }
+        $solicitudes = Solicitud::getAll();
 
-        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'statusPacient', 'earrings', 'consultas'));
+        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'statusPacient', 'earrings', 'consultas', 'solicitudes'));
     }
 
     public function editProfile()
