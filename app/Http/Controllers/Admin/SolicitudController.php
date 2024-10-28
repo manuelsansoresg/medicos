@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CatalogPrice;
+use App\Models\Comment;
 use App\Models\Solicitud;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -58,7 +59,11 @@ class SolicitudController extends Controller
                         ->where('solicitudes.id',$id)
                         ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
                         ->first();
-        return view('administracion.solicitudes.solicitud', compact('solicitud'));
+        $comments = Comment::where([
+            'type' => 2,
+            'idRel' => $id,
+        ])->get();
+        return view('administracion.solicitudes.solicitud', compact('solicitud', 'id', 'comments'));
     }
 
     public function adjuntarComprobante(Request $request)
@@ -86,6 +91,11 @@ class SolicitudController extends Controller
         }
 
         return back()->with('error', 'Hubo un problema al cargar el archivo.');
+    }
+
+    public function storeSolicitudComment($solicitudId, Request $request)
+    {
+        Comment::commentSolicitud($solicitudId, $request);
     }
 
     /**

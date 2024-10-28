@@ -51,6 +51,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('usuarios', '\App\Http\Controllers\Admin\UserController')->middleware('auth');
     Route::resource('solicitudes', '\App\Http\Controllers\Admin\SolicitudController')->middleware('auth');
     Route::post('solicitudes/{solicitudId}/adjuntarComprobante', [\App\Http\Controllers\Admin\SolicitudController::class, 'adjuntarComprobante'])->middleware('auth');
+    Route::post('solicitudes/{solicitudId}/comment/store', [\App\Http\Controllers\Admin\SolicitudController::class, 'storeSolicitudComment'])->middleware('auth');
     
 
     Route::resource('sin_citas', '\App\Http\Controllers\Admin\SinCitasController')->middleware('auth');
