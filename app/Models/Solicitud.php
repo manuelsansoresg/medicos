@@ -14,7 +14,8 @@ class Solicitud extends Model
         'comprobante',
         'estatus',
         'cantidad',
-        'user_id'
+        'user_id',
+        'fecha_vencimiento',
     ];
 
     protected $table = 'solicitudes';
@@ -27,12 +28,16 @@ class Solicitud extends Model
 
         if ($isAdmin) {
             return Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at'
-                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')->get();
+                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'solicitudes.updated_at', 'name', 'vapellido'
+                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
+                ->join('users', 'users.id', 'solicitudes.user_id')
+                ->get();
         } else {
             return Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at'
-                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')->where('user_id', $user_id)->get();
+                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'name', 'vapellido'
+                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
+                ->join('users', 'users.id', 'solicitudes.user_id')
+                ->where('user_id', $user_id)->get();
         }
         
     }
@@ -41,14 +46,59 @@ class Solicitud extends Model
     {
         $data = $request->data;
         $solicitudId = $request->solicitudId;
-        if ($solicitudId == null) {
-            $data['user_id'] = Auth::user()->id;
-            $solicitud = new Solicitud($data);
-            $solicitud->save();
-        } else {
-            $solicitud = Solicitud::where('id', $solicitudId)->update($data);
-            
+
+        // Verificamos si el usuario tiene el rol de administrador, médico o auxiliar.
+        $isAdmin = Auth::user()->hasRole('administrador');
+        $isMedico = Auth::user()->hasRole('medico');
+        $isAuxiliar = Auth::user()->hasRole('auxiliar');
+        $isExistAcceso = $isAdmin === true ? false : true;
+        $solicitud = null;
+        $errorMessage = '';
+
+        // Validación solo si el usuario no es admin.
+        if ($isMedico || $isAuxiliar) {
+            $user_id = User::getMyUserPrincipal();
+
+            // Verificamos si el usuario ya tiene una solicitud de paquete básico pendiente.
+            $getSolicitudPendiente = Solicitud::where('user_id', $user_id)
+                                            ->where('estatus', 0)
+                                            ->first();
+
+            // Si ya hay una solicitud pendiente de activación
+            if ($getSolicitudPendiente) {
+                $isExistAcceso = true;
+                $errorMessage = 'Ya tienes una solicitud pendiente en espera de activación.';
+            } else {
+                // Verificamos si el usuario ya tiene un paquete básico activo.
+                $getSolicitudBasico = Solicitud::where('user_id', $user_id)
+                                            ->where('catalog_prices_id', 1)
+                                            ->where('estatus', 1)
+                                            ->first();
+
+                if ($getSolicitudBasico != null && $data['catalog_prices_id'] == 1) {
+                    $isExistAcceso = true;
+                    $errorMessage = 'Solo puedes solicitar 1 paquete básico activo.';
+                } elseif ($getSolicitudBasico == null && $data['catalog_prices_id'] != 1) {
+                    // Si el usuario quiere solicitar un paquete que no es el básico, pero no tiene uno básico activo.
+                    $isExistAcceso = true;
+                    $errorMessage = 'Para solicitar este paquete debes tener un paquete básico activo.';
+                } else {
+                    $isExistAcceso = false;
+                }
+            }
         }
-        return $solicitud;
+
+        // Si la validación falla, enviamos el mensaje de error.
+        if ($isExistAcceso == false) {
+            if ($solicitudId == null) {
+                $data['user_id'] = Auth::user()->id;
+                $solicitud = new Solicitud($data);
+                $solicitud->save();
+            } else {
+                $solicitud = Solicitud::where('id', $solicitudId)->update($data);
+            }
+        }
+
+        return array('solicitud' => $solicitud, 'isReturnError' => $isExistAcceso, 'errorMessage' => $errorMessage);
     }
 }

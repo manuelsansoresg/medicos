@@ -54,44 +54,75 @@ class SolicitudController extends Controller
     public function show($id)
     {
         $solicitud = Solicitud::select(
-                        'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad'
+                        'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'comprobante', 'fecha_vencimiento', 'name', 'vapellido'
                         )
                         ->where('solicitudes.id',$id)
                         ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
+                        ->join('users', 'users.id', 'solicitudes.user_id')
                         ->first();
         $comments = Comment::where([
             'type' => 2,
             'idRel' => $id,
         ])->get();
-        return view('administracion.solicitudes.solicitud', compact('solicitud', 'id', 'comments'));
+        $fecha_vencimiento = $solicitud->fecha_vencimiento != '' ? $solicitud->fecha_vencimiento : date('Y-m-d', strtotime('+1 year'));
+        return view('administracion.solicitudes.solicitud', compact('solicitud', 'id', 'comments', 'fecha_vencimiento'));
     }
 
     public function adjuntarComprobante(Request $request)
     {
-        // Definir las reglas de validación
-        $validator = Validator::make($request->all(), [
-            'comprobante' => 'required|mimes:jpeg,png,jpg,pdf|max:1024', // Máximo 1MB
-        ]);
+        $solicitudId = $request->solicitudId;
+        $estatus = isset($request->estatus) ? $request->estatus : null;
+        $fechaVencimiento = isset($request->fecha_vencimiento) ? $request->fecha_vencimiento : null;
+        // Si el archivo "comprobante" está presente, aplica validación y procesamiento
+        if ($request->hasFile('comprobante')) {
+            // Validar el archivo de comprobante
+            $validator = Validator::make($request->all(), [
+                'comprobante' => 'mimes:jpeg,png,jpg,pdf|max:1024' // Máximo 1MB
+            ]);
 
-        // Si la validación falla, redireccionar con errores
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
+            // Si la validación falla, redireccionar con errores
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
+
+            // Procesar y guardar el archivo si la validación es exitosa
+            if ($request->file('comprobante')->isValid()) {
+                $archivo = $request->file('comprobante');
+                $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
+                $rutaDestino = public_path('comprobante');
+
+                $dataSolicitud = array(
+                    'comprobante' => $nombreArchivo
+                );
+                if ($estatus != null) {
+                    $dataSolicitud['estatus'] = $estatus;
+                    if ($estatus == 1) {
+                        $dataSolicitud['fecha_vencimiento'] = $fechaVencimiento;
+                    }
+                }
+                $archivo->move($rutaDestino, $nombreArchivo);
+                Solicitud::where('id', $solicitudId)->update($dataSolicitud);
+
+                return back()->with('success', 'Comprobante adjuntado correctamente.');
+            }
+
+            return back()->with('error', 'Hubo un problema al cargar el archivo.');
         }
 
-        // Procesar y guardar el archivo si la validación es exitosa
-        if ($request->file('comprobante')->isValid()) {
-            $archivo = $request->file('comprobante');
-            $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
-            $rutaDestino = public_path('comprobante');
-
-            $archivo->move($rutaDestino, $nombreArchivo);
-
-            // Aquí podrías guardar información en la base de datos si es necesario
-            return back()->with('success', 'Comprobante adjuntado correctamente.');
+        // Si no hay archivo, solo se actualiza el estatus
+        if ($estatus != null) {
+            $dataSolicitud = array(
+                'estatus' => $estatus,
+            );
+            if ($estatus == 1) {
+                $dataSolicitud['fecha_vencimiento'] = $fechaVencimiento;
+            }
+            Solicitud::where('id', $solicitudId)->update($dataSolicitud);
         }
 
-        return back()->with('error', 'Hubo un problema al cargar el archivo.');
+        return back()->with('success', 'Estatus actualizado correctamente.');
     }
+
 
     public function storeSolicitudComment($solicitudId, Request $request)
     {

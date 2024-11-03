@@ -116,6 +116,9 @@
             <table class="table">
                 <tr>
                     <th>NOMBRE</th>
+                    @hasrole(['administrador'])
+                    <th>USUARIO</th>
+                    @endrole
                     <th>FECHA SOLICITUD</th>
                     <th>CANTIDAD</th>
                     <th>VENCIMIENTO</th>
@@ -125,21 +128,24 @@
                @foreach ($solicitudes as $solicitud)
                    <tr>
                     <td>{{ $solicitud->nombre }}</td>
+                    @hasrole(['administrador'])
+                    <td> {{ $solicitud->name }} {{ $solicitud->apellido }}  </td>
+                    @endrole
                     <td>{{ date('d-m-Y', strtotime($solicitud->created_at)) }}</td>
                     <td>{{ $solicitud->cantidad }}</td>
                     <td>
-                        @if ($solicitud->estatus != 1 )
-                            Pendiente
-                            @else
-                        @endif
+                        @php
+                            $fechaVencimiento = \Carbon\Carbon::parse($solicitud->updated_at)->addYear();
+                        @endphp
+                        {{ $fechaVencimiento->format('d-m-Y') }}
                     </td>
                     <td>
                         @switch($solicitud->estatus)
                             @case(1)
-                                
+                                ACTIVO
                                 @break
                             @case(2)
-                                
+                                EN REVISIÓN
                                 @break
                             @default
                                 Pendiente

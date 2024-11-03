@@ -20,9 +20,15 @@ class Comment extends Model
     public static function commentSolicitud($solicitudId, $request)
     {
         $data            = $request->data;
+        $commentId = $request->commentId;
+
         $data['user_id'] = Auth::user()->id;
-        $data['type']    = 2;
+        $data['type']    = 2; //comentario nuevo
         $data['idRel']   = $solicitudId;
+        if ($commentId != null) {
+            $data['respuesta_id'] = $commentId;
+            $data['type']    = 3; //tipo respuesta 
+        }
         $comment = Comment::create($data);
         return $comment;
     }

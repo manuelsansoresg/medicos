@@ -19,6 +19,10 @@
   color: #f2f2f2;
 }
 
+.previewComrobante {
+  width: 140px;
+}
+
 p, label {
   color: #38b6ff !important;
 }
