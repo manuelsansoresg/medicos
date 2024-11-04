@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +39,38 @@ class Solicitud extends Model
                 )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
                 ->join('users', 'users.id', 'solicitudes.user_id')
                 ->where('user_id', $user_id)->get();
+        }
+        
+    }
+
+    public static function getPaqueteActivo($solicitud)
+    {
+        $userId[]     = $solicitud->user_id;
+        $getUser      = User::find($solicitud->user_id);
+        $userId[]     = $getUser->usuario_principal;
+        $getSolicitud = Solicitud::where(function($query) use ($userId) {
+                        foreach ($userId as $id) {
+                            $query->orWhere('user_id', $id);
+                        }
+                    })
+                    ->where('catalog_prices_id', 1)
+                    ->where('estatus', 1)
+                    ->first();
+        if ($getSolicitud != null) {
+            // Asumiendo que $fechaVencimiento contiene la fecha de vencimiento en formato 'Y-m-d'
+            $fechaVencimiento = new DateTime('2025-10-01');
+            $fechaActual = new DateTime('2024-11-01'); // Suponiendo que esta es la fecha del servidor
+
+            // Calcula la diferencia entre la fecha actual y la fecha de vencimiento
+            $diferencia = $fechaActual->diff($fechaVencimiento);
+
+            // Obtiene el total de meses entre la fecha actual y la fecha de vencimiento
+            $mesesTranscurridos = ($diferencia->y * 12) + $diferencia->m;
+
+            // Calcula cuántos meses faltan para completar 12
+            $mesesRestantesParaCompletarDoce = 12 - $mesesTranscurridos;
+
+            echo "Meses restantes para completar el año: " . $mesesRestantesParaCompletarDoce;
         }
         
     }

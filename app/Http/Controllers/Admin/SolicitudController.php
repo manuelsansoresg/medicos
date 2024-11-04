@@ -54,7 +54,7 @@ class SolicitudController extends Controller
     public function show($id)
     {
         $solicitud = Solicitud::select(
-                        'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'comprobante', 'fecha_vencimiento', 'name', 'vapellido'
+                        'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'comprobante', 'fecha_vencimiento', 'name', 'vapellido', 'solicitudes.user_id'
                         )
                         ->where('solicitudes.id',$id)
                         ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
@@ -64,6 +64,9 @@ class SolicitudController extends Controller
             'type' => 2,
             'idRel' => $id,
         ])->get();
+        //obtener el paquete activo de uso de sistema
+        Solicitud::getPaqueteActivo($solicitud);
+        
         $fecha_vencimiento = $solicitud->fecha_vencimiento != '' ? $solicitud->fecha_vencimiento : date('Y-m-d', strtotime('+1 year'));
         return view('administracion.solicitudes.solicitud', compact('solicitud', 'id', 'comments', 'fecha_vencimiento'));
     }
