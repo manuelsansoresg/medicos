@@ -7,19 +7,75 @@
         <div class="card-body">
 
             <div class="col-12 mt-3">
-                <p class="h6 color-secondary">SOLICITUD</p>
-                <p>
-                     <span class="color-secondary"> PAQUETE :</span>  {{ $solicitud->nombre }}  <br>
-                     <span class="color-secondary"> CANTIDAD :</span>  {{ $solicitud->cantidad }}  <br>
-                     <span class="color-secondary"> PRECIO :</span>  {{ $solicitud->precio }}  <br>
-                     <span class="color-secondary"> TOTAL :</span>  {{ $solicitud->precio }}  <br>
-                </p>
-                <p class="h6 color-secondary">DATOS PARA LA TRANSFERENCIA</p>
-                <span class="color-secondary"> NOMBRE :</span> JOSE VAZQUEZ  <br>
-                <span class="color-secondary"> CLABE :</span> 0123348458585858  <br>
-                <span class="color-secondary"> BANCO :</span> BANAMEX  <br>
                 
-                <p class="h6 color-secondary mt-3">SUBIR COMPROBANTE DE LA TRANSFERENCIA</p>
+                
+                    @php
+                        $subtotal = $solicitud->precio * $solicitud->cantidad;
+
+                        if ($solicitud->catalog_prices_id == 1) {
+                            $total = $subtotal;
+                        } else {
+                            $total = $subtotal + $paqueteActivo;
+                        }
+                        
+                    @endphp
+                    <table class="table table-borderless">
+                        <tr>
+                            <td colspan="2">
+                                <p class="h6 color-secondary">SOLICITUD</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PAQUETE</td>
+                            <td>{{ $solicitud->nombre }}</td>
+                        </tr>
+                        <tr>
+                            <td>CANTIDAD</td>
+                            <td>{{ $solicitud->cantidad }}</td>
+                        </tr>
+                        <tr>
+                            <td>PRECIO</td>
+                            <td>${{ format_price($subtotal) }}</td>
+                        </tr>
+                        @if ($solicitud->catalog_prices_id != 1)
+                            <tr>
+                                <td>PAQUETE BÁSICO</td>
+                                <td>${{ format_price($paqueteActivo) }}</td>
+                            </tr>
+                        @endif
+                        <tr>
+                            <td>TOTAL</td>
+                            <td>${{ format_price($total) }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"> <hr> </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"> <p class="h6 color-secondary">DATOS PARA LA TRANSFERENCIA</p></td>
+                        </tr>
+                        <tr>
+                            <td>NOMBRE</td>
+                            <td>JOSE VAZQUEZ</td>
+                        </tr>
+                        <tr>
+                            <td>CLABE</td>
+                            <td>0123348458585858</td>
+                        </tr>
+                        <tr>
+                            <td>BANCO</td>
+                            <td>BANAMEX</td>
+                        </tr>
+                        <tr>
+                            <td>CANTIDAD A DEPOSITAR</td>
+                            <td>${{ format_price($total) }}</td>
+                        </tr>
+                    </table>
+                    
+               
+               
+               
+                
+                <p class="h6 color-secondary mt-5">SUBIR COMPROBANTE DE LA TRANSFERENCIA</p>
                 <form method="post" action="/admin/solicitudes/{{ $id }}/adjuntarComprobante" enctype="multipart/form-data">
                     @csrf
                     @php

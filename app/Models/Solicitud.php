@@ -56,6 +56,7 @@ class Solicitud extends Model
                     ->where('catalog_prices_id', 1)
                     ->where('estatus', 1)
                     ->first();
+        $price  = 0;
         if ($getSolicitud != null) {
             // Asumiendo que $fechaVencimiento contiene la fecha de vencimiento en formato 'Y-m-d'
             $fechaVencimiento = new DateTime('2025-10-01');
@@ -69,9 +70,15 @@ class Solicitud extends Model
 
             // Calcula cuántos meses faltan para completar 12
             $mesesRestantesParaCompletarDoce = 12 - $mesesTranscurridos;
-
-            echo "Meses restantes para completar el año: " . $mesesRestantesParaCompletarDoce;
+            if ($mesesRestantesParaCompletarDoce > 0 ) {
+                $getPrice = CatalogPrice::find($getSolicitud->catalog_prices_id);
+                $precioPaquete = $getPrice->precio / 12;
+                $price = $precioPaquete * $mesesRestantesParaCompletarDoce;
+            }
+            
         }
+
+        return $price;
         
     }
 
