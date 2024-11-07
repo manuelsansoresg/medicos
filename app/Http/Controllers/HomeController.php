@@ -41,9 +41,8 @@ class HomeController extends Controller
         if ($consultorio != null) {
             $consultas              = ConsultaAsignado::getByDay(5);
         }
-        $solicitudes = Solicitud::getAll();
-
-        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'statusPacient', 'earrings', 'consultas', 'solicitudes'));
+        
+        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'statusPacient', 'earrings', 'consultas'));
     }
 
     public function editProfile()

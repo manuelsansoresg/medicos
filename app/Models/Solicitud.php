@@ -21,25 +21,26 @@ class Solicitud extends Model
 
     protected $table = 'solicitudes';
 
-    public static function getAll()
+    public static function getAll($paginate = null)
     {
         //*cambiar listando las clinicas donde perteneces si no eres administrador
         $user_id = User::getMyUserPrincipal();
         $isAdmin = Auth::user()->hasRole('administrador');
 
         if ($isAdmin) {
-            return Solicitud::select(
+            $solicitud =  Solicitud::select(
                 'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'solicitudes.updated_at', 'name', 'vapellido'
                 )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
                 ->join('users', 'users.id', 'solicitudes.user_id')
-                ->get();
+                ;
         } else {
-            return Solicitud::select(
+            $solicitud =  Solicitud::select(
                 'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'name', 'vapellido'
                 )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
                 ->join('users', 'users.id', 'solicitudes.user_id')
-                ->where('user_id', $user_id)->get();
+                ->where('user_id', $user_id);
         }
+        return $paginate ? $solicitud->paginate($paginate) : $solicitud->get();
         
     }
 

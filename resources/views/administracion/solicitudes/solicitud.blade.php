@@ -12,7 +12,7 @@
                     @php
                         $subtotal = $solicitud->precio * $solicitud->cantidad;
 
-                        if ($solicitud->catalog_prices_id == 1) {
+                        if ($solicitud->catalog_prices_id == 1 || $solicitud->catalog_prices_id == 4) {
                             $total = $subtotal;
                         } else {
                             $total = $subtotal + $paqueteActivo;
