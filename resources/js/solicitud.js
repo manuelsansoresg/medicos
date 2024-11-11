@@ -40,6 +40,24 @@ window.setSolicitud = function(getSolicitud)
     }
 }
 
+window.renew = function(SolicitudId)
+{
+    axios
+        .get('/admin/solicitudes/'+SolicitudId+'/reset')
+        .then(function (response) {
+            let data = response.data;
+            Swal.fire({
+                text: 'Su solicitud ha sido enviada, favor de adjuntar el comprobante de pago en la siguiente ventana para su activación',
+                icon: "warning"
+            }).then((result) => {
+                // Acción después de cerrar el alerta
+                window.location = '/admin/solicitudes/'+data.id;
+            });
+            
+        })
+        .catch(e => { });
+}
+
 $("#frm-solicitud-comentario").submit(function (e) {
     e.preventDefault();
     const form = document.getElementById("frm-solicitud-comentario");
@@ -50,7 +68,12 @@ $("#frm-solicitud-comentario").submit(function (e) {
         .post('/admin/solicitudes/'+solicitudId+'/comment/store', data)
         .then(function (response) {
             let result = response.data;
-            
+            Swal.fire({
+                text: errorMessage,
+                icon: "warning"
+            }).then((result) => {
+                // Acción después de cerrar el alerta
+            });
             window.location = '/admin/solicitudes/'+solicitudId;
         })
         .catch(e => { });

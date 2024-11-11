@@ -1,4 +1,5 @@
 <div class="row mt-3">
+    @inject('MSolicitud', 'App\Models\Solicitud')
     <div class="col-12">
         
         <div class="row mt-3 pb-5">
@@ -48,6 +49,14 @@
                 <th>ACCIONES</th>
             </tr>
            @foreach ($solicitudes as $solicitud)
+                @php
+                    $mesesRestantes = null;
+                    $fechaVencimiento = $solicitud->fecha_vencimiento;
+                    $isVencido = false;
+                    if ($solicitud->catalog_prices_id == 1) {
+                        $mesesRestantes = $MSolicitud::getPaqueteActivo($solicitud)['mesesRestantes'];
+                    }
+                @endphp
                <tr>
                 <td>{{ $solicitud->nombre }}</td>
                 @hasrole(['administrador'])
@@ -57,9 +66,22 @@
                 <td>{{ $solicitud->cantidad }}</td>
                 <td>
                     @php
-                        $fechaVencimiento = \Carbon\Carbon::parse($solicitud->updated_at)->addYear();
+                        
+                        $color = 'color-primary';
+                        if ($mesesRestantes >= 10) {
+                            $color = 'text-warning';
+                        }
+                        
+                        if ($mesesRestantes === 0) {
+                            $color = 'text-danger';
+                            $isVencido = true;
+                            $MSolicitud::where(['id' => $solicitud->id, 'estatus' => 1])->update([
+                                'estatus' => 2
+                            ]);
+                        }
                     @endphp
-                    {{ $fechaVencimiento->format('d-m-Y') }}
+                   {{--  {{ $fechaVencimiento }} --}}
+                    <span class="{{ $color }}">{{ $fechaVencimiento }}</span>
                 </td>
                 <td>
                     @switch($solicitud->estatus)
@@ -74,7 +96,10 @@
                     @endswitch
                 </td>
                 <td>
-                    <a href="/admin/solicitudes/{{ $solicitud->id }}"  class="color-primary"><i class="fas fa-eye"></i></a>
+                    <a href="/admin/solicitudes/{{ $solicitud->id }}"  class="color-primary"><i class="fas fa-eye"></i></a> 
+                    @if ($isVencido === true)
+                        <a class="color-primary pointer" onclick="renew({{ $solicitud->id }})"><i class="fas fa-redo"></i></a>
+                    @endif
                 </td>
                </tr>
            @endforeach

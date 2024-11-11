@@ -45,6 +45,12 @@ class SolicitudController extends Controller
         return response()->json($solicitud);
     }
 
+    public function resetSolicitud($solicitudId)
+    {
+       $solicitud = Solicitud::reset($solicitudId);
+       return response()->json($solicitud);
+    }
+
     /**
      * Display the specified resource.
      *
@@ -65,7 +71,7 @@ class SolicitudController extends Controller
             'idRel' => $id,
         ])->get();
         //obtener el paquete activo de uso de sistema
-        $paqueteActivo = Solicitud::getPaqueteActivo($solicitud);
+        $paqueteActivo = Solicitud::getPaqueteActivo($solicitud)['price'];
         
         $fecha_vencimiento = $solicitud->fecha_vencimiento != '' ? $solicitud->fecha_vencimiento : date('Y-m-d', strtotime('+1 year'));
         return view('administracion.solicitudes.solicitud', compact('solicitud', 'id', 'comments', 'fecha_vencimiento', 'paqueteActivo'));

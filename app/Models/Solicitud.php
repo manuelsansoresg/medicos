@@ -29,16 +29,18 @@ class Solicitud extends Model
 
         if ($isAdmin) {
             $solicitud =  Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'solicitudes.updated_at', 'name', 'vapellido'
+                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'solicitudes.updated_at', 'name', 'vapellido', 'fecha_vencimiento', 'catalog_prices_id', 'user_id'
                 )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
                 ->join('users', 'users.id', 'solicitudes.user_id')
+                ->whereIn('estatus', [0,1,2])
                 ;
         } else {
             $solicitud =  Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'name', 'vapellido'
+                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'name', 'vapellido', 'fecha_vencimiento', 'catalog_prices_id', 'user_id'
                 )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
                 ->join('users', 'users.id', 'solicitudes.user_id')
-                ->where('user_id', $user_id);
+                ->where('user_id', $user_id)
+                ->whereIn('estatus', [0,1,2]);
         }
 
         if ($search != '') {
@@ -51,6 +53,22 @@ class Solicitud extends Model
         $solicitud->orderBy('solicitudes.id', 'DESC');
         return $paginate ? $solicitud->paginate($paginate) : $solicitud->get();
         
+    }
+
+    public static function reset($solicitudId)
+    {
+        $getSolicitud = Solicitud::find($solicitudId);
+        $dataSolicitud = array(
+            'catalog_prices_id' => $getSolicitud->catalog_prices_id ,
+            'estatus' => 0 ,
+            'cantidad' => $getSolicitud->cantidad ,
+            'user_id' => $getSolicitud->user_id ,
+        );
+        $solicitud = Solicitud::create($dataSolicitud);
+        Solicitud::where('id', $solicitudId)->update([
+            'estatus' => 3
+        ]);
+        return $solicitud;
     }
 
     public static function getPaqueteActivo($solicitud)
@@ -68,13 +86,16 @@ class Solicitud extends Model
                     
                     ->first();
         $price  = 0;
+        $mesesRestantesParaCompletarDoce = 0;
+        
+
         if ($getSolicitud != null) {
             // Asumiendo que $fechaVencimiento contiene la fecha de vencimiento en formato 'Y-m-d'
             $fechaVencimiento = new DateTime($getSolicitud->fecha_vencimiento);
             $fechaActual = new DateTime(date('Y-m-d')); // Suponiendo que esta es la fecha del servidor
-
             // Verifica si la fecha de vencimiento es mayor que la fecha actual
             if ($fechaVencimiento > $fechaActual) {
+                
                 // Calcula la diferencia de años y meses sin considerar los días
                 $anioDiff = $fechaVencimiento->format('Y') - $fechaActual->format('Y');
                 $mesDiff = $fechaVencimiento->format('m') - $fechaActual->format('m');
@@ -103,7 +124,7 @@ class Solicitud extends Model
             
         }
 
-        return $price;
+        return array('price' => $price, 'mesesRestantes' => $mesesRestantesParaCompletarDoce);
         
     }
 
