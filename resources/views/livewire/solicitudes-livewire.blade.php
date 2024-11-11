@@ -1,14 +1,40 @@
 <div class="row mt-3">
     <div class="col-12">
-        <div class="col-12 text-center">
-            <p class="h6"> SOlICITUDES <a href="/admin/solicitudes/create"  class="color-primary"><i class="fas fa-plus"></i></a> </p>
+        
+        <div class="row mt-3 pb-5">
+            <div class="col-12">
+                <div class="col-12 text-center">
+                    <p class="h6">SOLICITUDES <a href="/admin/solicitudes/create" class="color-primary"><i class="fas fa-plus"></i></a></p>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-4">
+                        <div class="form-group mb-2">
+                            <label for="fechaInicio" class="col-auto col-form-label">FECHA INICIAL</label>
+                            <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" placeholder="Fecha inicio" value="{{ date('Y-m-d') }}">
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group mb-2">
+                            <label for="fechaFinal" class="col-auto col-form-label">FECHA FINAL</label>
+                            <input type="date" class="form-control" id="fechaFinal" name="fechaFinal" placeholder="Fecha final" value="{{ date('Y-m-d') }}">
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group mb-2">
+                            <label  class="col-auto col-form-label">NOMBRE</label>
+                            <input type="text" class="form-control" placeholder="Buscar por nombre" wire:model="search">
+                        </div>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-primary">Filtrar</button> &nbsp;
+                        <a href="/comision/lista/show" class="btn btn-primary ml-3">Limpiar Filtro</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-12 text-right">
-            
-        </div>
-        <div class="col-12">
-            
-        </div>
+        
+        {{ $search }}
+        
         <table class="table">
             <tr>
                 <th>NOMBRE</th>
@@ -41,10 +67,10 @@
                             ACTIVO
                             @break
                         @case(2)
-                            EN REVISIÓN
+                            CADUCADO
                             @break
                         @default
-                            Pendiente
+                            PENDIENTE
                     @endswitch
                 </td>
                 <td>
@@ -53,5 +79,9 @@
                </tr>
            @endforeach
         </table>
+
+        <div class="d-flex justify-content-center">
+            {{ $solicitudes->links() }}
+        </div>
     </div>
 </div>

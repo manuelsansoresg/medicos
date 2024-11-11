@@ -25,7 +25,11 @@ class SolicitudesLivewire extends Component
     
     public function render()
     {
-        $solicitudes = Solicitud::getAll();
+        if ($this->search !== '' && $this->page > 1) {
+            $this->resetPage();
+        }
+        
+        $solicitudes = Solicitud::getAll(50, $this->search);
         return view('livewire.solicitudes-livewire', compact('solicitudes'));
     }
 }

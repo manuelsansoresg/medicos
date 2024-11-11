@@ -15,7 +15,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputNombre" class="form-label">*SOLICITUD</label>
-                                <select name="data[catalog_prices_id]" id="catalog_prices_id" class="form-control" required>
+                                <select name="data[catalog_prices_id]" id="catalog_prices_id" class="form-control" required onchange="setSolicitud(this)">
                                     <option value="">Selecciona una opción</option>
                                     @foreach ($catalogPrices as $catalogPrice)
                                         <option value="{{ $catalogPrice->id }}">{{  $catalogPrice->nombre }}</option>
@@ -26,7 +26,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputApellido" class="form-label">*CANTIDAD</label>
-                                <input type="number" class="form-control" name="data[cantidad]" id="cantidad" value="{{ $query != null ? $query->cantidad : null }}" required>
+                                <input type="number" class="form-control" name="data[cantidad]" id="cantidad" min="1" max="null" value="{{ $query != null ? $query->cantidad : null }}" required>
                             </div>
                         </div>
 

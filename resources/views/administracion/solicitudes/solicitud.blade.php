@@ -149,7 +149,7 @@
                     @php
                         $respuestas = $MComments::where([
                             'type' => 3,
-                            'idRel' => $comment->id,
+                            'respuesta_id' => $comment->id,
                         ])->get();
                     @endphp
                     <div class="card my-3 shadow-sm">
@@ -161,7 +161,7 @@
                             </div>
                             <p class="mb-3">{{ $comment->comment }}</p>
                             <div class="col-12 text-end">
-                                <button class="btn btn-outline-secondary btn-sm" onclick="comentar({{ $comment->idRel }})">Responder</button>
+                                <button class="btn btn-outline-secondary btn-sm" onclick="comentar({{ $comment->id }})">Responder</button>
                             </div>
                         </div>
                 

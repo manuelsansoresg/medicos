@@ -27,6 +27,18 @@ $("#frm-solicitud").submit(function (e) {
         });
 });
 
+window.setSolicitud = function(getSolicitud)
+{
+    let solicitud = getSolicitud.value;
+    let cantidadInput = document.getElementById("cantidad");
+
+    // Establece el valor máximo del input en función de la solicitud
+    if (solicitud == 1) {
+        cantidadInput.setAttribute("max", "1");
+    } else {
+        cantidadInput.removeAttribute("max"); // Quita el atributo max si no es 1
+    }
+}
 
 $("#frm-solicitud-comentario").submit(function (e) {
     e.preventDefault();

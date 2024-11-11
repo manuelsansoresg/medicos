@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-center-radar.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+  @livewireStyles
+
 </head>
 <body>
   @inject('ClinicaUser', 'App\Models\ClinicaUser')
@@ -130,6 +132,8 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+@livewireScripts
+
 <script src="/js/app.js?version'.date('H-i-s')"></script>
 
 <script>

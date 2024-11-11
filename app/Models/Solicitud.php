@@ -21,7 +21,7 @@ class Solicitud extends Model
 
     protected $table = 'solicitudes';
 
-    public static function getAll($paginate = null)
+    public static function getAll($paginate = null, $search = null)
     {
         //*cambiar listando las clinicas donde perteneces si no eres administrador
         $user_id = User::getMyUserPrincipal();
@@ -40,6 +40,15 @@ class Solicitud extends Model
                 ->join('users', 'users.id', 'solicitudes.user_id')
                 ->where('user_id', $user_id);
         }
+
+        if ($search != '') {
+            $solicitud->where(function ($query) use ($search) {
+                $query->orWhere('name', 'like', '%' . $search . '%');
+                $query->orWhere('vapellido', 'like', '%' . $search . '%');
+            });
+            
+        }
+        $solicitud->orderBy('solicitudes.id', 'DESC');
         return $paginate ? $solicitud->paginate($paginate) : $solicitud->get();
         
     }
@@ -56,21 +65,36 @@ class Solicitud extends Model
                     })
                     ->where('catalog_prices_id', 1)
                     ->where('estatus', 1)
+                    
                     ->first();
         $price  = 0;
         if ($getSolicitud != null) {
             // Asumiendo que $fechaVencimiento contiene la fecha de vencimiento en formato 'Y-m-d'
-            $fechaVencimiento = new DateTime('2025-10-01');
-            $fechaActual = new DateTime('2024-11-01'); // Suponiendo que esta es la fecha del servidor
+            $fechaVencimiento = new DateTime($getSolicitud->fecha_vencimiento);
+            $fechaActual = new DateTime(date('Y-m-d')); // Suponiendo que esta es la fecha del servidor
 
-            // Calcula la diferencia entre la fecha actual y la fecha de vencimiento
-            $diferencia = $fechaActual->diff($fechaVencimiento);
+            // Verifica si la fecha de vencimiento es mayor que la fecha actual
+            if ($fechaVencimiento > $fechaActual) {
+                // Calcula la diferencia de años y meses sin considerar los días
+                $anioDiff = $fechaVencimiento->format('Y') - $fechaActual->format('Y');
+                $mesDiff = $fechaVencimiento->format('m') - $fechaActual->format('m');
 
-            // Obtiene el total de meses entre la fecha actual y la fecha de vencimiento
-            $mesesTranscurridos = ($diferencia->y * 12) + $diferencia->m;
+                // Calcula el total de meses hasta la fecha de vencimiento
+                $mesesTranscurridos = ($anioDiff * 12) + $mesDiff;
 
-            // Calcula cuántos meses faltan para completar 12
-            $mesesRestantesParaCompletarDoce = 12 - $mesesTranscurridos;
+                // Asegura que no haya ningún mes transcurrido si el día actual es menor al día del mes de la fecha de vencimiento
+                if ($fechaActual->format('d') < $fechaVencimiento->format('d') && $mesesTranscurridos > 0) {
+                    $mesesTranscurridos--;
+                }
+
+                // Calcula los meses restantes para completar 12
+                $mesesRestantesParaCompletarDoce = 12 - $mesesTranscurridos;
+            } else {
+                // Si la fecha de vencimiento ya ha pasado
+                $mesesTranscurridos = 12; // Todos los meses ya se han consumido
+                $mesesRestantesParaCompletarDoce = 0;
+            }
+            
             if ($mesesRestantesParaCompletarDoce > 0 ) {
                 $getPrice = CatalogPrice::find($getSolicitud->catalog_prices_id);
                 $precioPaquete = $getPrice->precio / 12;
@@ -103,12 +127,13 @@ class Solicitud extends Model
             // Verificamos si el usuario ya tiene una solicitud de paquete básico pendiente.
             $getSolicitudPendiente = Solicitud::where('user_id', $user_id)
                                             ->where('estatus', 0)
+                                            ->orWhere('estatus', 2)
                                             ->first();
 
             // Si ya hay una solicitud pendiente de activación
             if ($getSolicitudPendiente) {
                 $isExistAcceso = true;
-                $errorMessage = 'Ya tienes una solicitud pendiente en espera de activación.';
+                $errorMessage = $getSolicitudPendiente->estatus == 0 ?  'Ya tienes una solicitud pendiente en espera de activación.' : 'Tienes tu acceso caducado, favor de reactivarlo en el panel principal';
             } else {
                 // Verificamos si el usuario ya tiene un paquete básico activo.
                 $getSolicitudBasico = Solicitud::where('user_id', $user_id)
