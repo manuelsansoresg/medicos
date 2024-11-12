@@ -60,7 +60,7 @@ class SolicitudController extends Controller
     public function show($id)
     {
         $solicitud = Solicitud::select(
-                        'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'comprobante', 'fecha_vencimiento', 'name', 'vapellido', 'solicitudes.user_id', 'catalog_prices_id'
+                        'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'estatus', 'comprobante', 'fecha_vencimiento', 'name', 'vapellido', 'solicitudes.user_id', 'catalog_prices_id'
                         )
                         ->where('solicitudes.id',$id)
                         ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
@@ -107,6 +107,7 @@ class SolicitudController extends Controller
                     $dataSolicitud['estatus'] = $estatus;
                     if ($estatus == 1) {
                         $dataSolicitud['fecha_vencimiento'] = $fechaVencimiento;
+                        $dataSolicitud['fecha_activacion'] = date('Y-m-d');
                     }
                 }
                 $archivo->move($rutaDestino, $nombreArchivo);
@@ -125,6 +126,7 @@ class SolicitudController extends Controller
             );
             if ($estatus == 1) {
                 $dataSolicitud['fecha_vencimiento'] = $fechaVencimiento;
+                $dataSolicitud['fecha_activacion'] = date('Y-m-d');
             }
             Solicitud::where('id', $solicitudId)->update($dataSolicitud);
         }

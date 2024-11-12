@@ -17,6 +17,7 @@ class Solicitud extends Model
         'cantidad',
         'user_id',
         'fecha_vencimiento',
+        'fecha_activacion',
     ];
 
     protected $table = 'solicitudes';
@@ -86,8 +87,7 @@ class Solicitud extends Model
                     
                     ->first();
         $price  = 0;
-        $mesesRestantesParaCompletarDoce = 0;
-        
+        $mesesRestantesParaCompletarDoce = null;
 
         if ($getSolicitud != null) {
             // Asumiendo que $fechaVencimiento contiene la fecha de vencimiento en formato 'Y-m-d'
@@ -176,6 +176,7 @@ class Solicitud extends Model
         }
 
         // Si la validación falla, enviamos el mensaje de error.
+        
         if ($isExistAcceso == false) {
             if ($solicitudId == null) {
                 $data['user_id'] = Auth::user()->id;

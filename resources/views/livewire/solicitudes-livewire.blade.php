@@ -72,7 +72,7 @@
                             $color = 'text-warning';
                         }
                         
-                        if ($mesesRestantes === 0) {
+                        if ($mesesRestantes === 0 || $solicitud->estatus == 2) {
                             $color = 'text-danger';
                             $isVencido = true;
                             $MSolicitud::where(['id' => $solicitud->id, 'estatus' => 1])->update([
