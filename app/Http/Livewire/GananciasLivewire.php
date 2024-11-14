@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Solicitud;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -22,6 +23,7 @@ class GananciasLivewire extends Component
         if ($this->search !== '' && $this->page > 1) {
             $this->resetPage();
         }
-        return view('livewire.ganancias-livewire');
+        $solicitudes = Solicitud::getGanancias(50, $this->search);
+        return view('livewire.ganancias-livewire', compact('solicitudes'));
     }
 }

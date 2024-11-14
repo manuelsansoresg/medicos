@@ -31,12 +31,56 @@ window.setSolicitud = function(getSolicitud)
 {
     let solicitud = getSolicitud.value;
     let cantidadInput = document.getElementById("cantidad");
-
+    $('#content-solicitud-pacientes').hide();
     // Establece el valor máximo del input en función de la solicitud
     if (solicitud == 1) {
         cantidadInput.setAttribute("max", "1");
-    } else {
+    } 
+    if(solicitud == 4) {
+        $('#content-solicitud-pacientes').show();
+    }
+    if(solicitud != 1) {
         cantidadInput.removeAttribute("max"); // Quita el atributo max si no es 1
+    }
+}
+let selectedButtons = []; // Mantendrá un seguimiento de los botones seleccionados
+let selectedIds = []; // Mantiene el ID de los pacientes seleccionados
+
+window.toggleSelectionWithLimit = function(pacienteId) {
+    const cantidadInput = document.getElementById("cantidad");
+    const maxCantidad = parseInt(cantidadInput.value);
+    
+    // Verifica que el input "cantidad" tenga un valor válido
+    if (!maxCantidad) {
+        alert("Debes establecer una cantidad de pacientes.");
+        cantidadInput.focus();
+        return;
+    }
+
+    const button = document.getElementById(`btn-${pacienteId}`);
+    const pacienteInput = document.getElementById("pacienteId");
+
+    // Verifica que el botón y el input existan
+    if (button && pacienteInput) {
+        // Si el botón está en "btn-primary" y aún no se ha alcanzado el límite
+        if (button.classList.contains("btn-primary") && selectedButtons.length < maxCantidad) {
+            button.classList.remove("btn-primary");
+            button.classList.add("btn-success");
+            selectedButtons.push(button); // Agrega el botón a la lista de seleccionados
+            selectedIds.push(pacienteId); // Agrega el ID al array de IDs seleccionados
+
+        // Si el botón ya está seleccionado y el usuario hace clic para deseleccionarlo
+        } else if (button.classList.contains("btn-success")) {
+            button.classList.remove("btn-success");
+            button.classList.add("btn-primary");
+            selectedButtons = selectedButtons.filter(btn => btn !== button); // Quita el botón de la lista de seleccionados
+            selectedIds = selectedIds.filter(id => id !== pacienteId); // Quita el ID del array de seleccionados
+        } else if (selectedButtons.length >= maxCantidad) {
+            alert(`Solo puedes seleccionar hasta ${maxCantidad} paciente(s)., dar clic al botón verde para deseleccionar `);
+        }
+
+        // Actualiza el valor del input oculto con los IDs seleccionados
+        pacienteInput.value = selectedIds.join(',');
     }
 }
 

@@ -11,7 +11,7 @@
             </div>
         </div>
        <div class="col-12 text-end py-3">
-            @if ($isDownload)
+            @if ($isDownload === true && $isShowDownload === true)
                 <button class="btn btn-primary disabled" id="btn-download-expedient">DESCARGAR EXPEDIENTES SELECCIONADOS</button>
             @endif
        </div>
@@ -20,7 +20,7 @@
             <div class="table-responsive">
                 <table class="table">
                     <tr>
-                        @if ($isDownload)
+                        @if ($isDownload == true && $isOriginSolicitud == false)
                             <td>
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="selectAll" value="1">
@@ -33,7 +33,7 @@
                     </tr>
                     @foreach ($pacientes as $paciente)
                         <tr>
-                            @if ($isDownload)
+                            @if ($isDownload == true && $isOriginSolicitud == false)
                                 <td>
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input selectExpedient" name="expedients[]" value="{{ $paciente->id }}">
@@ -46,7 +46,13 @@
                                 @php
                                     $nombre = $paciente->name.' '. $paciente->vapellido;
                                 @endphp
-                                <a href="/admin/expedientes/{{ $paciente->id }}" class="btn btn-primary"><i class="far fa-folder-open"></i></a>
+                                @if ($isOriginSolicitud == false)
+                                    <a href="/admin/expedientes/{{ $paciente->id }}" class="btn btn-primary"><i class="far fa-folder-open"></i></a>
+                                    @else
+                                    <a href="#" id="btn-{{ $paciente->id }}" class="btn btn-primary btn-toggle" onclick="toggleSelectionWithLimit('{{ $paciente->id }}')">
+                                        <i class="fas fa-check-circle"></i>
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                     @endforeach

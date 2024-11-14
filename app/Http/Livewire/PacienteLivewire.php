@@ -14,13 +14,17 @@ class PacienteLivewire extends Component
     public    $search          = '';
     public    $isList          = '';
     public    $isDownload      = false;
+    public    $isShowDownload;
+    public    $isOriginSolicitud;
     public    $limit;
 
-    public function mount($limit, $isList = false)
+    public function mount($limit, $isList = false, $isShowDownload = true, $isOriginSolicitud = false)
     {
-        $this->limit  = $limit;
-        $this->isList = $isList;
-        $this->isDownload = User::getIsPermissionDownload();
+        $this->limit             = $limit;
+        $this->isList            = $isList;
+        $this->isShowDownload    = $isShowDownload;
+        $this->isOriginSolicitud = $isOriginSolicitud;
+        $this->isDownload        = User::getIsPermissionDownload();
     }
     public function render()
     {

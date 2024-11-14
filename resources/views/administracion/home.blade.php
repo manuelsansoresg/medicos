@@ -110,30 +110,9 @@
     
     <livewire:solicitudes-livewire :limit="50"  />
    
-    <div class="row mt-3">
-        <div class="col-12">
-            <div class="col-12 text-center">
-                <p class="h6"> GANANCIAS </p>
-            </div>
-            <table class="table">
-                <tr>
-                    <th>NOMBRE</th>
-                    <th>COSTO</th>
-                    <th>GANANCIA</th>
-                </tr>
-                <tr>
-                    <td>MANUEL SANSORES MANUEL DE JESUS</td>
-                    <td>100</td>
-                    <td>50</td>
-                </tr>
-                <tr>
-                    <td>JUAN CENTENO CAMARA</td>
-                    <td>100</td>
-                    <td>50</td>
-                </tr>
-            </table>
-        </div>
-    </div>
+    <livewire:ganancias-livewire :limit="50"  />
+
+   
     
 </div>
 @stop

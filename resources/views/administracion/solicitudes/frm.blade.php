@@ -29,6 +29,12 @@
                                 <input type="number" class="form-control" name="data[cantidad]" id="cantidad" min="1" max="null" value="{{ $query != null ? $query->cantidad : null }}" required>
                             </div>
                         </div>
+                        <div id="content-solicitud-pacientes">
+                            <h5 class="color-secondary mt-3">Seleccione un paciente</h5>
+                            <livewire:paciente-livewire :limit="50" :isList="true" :isShowDownload="false" :isOriginSolicitud="true" />
+                            <input type="hidden" id="pacienteId" id="data[paciente_id]" value="">
+
+                        </div>
 
                         <div class="col-md-12 text-end">
                             <div class="mb-3">

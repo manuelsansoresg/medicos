@@ -18,6 +18,7 @@ class Solicitud extends Model
         'user_id',
         'fecha_vencimiento',
         'fecha_activacion',
+        'paciente_id',
     ];
 
     protected $table = 'solicitudes';
@@ -54,6 +55,42 @@ class Solicitud extends Model
         $solicitud->orderBy('solicitudes.id', 'DESC');
         return $paginate ? $solicitud->paginate($paginate) : $solicitud->get();
         
+    }
+
+    public static function getGanancias($paginate = null, $search = null)
+    {
+        
+        //*cambiar listando las clinicas donde perteneces si no eres administrador
+        $user_id = User::getMyUserPrincipal();
+        $isAdmin = Auth::user()->hasRole('administrador');
+
+        if ($isAdmin) {
+            $solicitud =  Solicitud::select(
+                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'solicitudes.updated_at', 'name', 'vapellido', 'fecha_vencimiento', 'catalog_prices_id', 'user_id'
+                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
+                ->join('users', 'users.id', 'solicitudes.user_id')
+                ->whereIn('estatus', [1,3])
+                ;
+        } else {
+            $solicitud =  Solicitud::select(
+                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'name', 'vapellido', 'fecha_vencimiento', 'catalog_prices_id', 'user_id'
+                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
+                ->join('users', 'users.id', 'solicitudes.user_id')
+                ->where('user_id', $user_id)
+                ->where('catalog_prices_id', 4);
+        }
+
+        if ($search != '') {
+            $solicitud->where(function ($query) use ($search) {
+                $query->orWhere('name', 'like', '%' . $search . '%');
+                $query->orWhere('vapellido', 'like', '%' . $search . '%');
+            });
+            
+        }
+        $solicitud->orderBy('solicitudes.id', 'DESC');
+        return $paginate ? $solicitud->paginate($paginate) : $solicitud->get();
+        
+    
     }
 
     public static function reset($solicitudId)
