@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -330,7 +331,7 @@ class User extends Authenticatable
     }
     
     //*obtiene listado de tu usuario y los usuarios que te pertenecen si eres medico, si eres admin obtiene el listado de todos los usuarios
-    public static function GetListUsers()
+    public static function GetListUsers($paginate = null, $status = null)
     {
         $isAdmin    = Auth::user()->hasRole('administrador');
         $isDoctor   = Auth::user()->hasRole('medico');
@@ -341,25 +342,37 @@ class User extends Authenticatable
         
         if ($isAdmin === true) {
             $users = User::getUsersByRoles($roles);
+        } else {
+            if ($isDoctor === true) {
+                $roles = [ 'medico', 'auxiliar', 'secretario'];
+                $users = User::whereHas('roles', function ($q) use($roles) {
+                                    $q->whereIn('name', $roles);
+                                });
+                if ($status === 0) {
+                    $users->where('status', $status);
+                }
+                $users->where(function($query) use ($usuario_principal) {
+                    $query->where('id', Auth::user()->id)
+                          ->orWhere('usuario_principal', $usuario_principal);
+                });
+                                
+            }
+    
+            if ($isAuxiliar === true) {
+                $users =  User::where('id', Auth::user()->id);
+                if ($status === 0) {
+                    $users->where('status', $status);
+                }
+                $users ->orWhere('creador_id', Auth::user()->id);
+                            
+            }
+            if ($paginate === null) {
+                $users = $users->get();
+            } else {
+                $users = $users->paginate($paginate);
+            }
         }
         
-        if ($isDoctor === true) {
-            $roles = [ 'medico', 'auxiliar', 'secretario'];
-            $users = User::whereHas('roles', function ($q) use($roles) {
-                                $q->whereIn('name', $roles);
-                            })
-                            ->where(function($query) use ($usuario_principal) {
-                                $query->where('id', Auth::user()->id)
-                                      ->orWhere('usuario_principal', $usuario_principal);
-                            })
-                            ->get();
-        }
-
-        if ($isAuxiliar === true) {
-            $users =  User::where('id', Auth::user()->id)
-                        ->orWhere('creador_id', Auth::user()->id)
-                        ->get();
-        }
         
         return $users;
     }
@@ -494,5 +507,101 @@ class User extends Authenticatable
     {
         $getPercent = User::getUsersByRoles(['paciente']);
         return count($getPercent) > 0 ? true : false;
+    }
+
+    public static function getPorcentajeSistema()
+    {
+        $total         = 5;
+        $idusrregistra = User::getMyUserPrincipal();
+        $clinicat      = Clinica::where('idusrregistra', $idusrregistra)->count() > 0 ? 1 : 0;
+        $consultorios  = count(Consultorio::getAll()) > 0 ? 1 : 0;
+        $users         = count(User::GetListUsers())> 0 ? 1 : 0;
+        $pacientes     = count(User::getUsersByRoles(['paciente']))> 0 ? 1 : 0;
+        $templates    = count(FormularioConfiguration::getAllMyTemplates())> 0 ? 1 : 0;
+
+        // Suma los valores que resulten en 1.
+        $complete = $clinicat + $consultorios + $users + $pacientes + $templates;
+        // Calcula el porcentaje.
+        $percent = ($complete / $total) * 100;
+        $data = array(
+            'validateClinic' => $clinicat, 
+            'validateCon' => $consultorios, 
+            'validateUsers' => $users, 
+            'validatePacient' => $pacientes, 
+            'validateTemplate' => $templates, 
+            'percent' => $percent, 
+        );
+        return $data;
+    }
+
+    public static function getUsersActive()
+    {
+        $userId =self::getMyUserPrincipal();
+        //primero obtener si el paquete esta activo ya que si es activo debe tener 2 usuarios para crear de default
+        $getTotalPaquete = Solicitud::select('id')
+        ->where([
+            'user_id' => $userId
+        ])
+        ->where('estatus', 1)
+        ->where('catalog_prices_id', 1)
+        ->first();
+        $totalPaquete = $getTotalPaquete == null? 0 : 2;
+
+        //revisar si se compraron usuarios extras y si estan activos
+        $totalUsuariosSolicitud = Solicitud::select(DB::raw('SUM(cantidad) as total'))
+        ->where([
+            'user_id' => $userId
+        ])
+        ->where('estatus', 1)
+        ->where('catalog_prices_id', 2)
+        ->first();
+        $totalUsuariosSolicitud = $totalUsuariosSolicitud == null ? 0 : $totalUsuariosSolicitud->total + $totalPaquete;
+        $getUsers               = User::GetListUsers();
+        $myUsers                = count($getUsers);
+        $total                  = $totalUsuariosSolicitud - $myUsers ;
+        self::updateUserFinishDate();
+        Consultorio::updateConFinishDate();
+        return $total;
+    }
+
+    public static function updateUserFinishDate()
+    {
+        // Obtener el usuario principal
+        $userId = self::getMyUserPrincipal();
+
+        // Consultar solicitudes del usuario principal
+        $solicitudes = Solicitud::where('user_id', $userId)
+            ->where('estatus', 1) // Solo solicitudes activas
+            ->whereIn('catalog_prices_id', [1,2])
+            ->get();
+
+        // Determinar usuarios permitidos con base en solicitudes válidas
+        $usuariosPermitidos = 0;
+        foreach ($solicitudes as $solicitud) {
+            if (Carbon::parse($solicitud->fecha_vencimiento)->isFuture()) {
+                if ($solicitud->catalog_prices_id == 1) {
+                    $usuariosPermitidos += 2; // 2 usuarios para catalog_prices_id = 1
+                } elseif ($solicitud->catalog_prices_id == 2) {
+                    $usuariosPermitidos += $solicitud->cantidad; // Cantidad definida
+                }
+            }
+        }
+
+        // Obtener la lista de usuarios ascendentes
+        $usuarios = User::GetListUsers();
+
+        // Actualizar el estado de los usuarios
+        $contador = 0;
+        foreach ($usuarios as $usuario) {
+            if ($contador < $usuariosPermitidos) {
+                $usuario->status = 1; // Mantener activo
+                //echo 'activo'. $usuario->name.'<br>';
+            } else {
+                $usuario->status = 0; // Desactivar el resto
+                //echo 'inactivo'. $usuario->name.'<br>';
+            }
+            $usuario->update();
+            $contador++;
+        }
     }
 }

@@ -5,7 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CatalogPrice;
 use App\Models\Comment;
+use App\Models\Consultorio;
 use App\Models\Solicitud;
+use App\Models\SolicitudPaciente;
+use App\Models\SolicitudUsuario;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -51,6 +55,35 @@ class SolicitudController extends Controller
        return response()->json($solicitud);
     }
 
+    public function showDataRenew($solicitudId)
+    {
+        $title = 'Elije un elemento para activar';
+        $solicitudes = Solicitud::select('cantidad', 'catalog_prices_id', 'cantidad')->where('id', $solicitudId)->first();
+        $cantidad = $solicitudes->cantidad;
+        $users = null;
+        $cons = null;
+        if ($solicitudes->catalog_prices_id == 2) { //usuarios
+            $users        = User::GetListUsers(null, 0);
+            
+        }
+        if ($solicitudes->catalog_prices_id == 3) { //consultorios
+            $cons              = Consultorio::getAll(null, 0);
+            
+        }
+        $view = \View::make('listado_solicitud_renovacion', compact('solicitudes', 'users', 'cantidad', 'solicitudId', 'cons'))->render();
+        $data = array(
+            'title' => $title,
+            'content' => $view
+        );
+        return response()->json($data);
+        //return view('listado_solicitud_renovacion', compact('solicitudes', 'users', 'cantidad'));
+    }
+
+    public function storeSolicitudes(Request $request)
+    {
+        SolicitudUsuario::saveRenew($request);
+    }
+
     /**
      * Display the specified resource.
      *
@@ -72,9 +105,10 @@ class SolicitudController extends Controller
         ])->get();
         //obtener el paquete activo de uso de sistema
         $paqueteActivo = Solicitud::getPaqueteActivo($solicitud)['price'];
+        $pacientes = SolicitudPaciente::where('solicitud_id', $id) ->with('paciente')->get();
         
         $fecha_vencimiento = $solicitud->fecha_vencimiento != '' ? $solicitud->fecha_vencimiento : date('Y-m-d', strtotime('+1 year'));
-        return view('administracion.solicitudes.solicitud', compact('solicitud', 'id', 'comments', 'fecha_vencimiento', 'paqueteActivo'));
+        return view('administracion.solicitudes.solicitud', compact('solicitud', 'id', 'comments', 'fecha_vencimiento', 'paqueteActivo', 'pacientes'));
     }
 
     public function adjuntarComprobante(Request $request)
@@ -108,7 +142,11 @@ class SolicitudController extends Controller
                     if ($estatus == 1) {
                         $dataSolicitud['fecha_vencimiento'] = $fechaVencimiento;
                         $dataSolicitud['fecha_activacion'] = date('Y-m-d');
+                        $dataSolicitud['precio_total'] = $request->precio_total;
                     }
+
+                    SolicitudUsuario::activateRenew($solicitudId);
+                   
                 }
                 $archivo->move($rutaDestino, $nombreArchivo);
                 Solicitud::where('id', $solicitudId)->update($dataSolicitud);
@@ -124,10 +162,12 @@ class SolicitudController extends Controller
             $dataSolicitud = array(
                 'estatus' => $estatus,
             );
-            if ($estatus == 1) {
+            if ($estatus == 1) { // paquete uso del sistema
                 $dataSolicitud['fecha_vencimiento'] = $fechaVencimiento;
+                $dataSolicitud['precio_total'] = $request->precio_total;
                 $dataSolicitud['fecha_activacion'] = date('Y-m-d');
             }
+            SolicitudUsuario::activateRenew($solicitudId);
             Solicitud::where('id', $solicitudId)->update($dataSolicitud);
         }
 

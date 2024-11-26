@@ -119,6 +119,18 @@ class FormularioConfigurationController extends Controller
         return redirect()->route('template-formulario.index');
     }
 
+    public function activar($configurationId)
+    {
+        $userId = User::getMyUserPrincipal();
+        FormularioConfiguration::where('user_id', $userId)->update([
+            'active' => 0
+        ]);
+
+        FormularioConfiguration::where('id', $configurationId)->update([
+            'active' => 1
+        ]);
+    }
+
     public function destroy($configurationId)
     {
         $configuration = FormularioConfiguration::find($configurationId);

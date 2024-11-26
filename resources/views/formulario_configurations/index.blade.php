@@ -22,11 +22,17 @@
             <a href="/" class="btn btn-primary"><i class="fas fa-home"></i></a>
             <a href="{{ route('template-formulario.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i></a>
         </div>
+        <div class="col-12 mt-3">
+            <div class="alert alert-primary" role="alert">
+                La plantilla es un formulario personalizado que saldrá al momento de realizar una consulta, recuerda activar la plantilla que usaras para la consulta
+              </div>
+        </div>
         <div class="col-12">
             <table class="table mt-3">
                 <thead>
                     <tr>
-                        <th>NOMBRE DEL FORMULARIO</th>
+                        <th>NOMBRE DE LA PLANTILLA</th>
+                        <th>ESTATUS</th>
                         <th>ACCIONES</th>
                     </tr>
                 </thead>
@@ -38,7 +44,17 @@
                            
                         </td>
                         <td>
-                            <a href="{{ route('template-formulario.edit', $configuration->id) }}" class="btn btn-primary"><i
+                            @if ($configuration->active == 1)
+                                SÍ
+                            @else
+                                NO
+                            @endif
+                           
+                        </td>
+                        <td>
+                            <a onclick="activarPlantilla({{ $configuration->id }})" class="btn btn-success"><i class="far fa-check-circle"></i></a>
+                            
+                                <a href="{{ route('template-formulario.edit', $configuration->id) }}" class="btn btn-primary"><i
                                 class="fas fa-edit"></i></a>
                                 <a href="#" onclick="deletePlantilla({{ $configuration->id }})" class="btn btn-danger"><i
                                     class="fas fa-trash"></i></a>

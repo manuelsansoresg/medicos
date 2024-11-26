@@ -68,6 +68,8 @@ window.toggleSelectionWithLimit = function(pacienteId) {
             button.classList.add("btn-success");
             selectedButtons.push(button); // Agrega el botón a la lista de seleccionados
             selectedIds.push(pacienteId); // Agrega el ID al array de IDs seleccionados
+            permisosPaciente(pacienteId);
+            
 
         // Si el botón ya está seleccionado y el usuario hace clic para deseleccionarlo
         } else if (button.classList.contains("btn-success")) {
@@ -83,6 +85,32 @@ window.toggleSelectionWithLimit = function(pacienteId) {
         pacienteInput.value = selectedIds.join(',');
     }
 }
+
+window.permisosPaciente = function(pacientId)
+{
+    axios
+        .get('/admin/usuarios/'+pacientId+'/permisos/get')
+        .then(function (response) {
+            let data = response.data;
+            $('#content-pacient-permissions').html(data);
+            $('#modalPermisosPaciente').modal('show');
+            
+        })
+        .catch(e => { });
+}
+
+$("#frm-config-download-pacient-expedient").submit(function (e) {
+    e.preventDefault();
+    const form = document.getElementById("frm-config-download-pacient-expedient");
+    const data = new FormData(form);
+    
+    axios
+        .post("/admin/configuracion-descargas", data)
+        .then(function (response) {
+            $('#modalPermisosPaciente').modal('hide');
+        })
+        .catch(e => { });
+});
 
 window.renew = function(SolicitudId)
 {
@@ -101,6 +129,46 @@ window.renew = function(SolicitudId)
         })
         .catch(e => { });
 }
+
+window.modalRenewSolicitud = function(solicitudId)
+{
+    axios
+    .get('/admin/solicitudes/'+solicitudId+'/renew/showData')
+    .then(function (response) {
+        let data = response.data;
+        $('#modalReactivacionLabel').html(data.title);
+        $('#modalReactivacionContent').html(data.content);
+        $('#modalReactivacion').modal('show');
+        
+    })
+    .catch(e => { });
+}
+
+window.renovarSolicitudes = function()
+{
+    const form = document.getElementById("frm-renovar-solicitudes");
+    const data = new FormData(form);
+
+    axios
+        .post('/admin/solicitudes/action/renew/store', data)
+        .then(function (response) {
+            Swal.fire({
+                text: 'Su solicitud ha sido enviada, favor de adjuntar el comprobante de pago en la siguiente ventana para su activación',
+                icon: "warning"
+            }).then((result) => {
+                // Acción después de cerrar el alerta
+                window.location = '/';
+            });
+        })
+        .catch(function (error) {
+            console.error(error.response.data);
+            alert("Ocurrió un error al renovar la solicitud");
+        });
+}
+
+
+
+
 
 $("#frm-solicitud-comentario").submit(function (e) {
     e.preventDefault();

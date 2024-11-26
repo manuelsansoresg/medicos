@@ -130,7 +130,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="/vendor/EasyAutocomplete/jquery.easy-autocomplete.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+{{-- <script src="//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script> --}}
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @livewireScripts
 
@@ -161,39 +161,7 @@
     }
   });
   
-  if (document.getElementById('container')) {
-    var bar = new ProgressBar.Circle(container, {
-    color: '#1a73e8',
-    // This has to be the same size as the maximum width to
-    // prevent clipping
-    strokeWidth: 4,
-    trailWidth: 1,
-    easing: 'easeInOut',
-    duration: 1400,
-    text: {
-      autoStyleContainer: false
-    },
-    from: { color: '#1a73e8', width: 1 },
-    to: { color: '#1a73e8', width: 4 },
-    // Set default step function for all animate calls
-    step: function(state, circle) {
-      circle.path.setAttribute('stroke', state.color);
-      circle.path.setAttribute('stroke-width', state.width);
   
-      var value = Math.round(circle.value() * 100);
-      if (value === 0) {
-        circle.setText('');
-      } else {
-        circle.setText(value+'%');
-      }
-  
-    }
-  });
-  bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-  bar.text.style.fontSize = '2rem';
-  
-  bar.animate(1.0);  // Number from 0.0 to 1.0
-  }
  
 </script>
 

@@ -7,6 +7,7 @@ use App\Http\Requests\UserUpdateRequest;
 use App\Models\Access;
 use App\Models\Clinica;
 use App\Models\ClinicaUser;
+use App\Models\FormularioConfiguration;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +42,17 @@ class UserController extends Controller
         $userAdmins = User::getUsersByNameRol('medico');
         
         return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics', 'puestos', 'userAdmins'));
+    }
+
+    public function permisosGet($pacienteId)
+    {
+        $user = User::find($pacienteId);
+        $userId = $pacienteId;
+        $userPrincipal  = User::getMyUserPrincipal();
+        $configurations = FormularioConfiguration::where(['active' =>  1, 'user_id' => $userPrincipal])->with('fields')->first();
+        $view = \View::make('administracion.user.expedients_download.content_config', compact('userId', 'user', 'configurations'))->render();
+        return view('administracion.user.expedients_download.content_config', compact('userId', 'user', 'configurations'));
+        return response()->json($view);
     }
 
     /**

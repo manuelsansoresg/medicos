@@ -29,13 +29,19 @@
                             <td>PAQUETE</td>
                             <td>{{ $solicitud->nombre }}</td>
                         </tr>
+                        @foreach ($pacientes as $pacientesValue)
+                            <tr>
+                                <td> NOMBRE PACIENTE </td>
+                                <td>{{ $pacientesValue->paciente->name }}  {{ $pacientesValue->paciente->vapellido }}</td>
+                            </tr>
+                        @endforeach
                         <tr>
                             <td>CANTIDAD</td>
                             <td>{{ $solicitud->cantidad }}</td>
                         </tr>
                         <tr>
                             <td>PRECIO</td>
-                            <td>${{ format_price($subtotal) }}</td>
+                            <td>${{ format_price($solicitud->precio) }}</td>
                         </tr>
                         @if ($solicitud->catalog_prices_id != 1)
                             <tr>
@@ -45,7 +51,9 @@
                         @endif
                         <tr>
                             <td>TOTAL</td>
-                            <td>${{ format_price($total) }}</td>
+                            <td>${{ format_price($total) }}
+                              
+                            </td>
                         </tr>
                         <tr>
                             <td colspan="2"> <hr> </td>
@@ -110,6 +118,7 @@
                                 <option value="2" {{ $solicitud->estatus == 2 ? 'selected' : null}}>EN REVISIÓN</option>
                             </select>
                         </div>
+                        <input type="hidden" name="precio_total" value="{{ $total }}" >
                     @endrole
 
                     @if ($errors->any())

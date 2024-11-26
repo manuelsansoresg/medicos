@@ -1,5 +1,5 @@
 @extends('layouts.template')
-
+@inject('MmSolicitudPaciente', 'App\Models\SolicitudPaciente') 
 @section('content_header')
     <div class="container">
         <div class="row mt-3">
@@ -35,10 +35,18 @@
                         </thead>
                         <tbody>
                             @foreach ($users as $user)
+                                @php
+                                    $isExistPacientePermissions = $MmSolicitudPaciente::where('paciente_id', $user->id)->count();
+                                @endphp
                                 <tr>
                                     <td>{{ $user->name }} {{  $user->vapellido }} </td>
                                     <td> {{ $user->email }} </td>
                                     <td class="col-3">
+                                        @if ($isExistPacientePermissions > 0)
+                                        <a href="#" onclick="permisosPaciente({{ $user->id }})" class="btn btn-success"><i
+                                            class="fas fa-users-cog"></i></a>
+                                        @endif
+                                     
                                         <a href="/admin/pacientes/{{ $user->id }}/edit" class="btn btn-primary"><i
                                                 class="fas fa-edit"></i></a>
                                         <a href="#" onclick="deletePaciente({{ $user->id }})" class="btn btn-danger"><i
@@ -53,4 +61,23 @@
 
         </div>
     </div>
+
+    <div class="modal fade" id="modalPermisosPaciente" tabindex="-1" aria-labelledby="modalPermisosPacienteLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form id="frm-config-download-pacient-expedient">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPermisosPacienteLabel">Agregar permisos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="content-pacient-permissions">
+    
+                    </div>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
 @endsection

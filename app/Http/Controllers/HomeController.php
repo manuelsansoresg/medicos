@@ -41,8 +41,9 @@ class HomeController extends Controller
         if ($consultorio != null) {
             $consultas              = ConsultaAsignado::getByDay(5);
         }
-        
-        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'statusPacient', 'earrings', 'consultas'));
+        $getPorcentajeSistema = User::getPorcentajeSistema();
+        //User::getUsersActive();
+        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'statusPacient', 'earrings', 'consultas', 'getPorcentajeSistema'));
     }
 
     public function editProfile()

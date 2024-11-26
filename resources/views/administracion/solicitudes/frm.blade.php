@@ -1,6 +1,7 @@
 @extends('layouts.template')
 
 @section('content')
+@inject('CUser', 'App\Models\User') 
 <div class="container bg-white py-2">
     <div class="row mt-3 card">
        
@@ -29,10 +30,10 @@
                                 <input type="number" class="form-control" name="data[cantidad]" id="cantidad" min="1" max="null" value="{{ $query != null ? $query->cantidad : null }}" required>
                             </div>
                         </div>
-                        <div id="content-solicitud-pacientes">
+                        <div id="content-solicitud-pacientes" style="display: none">
                             <h5 class="color-secondary mt-3">Seleccione un paciente</h5>
                             <livewire:paciente-livewire :limit="50" :isList="true" :isShowDownload="false" :isOriginSolicitud="true" />
-                            <input type="hidden" id="pacienteId" id="data[paciente_id]" value="">
+                            <input type="hidden" id="pacienteId" name="pacientes_ids" value="">
 
                         </div>
 
@@ -49,4 +50,25 @@
         </div>
     </div>
 </div>
+{{-- modal permisos --}}
+@php
+    
+@endphp
+<div class="modal fade" id="modalPermisosPaciente" tabindex="-1" aria-labelledby="modalPermisosPacienteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="frm-config-download-pacient-expedient">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPermisosPacienteLabel">Agregar permisos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="content-pacient-permissions">
+
+                </div>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
 @endsection

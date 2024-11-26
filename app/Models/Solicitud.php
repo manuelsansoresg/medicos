@@ -19,6 +19,8 @@ class Solicitud extends Model
         'fecha_vencimiento',
         'fecha_activacion',
         'paciente_id',
+        'precio_total',
+        'solicitud_origin_id'
     ];
 
     protected $table = 'solicitudes';
@@ -57,26 +59,29 @@ class Solicitud extends Model
         
     }
 
-    public static function getGanancias($paginate = null, $search = null)
+    public static function getGanancias($paginate = null, $search = null, $fechaInicio, $fechaFinal)
     {
-        
+        \DB::enableQueryLog();
         //*cambiar listando las clinicas donde perteneces si no eres administrador
         $user_id = User::getMyUserPrincipal();
         $isAdmin = Auth::user()->hasRole('administrador');
 
         if ($isAdmin) {
             $solicitud =  Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'solicitudes.updated_at', 'name', 'vapellido', 'fecha_vencimiento', 'catalog_prices_id', 'user_id'
+                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus','precio_total', 'solicitudes.created_at', 'solicitudes.updated_at', 'name', 'vapellido', 'porcentaje_ganancia', 'fecha_vencimiento', 'catalog_prices_id', 'user_id', 'estatus', 'fecha_activacion'
                 )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
                 ->join('users', 'users.id', 'solicitudes.user_id')
+                ->whereBetween('fecha_activacion', [$fechaInicio, $fechaFinal]) // Filtrar por rango de fechas
                 ->whereIn('estatus', [1,3])
                 ;
         } else {
             $solicitud =  Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'name', 'vapellido', 'fecha_vencimiento', 'catalog_prices_id', 'user_id'
+                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'precio_total' , 'solicitudes.created_at', 'name', 'vapellido', 'fecha_vencimiento', 'porcentaje_ganancia', 'catalog_prices_id', 'user_id', 'estatus', 'fecha_activacion'
                 )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
                 ->join('users', 'users.id', 'solicitudes.user_id')
                 ->where('user_id', $user_id)
+                ->whereBetween('fecha_activacion', [$fechaInicio, $fechaFinal]) // Filtrar por rango de fechas
+                ->where('estatus', '!=', 0)
                 ->where('catalog_prices_id', 4);
         }
 
@@ -101,6 +106,7 @@ class Solicitud extends Model
             'estatus' => 0 ,
             'cantidad' => $getSolicitud->cantidad ,
             'user_id' => $getSolicitud->user_id ,
+            'solicitud_origin_id' => $getSolicitud->id ,
         );
         $solicitud = Solicitud::create($dataSolicitud);
         Solicitud::where('id', $solicitudId)->update([
@@ -222,8 +228,21 @@ class Solicitud extends Model
             } else {
                 $solicitud = Solicitud::where('id', $solicitudId)->update($data);
             }
+             // vincular paciente con solicitud 
+            if ($data['catalog_prices_id'] == 4) { 
+                SolicitudPaciente::where('solicitud_id', $solicitud->id)->delete();
+                $pacientesIds = explode(',', $request->pacientes_ids);
+                foreach ($pacientesIds as $pacientesId) {
+                    SolicitudPaciente::create([
+                        'solicitud_id' => $solicitud->id,
+                        'paciente_id' => $pacientesId
+                    ]);
+                }
+            }
         }
-
+       
         return array('solicitud' => $solicitud, 'isReturnError' => $isExistAcceso, 'errorMessage' => $errorMessage);
     }
+
+    
 }

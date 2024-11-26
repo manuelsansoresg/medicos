@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -15,26 +16,37 @@ class Consultorio extends Model
     protected $primaryKey   = 'idconsultorios';
     protected $table        = 'consultorios';
     protected $fillable = [
-        'idconsultorios','vnumconsultorio','thubicacion','ttelefono','idclinica'
+        'idconsultorios','vnumconsultorio','thubicacion','ttelefono','idclinica', 'idusrregistra', 'status'
     ];
 
-    public static function getAll()
+    public static function getAll($paginate = null, $status = null)
     {
         $clinica     = Session::get('clinica');
         $consultorio = Session::get('consultorio');
         $isAdmin     = Auth::user()->hasRole('administrador');
+        $userId = User::getMyUserPrincipal();
 
         if ($isAdmin) {
-            return Consultorio::all();
+            $consultorio =  Consultorio::all();
+        } else {
+            $consultorio =  Consultorio::where([
+                'idusrregistra' => $userId,
+            ]); 
+            if ($status != 0) {
+                $consultorio->where('status', $status);
+            }
+            $consultorio = $consultorio->get();
         }
 
-        if ($consultorio == 0 && $consultorio != null) {
+        return $consultorio;
+
+       /*  if ($consultorio == 0 && $consultorio != null) {
             return Consultorio::getAsignedConsultories($clinica);
         }
         return Consultorio::where([
             'idconsultorios' => $consultorio,
             'idclinica' => $clinica,
-        ])->get();
+        ])->get(); */
     }
 
     public static function getAsignedConsultories($clinicaId, $isArray = false)
@@ -97,13 +109,56 @@ class Consultorio extends Model
     {
         $data = $request->data;
         $consultorio_id = $request->consultorio_id;
+        $userId = User::getMyUserPrincipal();
         if ($consultorio_id == null) {
+            $data['idusrregistra'] = $userId;
             $consultorio = Consultorio::create($data);
         } else {
             $consultorio = Consultorio::find($consultorio_id);
             $consultorio->update($data);
         }
         return $consultorio;
+    }
+
+    public static function updateConFinishDate()
+    {
+        // Obtener el usuario principal
+        $userId = User::getMyUserPrincipal();
+
+        // Consultar solicitudes del usuario principal
+        $solicitudes = Solicitud::where('user_id', $userId)
+            ->where('estatus', 1) // Solo solicitudes activas
+            ->whereIn('catalog_prices_id', [1,3])
+            ->get();
+
+        // Determinar usuarios permitidos con base en solicitudes válidas
+        $consultoriosPermitidos = 0;
+        foreach ($solicitudes as $solicitud) {
+            if (Carbon::parse($solicitud->fecha_vencimiento)->isFuture()) {
+                if ($solicitud->catalog_prices_id == 1) {
+                    $consultoriosPermitidos += 2; // 2 usuarios para catalog_prices_id = 1
+                } elseif ($solicitud->catalog_prices_id == 3) {
+                    $consultoriosPermitidos += $solicitud->cantidad; // Cantidad definida
+                }
+            }
+        }
+
+        // Obtener la lista de usuarios ascendentes
+        $consultorios = Consultorio::getAll();
+
+        // Actualizar el estado de los usuarios
+        $contador = 0;
+        foreach ($consultorios as $consultorio) {
+            if ($contador < $consultoriosPermitidos) {
+                $consultorio->status = 1; // Mantener activo
+                //echo 'activo'. $consultorio->name.'<br>';
+            } else {
+                $consultorio->status = 0; // Desactivar el resto
+                //echo 'inactivo'. $consultorio->name.'<br>';
+            }
+            $consultorio->update();
+            $contador++;
+        }
     }
 
     public function consultorioClinica()

@@ -21,6 +21,27 @@ window.deletePlantilla = function(templateId)
       })
 }
 
+window.activarPlantilla = function(plantillaId)
+{
+    Swal.fire({
+        title: '¿Deseas activar la plantilla?',
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: 'SÍ',
+        denyButtonText: `NO`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+            axios
+            .get("/admin/template-formulario/"+plantillaId+'/activar')
+            .then(function (response) {
+                window.location = '/admin/template-formulario'; 
+            })
+            .catch(error => { 
+            });
+        } 
+      })
+}
+
 if (document.getElementById('add-field')) {
     
     document.addEventListener('DOMContentLoaded', function () {
@@ -107,3 +128,39 @@ if (document.getElementById('add-field')) {
       });
 }
 
+/* grafica circular porcentaje de avance */
+
+if (document.getElementById('porcentajeSistema')) {
+    let porcentajeSistema = $('#porcentajeSistema').val();
+    var bar = new ProgressBar.Circle(container, {
+    color: '#1a73e8',
+    // This has to be the same size as the maximum width to
+    // prevent clipping
+    strokeWidth: 4,
+    trailWidth: 1,
+    easing: 'easeInOut',
+    duration: 1400,
+    text: {
+      autoStyleContainer: false
+    },
+    from: { color: '#1a73e8', width: 1 },
+    to: { color: '#1a73e8', width: 4 },
+    // Set default step function for all animate calls
+    step: function(state, circle) {
+      circle.path.setAttribute('stroke', state.color);
+      circle.path.setAttribute('stroke-width', state.width);
+  
+      var value = Math.round(circle.value() * porcentajeSistema);
+      if (value === 0) {
+        circle.setText('');
+      } else {
+        circle.setText(value+'%');
+      }
+  
+    }
+  });
+  bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
+  bar.text.style.fontSize = '2rem';
+  
+  bar.animate(1.0);  // Number from 0.0 to 1.0
+  }

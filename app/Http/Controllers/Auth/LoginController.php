@@ -1,9 +1,14 @@
 <?php
 
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Consultorio;
+use App\Models\Solicitud;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request; 
 
@@ -41,9 +46,18 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        if ($user->status == 0) {
-            //return redirect('account/suspend');
+        //1 verificar solicitudes a caducar y marcarlos caducados
+        $rolesValidate = $user->hasRole(['medico', 'auxiliar']);
+        if ($rolesValidate) {
+            $userId = User::getMyUserPrincipal();
+            Solicitud::where('user_id', $userId)
+                        ->where('estatus', 1)
+                        ->where('fecha_vencimiento', '<', Carbon::now())
+                        ->update(['estatus' => 2]);
+            
         }
+        User::updateUserFinishDate();
+        Consultorio::updateConFinishDate();
     }
 
 }

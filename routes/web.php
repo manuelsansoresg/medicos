@@ -49,10 +49,15 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/consultorio/{id}/{userId}/show', [App\Http\Controllers\Admin\ConsultoriosController::class, 'show'])->middleware('auth');
 
     Route::resource('usuarios', '\App\Http\Controllers\Admin\UserController')->middleware('auth');
+    Route::get('usuarios/{pacientes}/permisos/get', [\App\Http\Controllers\Admin\UserController::class, 'permisosGet'])->middleware('auth');
     Route::resource('solicitudes', '\App\Http\Controllers\Admin\SolicitudController')->middleware('auth');
     Route::post('solicitudes/{solicitudId}/adjuntarComprobante', [\App\Http\Controllers\Admin\SolicitudController::class, 'adjuntarComprobante'])->middleware('auth');
+    
     Route::post('solicitudes/{solicitudId}/comment/store', [\App\Http\Controllers\Admin\SolicitudController::class, 'storeSolicitudComment'])->middleware('auth');
     Route::get('solicitudes/{solicitudId}/reset', [\App\Http\Controllers\Admin\SolicitudController::class, 'resetSolicitud'])->middleware('auth');
+    Route::get('solicitudes/{solicitudId}/renew/showData', [\App\Http\Controllers\Admin\SolicitudController::class, 'showDataRenew'])->middleware('auth');
+    
+    Route::post('solicitudes/action/renew/store', [\App\Http\Controllers\Admin\SolicitudController::class, 'storeSolicitudes'])->middleware('auth');
     
 
     Route::resource('sin_citas', '\App\Http\Controllers\Admin\SinCitasController')->middleware('auth');
@@ -82,6 +87,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('template-formulario/{configuration}/edit', [FormularioConfigurationController::class, 'edit'])->name('template-formulario.edit');
     Route::put('template-formulario/{configuration}', [FormularioConfigurationController::class, 'update'])->name('template-formulario.update');
     Route::get('template-formulario/{configuration}/delete', [FormularioConfigurationController::class, 'destroy'])->name('template-formulario.destroy');
+    Route::get('template-formulario/{configuration}/activar', [FormularioConfigurationController::class, 'activar'])->name('template-formulario.activar');
     
     Route::get('template-formulario/{configurationId}/consulta/{consultaId}', [FormularioConfigurationController::class, 'showFormulario'])->name('template-formulario.showFormulario'); //mostrar por primera vez
     Route::post('template-formulario/{configurationId}/consulta/{consultaId}', [FormularioConfigurationController::class, 'storeFormulario'])->name('template-formulario.storeFormulario');
