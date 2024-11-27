@@ -25,7 +25,7 @@ class Solicitud extends Model
 
     protected $table = 'solicitudes';
 
-    public static function getAll($paginate = null, $search = null)
+    public static function getAll($paginate = null, $search = null, $solicitud_origin_id = null)
     {
         //*cambiar listando las clinicas donde perteneces si no eres administrador
         $user_id = User::getMyUserPrincipal();
@@ -45,6 +45,10 @@ class Solicitud extends Model
                 ->join('users', 'users.id', 'solicitudes.user_id')
                 ->where('user_id', $user_id)
                 ->whereIn('estatus', [0,1,2]);
+        }
+
+        if ($solicitud_origin_id != '') {
+            $solicitud->where('catalog_prices.id', $solicitud_origin_id);
         }
 
         if ($search != '') {
@@ -131,7 +135,7 @@ class Solicitud extends Model
                     ->first();
         $price  = 0;
         $mesesRestantesParaCompletarDoce = null;
-
+        
         if ($getSolicitud != null) {
             // Asumiendo que $fechaVencimiento contiene la fecha de vencimiento en formato 'Y-m-d'
             $fechaVencimiento = new DateTime($getSolicitud->fecha_vencimiento);

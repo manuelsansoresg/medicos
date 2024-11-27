@@ -97,6 +97,30 @@ class SolicitudUsuario extends Model
             ]);
         }
 
+        if ($solicitud->catalog_prices_id == 1) { //acceso al sistema
+            // Obtener y actualizar solo los primeros 2 usuarios
+            $getUsers = User::GetListUsers(null, null, $solicitud->user_id)
+            ->take(2);
+
+            foreach ($getUsers as $getUser) {
+            User::where('id', $getUser->id)->update([
+                'status' => 1,
+            ]);
+            }
+
+            // Obtener y actualizar solo los primeros 2 consultorios
+            $getCons = Consultorio::getAll(null, null, $solicitud->user_id)
+            ->take(2);
+
+            foreach ($getCons as $getCon) {
+            Consultorio::where('idconsultorios', $getCon->idconsultorios)->update([
+                'status' => 1,
+            ]);
+            }
+
+
+        }
+
     }
 
 }

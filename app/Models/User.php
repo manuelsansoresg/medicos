@@ -133,7 +133,7 @@ class User extends Authenticatable
                 })
                 ->get();
     }
-    public static function getUsersByRoles($roles, $search = null, $limit = null, $isPaginate = false)
+    public static function getUsersByRoles($roles, $search = null, $limit = null, $isPaginate = false, $setUserId = null)
     {
         \DB::enableQueryLog(); // Enable query log
 
@@ -142,6 +142,9 @@ class User extends Authenticatable
             whereHas('roles', function ($q) use($roles) {
             $q->whereIn('name', $roles);
         });
+        if ($setUserId != null) {
+            $users->where('usuario_principal', $setUserId);
+        }
         if (!$isAdmin) {
             $usuarioPrincipal = User::getMyUserPrincipal();
             $users->where('usuario_principal', $usuarioPrincipal);
@@ -331,7 +334,7 @@ class User extends Authenticatable
     }
     
     //*obtiene listado de tu usuario y los usuarios que te pertenecen si eres medico, si eres admin obtiene el listado de todos los usuarios
-    public static function GetListUsers($paginate = null, $status = null)
+    public static function GetListUsers($paginate = null, $status = null, $setUserId = null)
     {
         $isAdmin    = Auth::user()->hasRole('administrador');
         $isDoctor   = Auth::user()->hasRole('medico');
@@ -341,7 +344,7 @@ class User extends Authenticatable
         $users =  null;
         
         if ($isAdmin === true) {
-            $users = User::getUsersByRoles($roles);
+            $users = User::getUsersByRoles($roles, $setUserId);
         } else {
             if ($isDoctor === true) {
                 $roles = [ 'medico', 'auxiliar', 'secretario'];

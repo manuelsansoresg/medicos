@@ -167,8 +167,9 @@ class SolicitudController extends Controller
                 $dataSolicitud['precio_total'] = $request->precio_total;
                 $dataSolicitud['fecha_activacion'] = date('Y-m-d');
             }
-            SolicitudUsuario::activateRenew($solicitudId);
+            
             Solicitud::where('id', $solicitudId)->update($dataSolicitud);
+            SolicitudUsuario::activateRenew($solicitudId);
         }
 
         return back()->with('success', 'Estatus actualizado correctamente.');

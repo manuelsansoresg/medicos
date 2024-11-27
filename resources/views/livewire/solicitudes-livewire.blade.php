@@ -8,13 +8,25 @@
                     <p class="h6">SOLICITUDES <a href="/admin/solicitudes/create" class="color-primary"><i class="fas fa-plus"></i></a></p>
                 </div>
                 <div class="row mt-3 justify-content-end">
-                    
+                    <div class="col-4">
+                        <div class="form-group mb-2">
+                            <label  class="col-auto col-form-label">NOMBRE SOLICITUD</label>
+                            <select class="form-control"  wire:model="solicitud_origin_id">
+                                <option value="">Todos</option>
+                                @foreach ($catalogoSolicitudes as $catalogoSolicitud)
+                                    <option value="{{ $catalogoSolicitud->id }}">{{ $catalogoSolicitud->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    @hasrole(['administrador'])
                     <div class="col-4">
                         <div class="form-group mb-2">
                             <label  class="col-auto col-form-label">NOMBRE</label>
                             <input type="text" class="form-control" placeholder="Buscar por nombre" wire:model="search">
                         </div>
                     </div>
+                    @endrole
                     {{-- <div class="col-12 text-end">
                         <button type="submit" class="btn btn-primary">Filtrar</button> &nbsp;
                         <a href="/comision/lista/show" class="btn btn-primary ml-3">Limpiar Filtro</a>
@@ -61,16 +73,16 @@
                                 $color = 'text-warning';
                             }
                             
-                            if ($mesesRestantes === 0 || $solicitud->estatus == 2) {
+                            if ($solicitud->estatus == 2) {
                                 $color = 'text-danger';
                                 $isVencido = true;
-                                $MSolicitud::where(['id' => $solicitud->id, 'estatus' => 1])->update([
+                               /*  $MSolicitud::where(['id' => $solicitud->id, 'estatus' => 1])->update([
                                     'estatus' => 2
-                                ]);
+                                ]); */
                             }
                         @endphp
                        {{--  {{ $fechaVencimiento }} --}}
-                        <span class="{{ $color }}">{{ $fechaVencimiento }}</span>
+                        <span class="{{ $color }}">{{ $fechaVencimiento }}  </span>
                     </td>
                     <td>
                         @switch($solicitud->estatus)

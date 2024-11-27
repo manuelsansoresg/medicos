@@ -19,7 +19,7 @@ class Consultorio extends Model
         'idconsultorios','vnumconsultorio','thubicacion','ttelefono','idclinica', 'idusrregistra', 'status'
     ];
 
-    public static function getAll($paginate = null, $status = null)
+    public static function getAll($paginate = null, $status = null, $setUserId = null)
     {
         $clinica     = Session::get('clinica');
         $consultorio = Session::get('consultorio');
@@ -27,7 +27,13 @@ class Consultorio extends Model
         $userId = User::getMyUserPrincipal();
 
         if ($isAdmin) {
-            $consultorio =  Consultorio::all();
+            if ($setUserId == null) {
+                $consultorio =  Consultorio::all();
+            } else {
+                $consultorio =  Consultorio::where([
+                    'idusrregistra' => $setUserId,
+                ])->get();; 
+            }
         } else {
             $consultorio =  Consultorio::where([
                 'idusrregistra' => $userId,
