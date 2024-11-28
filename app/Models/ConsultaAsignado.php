@@ -55,7 +55,7 @@ class ConsultaAsignado extends Model
         $horarios     = [];
 
         //TODO CAMBIAR LISTADO DE PACIENTE CON USUARIOS ROL PACIENTE IGUAL EN LA VISTA DE LA CITA
-        while ($horanueva < $ihorafinal) 
+        while ($horanueva <= $ihorafinal) 
         {
             $paciente   = null;
             $motivo     = null;

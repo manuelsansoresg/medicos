@@ -59,8 +59,8 @@
                                             $limitUser = $Muser::limitAllUsers($access, $user->id);
                                         @endphp
                                         @if ($getRoleName == 'administrador'|| $getRoleName == 'medico' || $getRoleName == 'auxiliar')
+                                        <a href="/admin/consulta-asignado/{{ $user->id }}" class="btn btn-warning text-white"><i class="fas fa-building"></i></a>
                                            @if ($limitUser == false || $getRoleName == 'administrador')
-                                            <a href="/admin/consulta-asignado/{{ $user->id }}" class="btn btn-warning text-white"><i class="fas fa-building"></i></a>
                                             <a href="/admin/usuarios/{{ $user->id }}/edit" class="btn btn-primary"><i
                                                     class="fas fa-edit"></i></a>
                                            @endif

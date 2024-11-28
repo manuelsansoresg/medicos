@@ -25,63 +25,53 @@ class ExpedienteController extends Controller
 
     public function downloadExpedient(Request $request)
     {
-        // Fecha y hora actuales para el nombre del ZIP
+
         $zipFileName = 'expedientes_' . Carbon::now()->format('Ymd_His') . '.zip';
         $zipFilePath = public_path($zipFileName);  // El archivo ZIP se creará en la carpeta public
 
-        // Crear instancia de ZipArchive
         $zip = new ZipArchive;
-        
+
         // Abrir o crear el ZIP
         if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
 
             $expedients = $request->expedients;
-            
-            // Recorrer cada expediente seleccionado
+            $filesAdded = 0; // Contador para los archivos agregados al ZIP
+
             foreach ($expedients as $expedient) {
                 $paciente = User::find($expedient);
-                $nameStudy = null;
-                $nameExpedient = null;
-                //si es admin y si es descargar todos
-                if (Auth::user()->hasPermissionTo('Descargar todos') || Auth::user()->hasRole('administrador')) {
-                    $nameExpedient = public_path('expedientes/' . $paciente->id . '-' . $paciente->name . ' ' . $paciente->vapellido . '.pdf');
-                    if (Auth::user()->hasRole('administrador') || Auth::user()->hasPermissionTo('Descargar estudios con imagenes')) { //descargar estudios con imagenes
-                        $nameStudy = public_path('estudios/' . $paciente->id . '-' . $paciente->name . ' ' . $paciente->vapellido . '.pdf');
-                    } else {
-                        $nameStudy = public_path('estudios/s_i-' . $paciente->id . '-' . $paciente->name . ' ' . $paciente->vapellido . '.pdf');
-                    }
-                } elseif (!Auth::user()->hasPermissionTo('Descargar todos') && Auth::user()->hasPermissionTo('Descargar consulta')) { //descargar solo consulta
-                    $nameExpedient = public_path('expedientes/' . $paciente->id . '-' . $paciente->name . ' ' . $paciente->vapellido . '.pdf');
-                } elseif (!Auth::user()->hasPermissionTo('Descargar todos') && !Auth::user()->hasPermissionTo('Descargar consulta')) { //descargar solo estudios
-                    if (Auth::user()->hasRole('administrador') || Auth::user()->hasPermissionTo('Descargar estudios con imagenes')) { //descargar estudios con imagenes
-                        $nameStudy = public_path('estudios/' . $paciente->id . '-' . $paciente->name . ' ' . $paciente->vapellido . '.pdf');
-                    } else {
-                        $nameStudy = public_path('estudios/s_i-' . $paciente->id . '-' . $paciente->name . ' ' . $paciente->vapellido . '.pdf');
-                    }
-                }
-                
-                
-                
-                // Verificar si el archivo existe antes de añadir al ZIP
-                if (file_exists($nameExpedient)) {
-                    // Agregar el archivo al ZIP
-                    $zip->addFile($nameExpedient, 'expedientes/' . basename($nameExpedient));
+
+                // Construir rutas de posibles archivos
+                $expedientPath = public_path('expedientes/' . $paciente->id . '-' . $paciente->name . ' ' . $paciente->vapellido . '.pdf');
+                $studyPath = Auth::user()->hasRole('administrador') || Auth::user()->hasPermissionTo('Descargar estudios con imagenes')
+                    ? public_path('estudios/' . $paciente->id . '-' . $paciente->name . ' ' . $paciente->vapellido . '.pdf')
+                    : public_path('estudios/s_i-' . $paciente->id . '-' . $paciente->name . ' ' . $paciente->vapellido . '.pdf');
+
+                // Validar archivos antes de intentar agregarlos
+                if (file_exists($expedientPath)) {
+                    $zip->addFile($expedientPath, 'expedientes/' . basename($expedientPath));
+                    $filesAdded++;
                 }
 
-                if (file_exists($nameStudy)) {
-                    // Agregar el archivo al ZIP
-                    $zip->addFile($nameStudy, 'estudios/' . basename($nameStudy));
+                if (file_exists($studyPath)) {
+                    $zip->addFile($studyPath, 'estudios/' . basename($studyPath));
+                    $filesAdded++;
                 }
             }
-            
-            // Cerrar el ZIP después de agregar los archivos
+
             $zip->close();
 
-            // Forzar la descarga del ZIP
-            return response()->download($zipFilePath)->deleteFileAfterSend(true);
+            // Verificar si se añadieron archivos al ZIP
+            if ($filesAdded > 0) {
+                return response()->download($zipFilePath)->deleteFileAfterSend(true);
+            } else {
+                // Eliminar el archivo ZIP vacío
+                unlink($zipFilePath);
+                return response()->json(['error' => 'No se encontraron archivos válidos para agregar al ZIP.'], 404);
+            }
         } else {
             return response()->json(['error' => 'No se pudo crear el archivo ZIP'], 500);
         }
+
     }
 
     /**
