@@ -91,7 +91,7 @@
       <div class="col-12">
         <h5 class="color-secondary">FAVOR DE ELEGIR UNA CLINICA Y UN CONSULTORIO</h5>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-5">
             <div class="mb-3">
                 <label for="inputNombre" class="form-label">*CLINICAS</label>
                 <select name="clinica" id="setClinica"  onchange="changeConsultorio(null)" class="form-control">
@@ -105,12 +105,18 @@
                 </select>
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-5">
             <div class="mb-3">
                 <label for="inputApellido" class="form-label">*CONSULTORIOS</label>
-                <select name="consultorio" id="setConsultorio" disabled  class="form-control" onchange="aplicarConsultorio()">
+                <select name="consultorio" id="setConsultorio" disabled  class="form-control">
                     <option value="">Seleccione una opción</option>
                 </select>
+            </div>
+          </div>
+          <div class="col-md-2 text-end">
+            <div class="mb-3">
+              <label for="inputApellido" class="form-label">&nbsp;</label> <br>
+                <button type="button" onclick="aplicarConsultorio()" class="btn btn-primary btn-block">Aplicar filtro</button>
             </div>
           </div>
         </div>

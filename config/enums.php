@@ -7,13 +7,13 @@ return [
     ),
     
     'status' => array(
-        '' => 'SELECCIONE UNA OPCIÓN',
+        '' => 'Seleccione una opción',
         0 => 'NO',
         1 => 'SÍ',
     ),
     
     'usuario_puesto' => array(
-        '' => 'SELECCIONE UNA OPCIÓN',
+        '' => 'Seleccione una opción',
         'administrador' => 'ADMINISTRADOR',
         'medico' => 'MEDICO',
         'auxiliar' => 'AUXILIAR',
@@ -21,18 +21,18 @@ return [
     ),
     
     'usuario_puesto_medico' => array(
-        '' => 'SELECCIONE UNA OPCIÓN',
+        '' => 'Seleccione una opción',
         'auxiliar' => 'AUXILIAR',
         'secretario' => 'SECRETARIO',
     ),
     
     'usuario_auxiliar' => array(
-        '' => 'SELECCIONE UNA OPCIÓN',
+        '' => 'Seleccione una opción',
         'secretario' => 'SECRETARIO',
     ),
 
     'sexo' => array(
-        '' => 'SELECCIONE UNA OPCIÓN',
+        '' => 'Seleccione una opción',
         'MASCULINO' => 'MASCULINO',
         'FEMENINO' => 'FEMENINO',
     ),

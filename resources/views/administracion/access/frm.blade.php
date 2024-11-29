@@ -43,7 +43,7 @@
                         <div class="mb-3">
                             <label for="user_id" class="form-label">* USUARIO</label>
                                 <select name="data[user_id]" id="user_id" class="form-control">
-                                    <option value="">SELECCIONE UNA OPCIÓN</option>
+                                    <option value="">Seleccione una opción</option>
                                     @foreach ($users as $user)
                                         <option value="{{ $user->id }}" {{ $access != null && $access->user_id == $user->id ? 'selected' : null }}> {{ $user->name }} </option>
                                     @endforeach

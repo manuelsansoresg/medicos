@@ -110,9 +110,7 @@
         @else
         <div class="col-12">
             <div class="alert alert-success" role="alert">
-                Favor de elegir el consultorio para poder filtrar resultados en el siguiente enlace 
-                <br>
-                <a href="/query/viewClinicaYConsultorio">Elegir consultorio</a>
+                Favor de elegir una clinica y un consultorio en la parte superior y seleccionar aplicar filtro
               </div>
         </div>
         @endif

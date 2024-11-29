@@ -75,7 +75,7 @@ window.aplicarConsultorio = function ()
             icon: "warning"
         }).then((result) => {
             if (result.isConfirmed) {
-                //window.location.reload();
+                window.location.reload();
             }
         });
     })

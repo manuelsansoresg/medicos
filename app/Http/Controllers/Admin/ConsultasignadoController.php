@@ -9,6 +9,7 @@ use App\Models\Consultorio;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class ConsultasignadoController extends Controller
 {
@@ -32,6 +33,8 @@ class ConsultasignadoController extends Controller
         $offices = Consultorio::getMyCon(); //consultorios
         $myUser = User::find(Auth::user()->id);
         $lastConsultaAsignado = null;
+        $clinica = Session::get('clinica');
+        
         return view('administracion.user.consultorioAsignado.frm', compact('offices', 'myUser', 'user', 'lastConsultaAsignado'));
     }
 
@@ -55,9 +58,9 @@ class ConsultasignadoController extends Controller
      */
     public function show($id)
     {
-
+        $clinica = Session::get('clinica');
         $query = ConsultaAsignado::getMyCon($id); //consultorios
-        return view('administracion.user.consultorioAsignado.list', compact('query', 'id'));
+        return view('administracion.user.consultorioAsignado.list', compact('query', 'id', 'clinica'));
     }
 
     /**
