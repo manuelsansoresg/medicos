@@ -48,7 +48,11 @@
                                         {{ $horario['motivo'] }}
                                     </td>
                                     <td>
-                                        {{ $horario['isDisponible'] }}
+                                        @if ($horario['isDisponible'] == 1)
+                                            Disponible
+                                            @else
+                                            Ocupado
+                                        @endif
                                     </td>
                                     <td>
                                         @if ($horario['userCitaId'] != null)

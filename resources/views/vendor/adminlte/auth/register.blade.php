@@ -20,7 +20,7 @@
         {{-- Name field --}}
         <div class="input-group mb-3">
             <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-                   value="{{ old('name') }}" placeholder="{{ __('adminlte::adminlte.full_name') }}" autofocus>
+                   value="{{ old('name') }}" placeholder="NOMBRE(S)" autofocus>
 
             <div class="input-group-append">
                 <div class="input-group-text">
@@ -29,6 +29,142 @@
             </div>
 
             @error('name')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+       
+        <div class="input-group mb-3">
+            <input type="text" name="vapellido" class="form-control @error('vapellido') is-invalid @enderror"
+                   value="{{ old('vapellido') }}" placeholder="APELLIDO PATERNO" autofocus>
+
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-user {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                </div>
+            </div>
+
+            @error('vapellido')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+        
+        <div class="input-group mb-3">
+            <input type="text" name="segundo_apellido" class="form-control @error('vapellido') is-invalid @enderror"
+                   value="{{ old('vapellido') }}" placeholder="APELLIDO MATERNO" autofocus>
+
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-user {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                </div>
+            </div>
+
+            @error('vapellido')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+        
+        <div class="input-group mb-3">
+            <input type="text" name="ttelefono" class="form-control @error('ttelefono') is-invalid @enderror"
+                   value="{{ old('ttelefono') }}" placeholder="TELEFONO" autofocus>
+
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-user {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                </div>
+            </div>
+
+            @error('ttelefono')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+        
+        <div class="input-group mb-3">
+            <input type="text" name="tdireccion" class="form-control @error('tdireccion') is-invalid @enderror"
+                   value="{{ old('tdireccion') }}" placeholder="DIRECCIÓN" autofocus>
+
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-user {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                </div>
+            </div>
+
+            @error('tdireccion')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+        
+        <div class="input-group mb-3">
+            <input type="text" name="clinica" class="form-control @error('clinica') is-invalid @enderror"
+                   value="{{ old('clinica') }}" placeholder="CLINICA" autofocus>
+
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-user {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                </div>
+            </div>
+
+            @error('clinica')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+        
+        <div class="input-group mb-3">
+            <input type="text" name="vcedula" class="form-control @error('vcedula') is-invalid @enderror"
+                   value="{{ old('vcedula') }}" placeholder="CÉDULA PROFESIONAL" autofocus>
+
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-user {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                </div>
+            </div>
+
+            @error('vcedula')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+       
+        <div class="input-group mb-3">
+            <input type="text" name="RFC" class="form-control @error('RFC') is-invalid @enderror"
+                   value="{{ old('RFC') }}" placeholder="RFC" autofocus>
+
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-user {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                </div>
+            </div>
+
+            @error('RFC')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+        </div>
+       
+        <div class="input-group mb-3">
+            <input type="text" name="especialidad" class="form-control @error('especialidad') is-invalid @enderror"
+                   value="{{ old('especialidad') }}" placeholder="ESPECIALIDAD O TÍTULO" autofocus>
+
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <span class="fas fa-user {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                </div>
+            </div>
+
+            @error('especialidad')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>

@@ -208,7 +208,7 @@ class ConsultaAsignado extends Model
         $idconsultorio = Session()->get('consultorio');
         $isAdmin     = Auth::user()->hasRole('administrador');
 
-        $consultaAsignado =  ConsultaAsignado::select('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio')  // Elimina el segundo 'idconsultasignado'
+        $consultaAsignado =  ConsultaAsignado::select('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio', 'user_citas.id')  // Elimina el segundo 'idconsultasignado'
                 ->join('consultorios', 'consultorios.idconsultorios', 'consultasignado.idconsultorio')
                 ->join('user_citas', 'user_citas.consulta_asignado_id', 'consultasignado.idconsultasignado')
                 ->where('ihorainicial', '>', 0) 
@@ -224,7 +224,7 @@ class ConsultaAsignado extends Model
             $consultaAsignado->whereIn('consultasignado.idconsultorio', $getAsignedConsultories);
         }
     
-        $consultaAsignado->groupBy('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio');  // Elimina la columna duplicada en el select
+        $consultaAsignado->groupBy('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio', 'user_citas.id');  // Elimina la columna duplicada en el select
         
         // Si se ha pasado un valor para la paginación
         if ($paginate != null) {

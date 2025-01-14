@@ -111,7 +111,7 @@
 
             </tr>
             <tr>
-                <td><b>CEDULA PROFESIONAL</b></td>
+                <td><b>CÉDULA PROFESIONAL</b></td>
                 <td>  {{ $medico->vcedula }}</td>
             </tr>
         </table>

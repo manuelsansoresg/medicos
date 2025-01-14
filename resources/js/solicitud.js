@@ -167,6 +167,30 @@ window.renovarSolicitudes = function()
 }
 
 
+window.validarCedula = function(userId)
+{
+    const isCedulaValid = document.querySelector('input[name="is_cedula_valid"]:checked').value;
+    $('#msg-cedula').show();
+    axios
+        .post('/admin/solicitudes/'+userId+'/cedula/validate', {
+            is_cedula_valid: isCedulaValid // Incluye el valor en el cuerpo del POST
+        })
+        .then(function (response) {
+            $('#msg-cedula').show();
+           /*  Swal.fire({
+                text: 'Su solicitud ha sido enviada, favor de adjuntar el comprobante de pago en la siguiente ventana para su activación',
+                icon: "warning"
+            }).then((result) => {
+                // Acción después de cerrar el alerta
+                window.location = '/';
+            }); */
+        })
+        .catch(function (error) {
+            console.error(error.response.data);
+            
+        });
+}
+
 
 
 

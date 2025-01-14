@@ -146,6 +146,11 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name' => 'nombre',
+        'vapellido' => 'apellido',
+        'ttelefono' => 'teléfono',
+        'vcedula' => 'cedula',
+    ],
 
 ];

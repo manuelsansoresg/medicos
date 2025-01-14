@@ -8,6 +8,7 @@ use App\Models\Consultorio;
 use App\Models\PendienteUsr;
 use App\Models\Solicitud;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -21,7 +22,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        
     }
 
     /**
@@ -44,6 +45,25 @@ class HomeController extends Controller
         $getPorcentajeSistema = User::getPorcentajeSistema();
         //User::getUsersActive();
         return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'statusPacient', 'earrings', 'consultas', 'getPorcentajeSistema'));
+    }
+
+    public function registroMedico()
+    {
+        return view('registro_medico');
+    }
+
+    public function gananciapdf()
+    {
+        // Fecha de inicio: primer día del mes actual
+        $fechaInicio = date('Y-m-01');
+        // Fecha final: último día del mes siguiente
+        $fechaFinal = date('Y-m-t', strtotime('first day of +1 month'));
+
+        $ganancias = Solicitud::getGanancias(null, null, $fechaInicio, $fechaFinal);
+        $pdf = Pdf::loadView('pdf_ganancias', compact('ganancias'));
+        $pdf->setPaper('A4');
+        return $pdf->stream();
+    
     }
 
     public function editProfile()

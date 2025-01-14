@@ -72,7 +72,7 @@ class Solicitud extends Model
 
         if ($isAdmin) {
             $solicitud =  Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus','precio_total', 'solicitudes.created_at', 'solicitudes.updated_at', 'name', 'vapellido', 'porcentaje_ganancia', 'fecha_vencimiento', 'catalog_prices_id', 'user_id', 'estatus', 'fecha_activacion'
+                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'precio_total' , 'solicitudes.created_at', 'name', 'vapellido', 'fecha_vencimiento', 'porcentaje_ganancia', 'catalog_prices_id', 'user_id', 'estatus', 'fecha_activacion'
                 )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
                 ->join('users', 'users.id', 'solicitudes.user_id')
                 ->whereBetween('fecha_activacion', [$fechaInicio, $fechaFinal]) // Filtrar por rango de fechas

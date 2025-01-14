@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\FormularioConfigurationController;
 use App\Http\Controllers\Admin\FormularioController;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,6 +21,8 @@ Auth::routes();
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
+Route::get('/registro-medico/salida', [App\Http\Controllers\HomeController::class, 'registroMedico']);
+
 Route::get('/editProfile', [App\Http\Controllers\HomeController::class, 'editProfile'])->name('editProfile')->middleware('auth');
 
 Route::get('/query/clinicaYConsultorio', [App\Http\Controllers\HomeController::class, 'clinicaYConsultorio'])->middleware('auth');
@@ -51,6 +54,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('usuarios', '\App\Http\Controllers\Admin\UserController')->middleware('auth');
     Route::get('usuarios/{pacientes}/permisos/get', [\App\Http\Controllers\Admin\UserController::class, 'permisosGet'])->middleware('auth');
     Route::resource('solicitudes', '\App\Http\Controllers\Admin\SolicitudController')->middleware('auth');
+    Route::get('solicitudes/{solicitudId}/task/{task}', [\App\Http\Controllers\Admin\SolicitudController::class, 'taskSolicitud'])->middleware('auth');
+    Route::post('solicitudes/{userId}/cedula/validate', [\App\Http\Controllers\Admin\SolicitudController::class, 'validateCedula'])->middleware('auth');
+
     Route::post('solicitudes/{solicitudId}/adjuntarComprobante', [\App\Http\Controllers\Admin\SolicitudController::class, 'adjuntarComprobante'])->middleware('auth');
     
     Route::post('solicitudes/{solicitudId}/comment/store', [\App\Http\Controllers\Admin\SolicitudController::class, 'storeSolicitudComment'])->middleware('auth');
@@ -105,6 +111,8 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::get('/ganancias', [App\Http\Controllers\HomeController::class, 'gananciapdf'])->name('home');
+
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout.get');
 
 
@@ -116,3 +124,14 @@ Route::put('formulario_entries/{entryId}', [FormularioController::class, 'update
 
 
 Route::get('formulario_entries/{entryId}/show_saved', [FormularioConfigurationController::class, 'showFormularioGuardado'])->name('formulario_entries.show_saved'); //mostrar lo que se guardo
+
+Route::post('/delete-temp-file', function (\Illuminate\Http\Request $request) {
+    $filePath = $request->input('filePath');
+
+    if (File::exists($filePath)) {
+        File::delete($filePath);
+        return response()->json(['status' => 'success']);
+    }
+
+    return response()->json(['status' => 'file_not_found'], 404);
+})->name('delete-temp-file');

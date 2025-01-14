@@ -2,24 +2,79 @@
 @inject('MComments', 'App\Models\Comment')
 @section('content')
 <div class="container bg-white py-2">
-    <div class="row mt-3 card">
-       
+    @php
+    $subtotal = $solicitud->precio * $solicitud->cantidad;
+
+    if ($solicitud->catalog_prices_id == 1 || $solicitud->catalog_prices_id == 4) {
+        $total = $subtotal;
+    } else {
+        $total = $subtotal + $paqueteActivo;
+    }
+    
+@endphp
+    @hasrole(['administrador'])
+        <div class="row">
+            
+            <div class="col-12">
+                <h5>ETAPAS</h5>
+            </div>
+            
+        </div>  
+        <div class="row">
+            <div class="col-5 card">
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td> 1- Validar información de la solicitud</td>
+                            <td>
+                                @if ($solicitud->is_cedula_valid == null)
+                                    <span class="badge badge-dim bg-warning">
+                                        <span>En espera </span>
+                                    </span>
+                                @endif
+                                
+                                @if ($solicitud->is_cedula_valid == 1)
+                                    <span class="badge badge-dim bg-success">
+                                        <span>Concluido </span>
+                                    </span>
+                                @endif
+                               
+                            </td>
+                            <td>
+                                <a href="/admin/solicitudes/{{ $solicitud->id }}/task/1" class="btn btn-primary">Abrir</a>
+                              
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> 2- Validar Comprobante pago</td>
+                            <td>
+                                @if ($solicitud->is_cedula_valid ==  1 && $solicitud->estatus == 0)
+                                <span class="badge badge-dim bg-warning">
+                                    <span>En espera </span>
+                                </span>
+                                @endif
+                                @if ($solicitud->estatus == 1)
+                                <span class="badge badge-dim bg-success">
+                                    <span> Concluido </span>
+                                </span>
+                                @endif
+                            </td>
+                            <td><a href="/admin/solicitudes/{{ $solicitud->id }}/task/2" class="btn btn-primary">Abrir</a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>    
+        </div>     
+    @endrole
         <div class="card-body">
 
             <div class="col-12 mt-3">
                 
                 
-                    @php
-                        $subtotal = $solicitud->precio * $solicitud->cantidad;
-
-                        if ($solicitud->catalog_prices_id == 1 || $solicitud->catalog_prices_id == 4) {
-                            $total = $subtotal;
-                        } else {
-                            $total = $subtotal + $paqueteActivo;
-                        }
-                        
-                    @endphp
+                   
                     <table class="table table-borderless">
+                        
+
                         <tr>
                             <td colspan="2">
                                 <p class="h6 color-secondary">SOLICITUD</p>
@@ -58,6 +113,7 @@
                         <tr>
                             <td colspan="2"> <hr> </td>
                         </tr>
+                        @hasrole(['medico'])
                         <tr>
                             <td colspan="2"> <p class="h6 color-secondary">DATOS PARA LA TRANSFERENCIA</p></td>
                         </tr>
@@ -77,12 +133,13 @@
                             <td>CANTIDAD A DEPOSITAR</td>
                             <td>${{ format_price($total) }}</td>
                         </tr>
+                        @endrole
                     </table>
                     
                
                
-               
-                
+                    
+                @hasrole(['medico'])
                 <p class="h6 color-secondary mt-5">SUBIR COMPROBANTE DE LA TRANSFERENCIA</p>
                 <form method="post" action="/admin/solicitudes/{{ $id }}/adjuntarComprobante" enctype="multipart/form-data">
                     @csrf
@@ -103,8 +160,25 @@
                             </div>
                         @endif
                     </div>
+                    @endrole
                     @hasrole(['administrador'])
-                        <div class="mb-3 mt-3">
+                        {{-- @if ($solicitud->catalog_prices_id == 1)
+                            <div class="mb-3 mt-3">
+                            
+                                <label for="inputNombre" class="form-label">ASIGNAR CLINICA</label>
+                                <select name="clinica" id="" class="form-control select2multiple"   data-search="on" multiple="multiple">
+                                    @foreach ($clinicas as $clinica)
+                                        <option value="{{ $clinica->idclinica }}" 
+                                         @foreach ($my_clinics as $my_clinic)
+                                           {{ $my_clinic->clinica_id == $clinica->idclinica ? 'selected' : null}}
+                                         @endforeach
+                                         >{{ $clinica->tnombre }}</option>
+                                    @endforeach
+                                 </select>
+
+                            </div>
+                        @endif --}}
+                       {{--  <div class="mb-3 mt-3">
                         
                             <label for="inputNombre" class="form-label">FECHA DE VENCIMIENTO</label>
                             <input type="date" class="form-control" name="fecha_vencimiento" value="{{ $fecha_vencimiento }}">
@@ -117,8 +191,8 @@
                                 <option value="0" {{ $solicitud->estatus == 0 ? 'selected' : null}}>NO</option>
                                 <option value="2" {{ $solicitud->estatus == 2 ? 'selected' : null}}>EN REVISIÓN</option>
                             </select>
-                        </div>
-                        <input type="hidden" name="precio_total" value="{{ $total }}" >
+                        </div> --}}
+                        
                     @endrole
 
                     @if ($errors->any())
@@ -145,9 +219,7 @@
                             @hasrole(['medico', 'auxiliar'])
                                 <button class="btn btn-primary">Adjuntar</button>
                             @endrole
-                            @hasrole('administrador')
-                                <button class="btn btn-primary">Guardar</button>
-                            @endrole
+                           
                         </div>
                     </div>
                 </form>

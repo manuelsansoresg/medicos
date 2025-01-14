@@ -43,8 +43,14 @@
                        </div>
                        <div class="col-md-6">
                            <div class="mb-3">
-                               <label for="inputApellido" class="form-label">*APELLIDO(S)</label>
+                               <label for="inputApellido" class="form-label">*APELLIDO PATERNO</label>
                                <input type="text" class="form-control" name="data[vapellido]" id="inputApellido" value="{{ $user != null ? $user->vapellido : null }}" required>
+                           </div>
+                       </div>
+                       <div class="col-md-6">
+                           <div class="mb-3">
+                               <label for="inputApellido" class="form-label">*APELLIDO MATERNO</label>
+                               <input type="text" class="form-control" name="data[segundo_apellido]" id="inputApellido" value="{{ $user != null ? $user->segundo_apellido : null }}" required>
                            </div>
                        </div>
                        <div class="col-md-6">
@@ -140,7 +146,7 @@
                        </div>
                        <div class="col-md-6">
                            <div class="mb-3">
-                               <label for="inputCedula" class="form-label">CEDULA PROFESIONAL</label>
+                               <label for="inputCedula" class="form-label">CÉDULA PROFESIONAL</label>
                                <input type="text" class="form-control" name="data[vcedula]" id="inputCedula" value="{{ $user != null ? $user->vcedula : null }}">
                            </div>
                        </div>

@@ -24,47 +24,43 @@
   position: relative;
 }
 </style>
-<!-- Menú de navegación -->
+
+
+
 <nav class="navbar navbar-expand-lg navbar-light bg-primary">
     <div class="container-fluid">
+      <!-- Logo -->
       <a class="navbar-brand" href="#">LOGO</a>
       
+      <!-- Campana (visible solo en dispositivos pequeños) -->
       <a class="nav-link d-lg-none" href="#">
         <i class="fas fa-bell"></i>
       </a>
   
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <!-- Botón hamburguesa -->
+      <button class="navbar-toggler" type="button" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       
+      <!-- Menú desplegable -->
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
+          <!-- Enlace Inicio -->
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/">Inicio</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Pacientes</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Configuración
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
-          </li>
-         
+          
+          <!-- Enlace Salir -->
           <li class="nav-item">
             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
               @csrf
-          </form>
-          <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            </form>
+            <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
               Salir
-          </a>
+            </a>
           </li>
+          
+          <!-- Campana (visible solo en dispositivos grandes) -->
           <li class="nav-item d-none d-lg-block">
             <a class="nav-link" href="#">
               <i class="fas fa-bell"></i>
@@ -73,7 +69,7 @@
         </ul>
       </div>
     </div>
-  </nav>
+</nav>
 <!-- Contenido de la página -->
 @php
     $my_clinics = $ClinicaUser::myClinics();
@@ -143,29 +139,19 @@
 <script src="/js/app.js?version'.date('H-i-s')"></script>
 
 <script>
-  // Cerrar el menú al hacer clic en un enlace
-  document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-      const navbarCollapse = document.getElementById('navbarNav');
-      const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
-        toggle: false
-      });
-      bsCollapse.hide();
-    });
+  document.querySelector('.navbar-toggler').addEventListener('click', function () {
+  const navbarCollapse = document.getElementById('navbarNav');
+  const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+    toggle: false // Evita el comportamiento automático
   });
 
-  // Cerrar el menú al hacer clic fuera de él
-  document.addEventListener('click', (event) => {
-    const navbarCollapse = document.getElementById('navbarNav');
-    const toggler = document.querySelector('.navbar-toggler');
+  if (navbarCollapse.classList.contains('show')) {
+    bsCollapse.hide(); // Oculta si ya está visible
+  } else {
+    bsCollapse.show(); // Muestra si está oculto
+  }
+});
 
-    if (!navbarCollapse.contains(event.target) && !toggler.contains(event.target)) {
-      const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
-        toggle: false
-      });
-      bsCollapse.hide();
-    }
-  });
   
   
  

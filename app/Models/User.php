@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -27,12 +28,15 @@ class User extends Authenticatable
         'email',
         'password',
         'vapellido',
+        'segundo_apellido',
         'ttelefono',
         'tdireccion',
         'idpuesto',
         'vcedula',
+        'is_cedula_valid',
         'RFC',
         'especialidad',
+        'clinica',
         'idclinica',
         'idoctora',
         'status',
@@ -68,6 +72,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public static function validateCedula($userId, $request)
+    {
+        $user = User::where('id', $userId)->update([
+            'is_cedula_valid' => $request->is_cedula_valid 
+        ]);
+        return $user;
+    }
+    
 
     public static function getIsPermissionDownload()
     {
@@ -354,6 +368,7 @@ class User extends Authenticatable
                 if ($status === 0) {
                     $users->where('status', $status);
                 }
+                
                 $users->where(function($query) use ($usuario_principal) {
                     $query->where('id', Auth::user()->id)
                           ->orWhere('usuario_principal', $usuario_principal);
@@ -456,7 +471,7 @@ class User extends Authenticatable
         return $user;
     }
 
-    public function createCode($userId)
+    public static function createCode($userId)
     {
         $caja1 = '';
         for($i=0 ; $i<5 ; $i++)

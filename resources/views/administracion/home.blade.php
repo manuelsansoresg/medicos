@@ -172,8 +172,12 @@
                                     @foreach ($consultas as $consulta)
                                     <tr>
                                         <td>
-                                            DE {{ $consulta->ihorainicial }}:00 HRS. A
-                                            {{ $consulta->ihorafinal }}:00 HRS.<br>
+                                             
+                                            <a href="/admin/consulta/{{ $consulta->id}}/{{ $consulta->idconsultasignado }}/registro">
+                                                DE {{ $consulta->ihorainicial }}:00 HRS. A
+                                                {{ $consulta->ihorafinal }}:00 HRS.<br>
+                                            </a>
+                                           
                                         </td>
                                     </tr>
                                     @endforeach

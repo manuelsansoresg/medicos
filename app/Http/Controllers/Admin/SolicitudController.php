@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CatalogPrice;
+use App\Models\Clinica;
+use App\Models\ClinicaUser;
 use App\Models\Comment;
 use App\Models\Consultorio;
 use App\Models\Solicitud;
@@ -23,6 +25,33 @@ class SolicitudController extends Controller
     public function index()
     {
         
+    }
+
+    public function taskSolicitud($solicitudId, $task)
+    {
+        $solicitud = Solicitud::select(
+            'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'estatus', 'comprobante', 'fecha_vencimiento', 'name', 'vapellido', 'segundo_apellido', 'vcedula', 'clinica', 'tdireccion', 'solicitudes.user_id', 'catalog_prices_id'
+            )
+            ->where('solicitudes.id', $solicitudId)
+            ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
+            ->join('users', 'users.id', 'solicitudes.user_id')
+            ->first();
+        
+        $fecha_vencimiento = $solicitud->fecha_vencimiento != '' ? $solicitud->fecha_vencimiento : date('Y-m-d', strtotime('+1 year'));
+        if ($task == 1) {
+            return view('administracion.solicitudes.tarea1', compact('solicitud', 'fecha_vencimiento'));
+            # code...
+        } else {
+            return view('administracion.solicitudes.tarea2', compact('solicitud', 'fecha_vencimiento'));
+            # code...
+        }
+        
+    }
+
+    public static function validateCedula($userId, Request $request)
+    {
+        $validate = User::validateCedula($userId, $request);
+        return response()->json($validate);
     }
 
     /**
@@ -93,7 +122,7 @@ class SolicitudController extends Controller
     public function show($id)
     {
         $solicitud = Solicitud::select(
-                        'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'estatus', 'comprobante', 'fecha_vencimiento', 'name', 'vapellido', 'solicitudes.user_id', 'catalog_prices_id'
+                        'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'estatus', 'comprobante', 'fecha_vencimiento', 'name', 'users.is_cedula_valid', 'vapellido', 'vcedula', 'clinica', 'solicitudes.user_id', 'catalog_prices_id'
                         )
                         ->where('solicitudes.id',$id)
                         ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
@@ -106,9 +135,11 @@ class SolicitudController extends Controller
         //obtener el paquete activo de uso de sistema
         $paqueteActivo = Solicitud::getPaqueteActivo($solicitud)['price'];
         $pacientes = SolicitudPaciente::where('solicitud_id', $id) ->with('paciente')->get();
+        $clinicas   = Clinica::getAll();
+        $my_clinics = ClinicaUser::where('user_id', $solicitud->user_id)->get();
         
         $fecha_vencimiento = $solicitud->fecha_vencimiento != '' ? $solicitud->fecha_vencimiento : date('Y-m-d', strtotime('+1 year'));
-        return view('administracion.solicitudes.solicitud', compact('solicitud', 'id', 'comments', 'fecha_vencimiento', 'paqueteActivo', 'pacientes'));
+        return view('administracion.solicitudes.solicitud', compact('solicitud', 'id', 'comments', 'fecha_vencimiento', 'my_clinics', 'paqueteActivo', 'pacientes', 'clinicas' ));
     }
 
     public function adjuntarComprobante(Request $request)

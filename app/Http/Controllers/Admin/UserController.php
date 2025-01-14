@@ -8,6 +8,7 @@ use App\Models\Access;
 use App\Models\Clinica;
 use App\Models\ClinicaUser;
 use App\Models\FormularioConfiguration;
+use App\Models\Solicitud;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +27,8 @@ class UserController extends Controller
         $my_clinics   = null;
         return view('administracion.user.list', compact('users', 'my_clinics'));
     }
+
+    
 
     /**
      * Show the form for creating a new resource.
