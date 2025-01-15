@@ -56,8 +56,11 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('solicitudes', '\App\Http\Controllers\Admin\SolicitudController')->middleware('auth');
     Route::get('solicitudes/{solicitudId}/task/{task}', [\App\Http\Controllers\Admin\SolicitudController::class, 'taskSolicitud'])->middleware('auth');
     Route::post('solicitudes/{userId}/cedula/validate', [\App\Http\Controllers\Admin\SolicitudController::class, 'validateCedula'])->middleware('auth');
+    Route::get('solicitudes/{solicitudId}/estatus/1/', [\App\Http\Controllers\Admin\SolicitudController::class, 'estatusSolicitudEspera'])->middleware('auth');
 
-    Route::post('solicitudes/{solicitudId}/adjuntarComprobante', [\App\Http\Controllers\Admin\SolicitudController::class, 'adjuntarComprobante'])->middleware('auth');
+    Route::post('solicitudes/{solicitudId}/adjuntarComprobante', [\App\Http\Controllers\Admin\SolicitudController::class, 'adjuntarComprobante'])->middleware('auth')->name('SolicitudAdjuntarComprobante');
+    Route::get('solicitudes/{solicitudId}/imagen/delete', [\App\Http\Controllers\Admin\SolicitudController::class, 'deleteImg'])->middleware('auth')->name('SolicitudDeleteImg');
+
     
     Route::post('solicitudes/{solicitudId}/comment/store', [\App\Http\Controllers\Admin\SolicitudController::class, 'storeSolicitudComment'])->middleware('auth');
     Route::get('solicitudes/{solicitudId}/reset', [\App\Http\Controllers\Admin\SolicitudController::class, 'resetSolicitud'])->middleware('auth');

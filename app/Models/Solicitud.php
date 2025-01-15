@@ -14,6 +14,7 @@ class Solicitud extends Model
         'catalog_prices_id',
         'comprobante',
         'estatus',
+        'estatus_validacion_cedula',
         'cantidad',
         'user_id',
         'fecha_vencimiento',
@@ -36,7 +37,7 @@ class Solicitud extends Model
                 'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'solicitudes.updated_at', 'name', 'vapellido', 'fecha_vencimiento', 'catalog_prices_id', 'user_id'
                 )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
                 ->join('users', 'users.id', 'solicitudes.user_id')
-                ->whereIn('estatus', [0,1,2])
+                ->whereIn('estatus', [0,1,2, 4])
                 ;
         } else {
             $solicitud =  Solicitud::select(
@@ -44,7 +45,7 @@ class Solicitud extends Model
                 )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
                 ->join('users', 'users.id', 'solicitudes.user_id')
                 ->where('user_id', $user_id)
-                ->whereIn('estatus', [0,1,2]);
+                ->whereIn('estatus', [0,1,2, 4]);
         }
 
         if ($solicitud_origin_id != '') {

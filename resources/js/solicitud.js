@@ -167,16 +167,17 @@ window.renovarSolicitudes = function()
 }
 
 
-window.validarCedula = function(userId)
+window.validarCedula = function(userId, solicitudId)
 {
     const isCedulaValid = document.querySelector('input[name="is_cedula_valid"]:checked').value;
-    $('#msg-cedula').show();
+    
     axios
         .post('/admin/solicitudes/'+userId+'/cedula/validate', {
             is_cedula_valid: isCedulaValid // Incluye el valor en el cuerpo del POST
         })
         .then(function (response) {
-            $('#msg-cedula').show();
+            
+            window.location = '/admin/solicitudes/'+solicitudId;
            /*  Swal.fire({
                 text: 'Su solicitud ha sido enviada, favor de adjuntar el comprobante de pago en la siguiente ventana para su activación',
                 icon: "warning"

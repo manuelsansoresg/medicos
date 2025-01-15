@@ -59,13 +59,13 @@
                                     <td>CÉDULA PROFESIONAL VÁLIDA</td>
                                     <td>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="is_cedula_valid" id="is_cedula_valid1" value="1">
+                                            <input class="form-check-input" type="radio" name="is_cedula_valid" id="is_cedula_valid1" value="1" {{ $solicitud->is_cedula_valid == 1 ? 'checked' : null}}>
                                             <label class="form-check-label" for="is_cedula_valid1">
-                                              SÍ
+                                              SÍ 
                                             </label>
                                           </div>
                                           <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="is_cedula_valid" id="is_cedula_valid2" checked value="0">
+                                            <input class="form-check-input" type="radio" name="is_cedula_valid" id="is_cedula_valid2" value="0" {{ $solicitud->is_cedula_valid == 0 || $solicitud->is_cedula_valid == null ? 'checked' : null}}>
                                             <label class="form-check-label" for="is_cedula_valid2">
                                               NO
                                             </label>
@@ -73,17 +73,11 @@
                                        
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td colspan="2" >
-                                        <div class="alert alert-success" style="display: none" id="msg-cedula">
-                                            Validación actualizado correctamente.
-                                        </div>
-                                    </td>
-                                </tr>
+                                
                                 <tr>
                                     <td colspan="2" class="text-end"> 
                                         <a href="/admin/solicitudes/{{ $solicitud->id }}" class="btn btn-success">Volver</a>
-                                        <a onclick="validarCedula({{ $solicitud->user_id }})" class="btn btn-primary">Guardar</a>
+                                        <a onclick="validarCedula({{ $solicitud->user_id }}, {{ $solicitud->id }})" class="btn btn-primary">Guardar</a>
                                     </td>
                                 </tr>
                            

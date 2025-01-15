@@ -48,7 +48,7 @@
                         <tr>
                             <td> 2- Validar Comprobante pago</td>
                             <td>
-                                @if ($solicitud->is_cedula_valid ==  1 && $solicitud->estatus == 0)
+                                @if ($solicitud->is_cedula_valid ==  1 && $solicitud->estatus != 1)
                                 <span class="badge badge-dim bg-warning">
                                     <span>En espera </span>
                                 </span>
@@ -155,7 +155,7 @@
                                 <img class="previewComrobante" src="{{ asset($pathComprobante).'/'.$solicitud->comprobante }}" alt="">
                                 <div class="col-12 mt-3">
                                     <a href="{{ asset($pathComprobante).'/'.$solicitud->comprobante }}" target="_blank" class="btn btn-primary"><i class="fas fa-eye"></i></a>
-                                    <a href="" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                                    <a href="/admin/solicitudes/{{ $solicitud->id }}/imagen/delete" class="btn btn-danger"><i class="fas fa-trash"></i></a>
                                 </div>
                             </div>
                         @endif

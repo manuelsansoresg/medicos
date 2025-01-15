@@ -75,8 +75,8 @@
                             <select name  = "estatus" id        = "estatus" class = "form-control">
                                 <option value = "">Seleccione una opción</option>
                                 <option value = "1" {{ $solicitud->estatus == 1 ? 'selected' : null }}>SÍ</option>
-                                <option value = "0" {{ $solicitud->estatus == 0 ? 'selected' : null }}>NO</option>
-                                <option value = "2" {{ $solicitud->estatus == 2 ? 'selected' : null }}>EN REVISIÓN</option>
+                                <option value = "4" {{ $solicitud->estatus == 0 ? 'selected' : null }}>NO</option>
+                                <option value = "0" {{ $solicitud->estatus == 2 ? 'selected' : null }}>EN REVISIÓN</option>
                             </select>
                         </div>
                     @endrole

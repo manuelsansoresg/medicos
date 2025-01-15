@@ -30,7 +30,7 @@ class SolicitudController extends Controller
     public function taskSolicitud($solicitudId, $task)
     {
         $solicitud = Solicitud::select(
-            'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'estatus', 'comprobante', 'fecha_vencimiento', 'name', 'vapellido', 'segundo_apellido', 'vcedula', 'clinica', 'tdireccion', 'solicitudes.user_id', 'catalog_prices_id'
+            'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'is_cedula_valid', 'estatus', 'comprobante', 'fecha_vencimiento', 'name', 'vapellido', 'segundo_apellido', 'vcedula', 'clinica', 'tdireccion', 'solicitudes.user_id', 'catalog_prices_id'
             )
             ->where('solicitudes.id', $solicitudId)
             ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
@@ -52,6 +52,11 @@ class SolicitudController extends Controller
     {
         $validate = User::validateCedula($userId, $request);
         return response()->json($validate);
+    }
+
+    public static function estatusSolicitudEspera($solicitudId)
+    {
+        return view('espera');
     }
 
     /**
@@ -144,10 +149,13 @@ class SolicitudController extends Controller
 
     public function adjuntarComprobante(Request $request)
     {
+        
         $solicitudId = $request->solicitudId;
         $estatus = isset($request->estatus) ? $request->estatus : null;
+        
         $fechaVencimiento = isset($request->fecha_vencimiento) ? $request->fecha_vencimiento : null;
         // Si el archivo "comprobante" está presente, aplica validación y procesamiento
+        
         if ($request->hasFile('comprobante')) {
             // Validar el archivo de comprobante
             $validator = Validator::make($request->all(), [
@@ -156,11 +164,13 @@ class SolicitudController extends Controller
 
             // Si la validación falla, redireccionar con errores
             if ($validator->fails()) {
+                
                 return back()->withErrors($validator)->withInput();
             }
 
             // Procesar y guardar el archivo si la validación es exitosa
             if ($request->file('comprobante')->isValid()) {
+                
                 $archivo = $request->file('comprobante');
                 $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
                 $rutaDestino = public_path('comprobante');
@@ -182,7 +192,7 @@ class SolicitudController extends Controller
                 $archivo->move($rutaDestino, $nombreArchivo);
                 Solicitud::where('id', $solicitudId)->update($dataSolicitud);
 
-                return back()->with('success', 'Comprobante adjuntado correctamente.');
+                return redirect('/admin/solicitudes/'.$solicitudId);
             }
 
             return back()->with('error', 'Hubo un problema al cargar el archivo.');
@@ -203,7 +213,7 @@ class SolicitudController extends Controller
             SolicitudUsuario::activateRenew($solicitudId);
         }
 
-        return back()->with('success', 'Estatus actualizado correctamente.');
+        return redirect('/admin/solicitudes/'.$solicitudId);
     }
 
 
@@ -233,6 +243,18 @@ class SolicitudController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+
+    public function deleteImg($solicitudId)
+    {
+        $pathComprobante = env('PATH_COMPROBANTE');
+        $getSolicitud = Solicitud::find($solicitudId);
+        unlink($pathComprobante.'/'.$getSolicitud->comprobante);
+        
+        Solicitud::where('id', $solicitudId)->update([
+            'comprobante' => null
+        ]);
+        return redirect ('admin/solicitudes/'.$solicitudId);
     }
 
     /**

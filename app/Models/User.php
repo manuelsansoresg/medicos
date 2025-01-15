@@ -79,6 +79,12 @@ class User extends Authenticatable
         $user = User::where('id', $userId)->update([
             'is_cedula_valid' => $request->is_cedula_valid 
         ]);
+        Solicitud::where([
+            'user_id' => $userId,
+            'estatus' => 0,
+        ])->update([
+            'estatus_validacion_cedula' => $request->is_cedula_valid
+        ]);
         return $user;
     }
     
