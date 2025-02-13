@@ -11,8 +11,9 @@
                 </svg>
             </div>
             <h2 class="card-title mb-3">Verificación en Proceso</h2>
-            <p class="card-text text-muted">Estamos revisando sus datos. Le responderemos a la brevedad posible para que pueda continuar con el proceso de activación del sistema. Agradecemos su paciencia.</p>
-            <a href="/" class="btn btn-primary mt-3">Volver al Inicio</a>
+            <p class="card-text text-muted">Estamos revisando sus datos. Le responderemos a la brevedad posible para que pueda continuar con el proceso de activación del sistema. Agradecemos su paciencia. 
+              <br>  Por correo se le notificará con una URL para darle continuidad al proceso de activación.</p>
+            
         </div>
     </div>
 </div>

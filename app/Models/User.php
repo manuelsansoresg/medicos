@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Lib\NotificationUser;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -74,17 +75,21 @@ class User extends Authenticatable
     ];
 
 
-    public static function validateCedula($userId, $request)
+    public static function validateCedula($userId, $solicitudId, $request)
     {
         $user = User::where('id', $userId)->update([
             'is_cedula_valid' => $request->is_cedula_valid 
         ]);
         Solicitud::where([
-            'user_id' => $userId,
+            'id' => $solicitudId,
             'estatus' => 0,
         ])->update([
             'estatus_validacion_cedula' => $request->is_cedula_valid
         ]);
+        if ($request->is_cedula_valid == 1) {
+            $notification = new NotificationUser();
+            $notification->requestRegistration($userId, $solicitudId);
+        }
         return $user;
     }
     
@@ -536,6 +541,7 @@ class User extends Authenticatable
     public static function getPorcentajeSistema()
     {
         $total         = 5;
+        
         $idusrregistra = User::getMyUserPrincipal();
         $clinicat      = Clinica::where('idusrregistra', $idusrregistra)->count() > 0 ? 1 : 0;
         $consultorios  = count(Consultorio::getAll()) > 0 ? 1 : 0;

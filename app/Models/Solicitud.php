@@ -120,6 +120,150 @@ class Solicitud extends Model
         return $solicitud;
     }
 
+    public static function getStatusPackages()
+    {
+        $userId       = User::getMyUserPrincipal();
+        //obtener todas las solicitudes activas del cliente
+        $getSolicitudes = Solicitud::selectRaw("
+                        SUM(CASE WHEN catalog_prices_id = 1 THEN cantidad ELSE 0 END) as totalPaquete,
+                        SUM(CASE WHEN catalog_prices_id = 2 THEN cantidad ELSE 0 END) + 
+                        SUM(CASE WHEN catalog_prices_id = 1 THEN cantidad * 2 ELSE 0 END) as totalUsuariosSistema,
+                        SUM(CASE WHEN catalog_prices_id = 3 THEN cantidad ELSE 0 END) + 
+                        SUM(CASE WHEN catalog_prices_id = 1 THEN cantidad * 2 ELSE 0 END) as totalConsultorioExtra,
+                        SUM(CASE WHEN catalog_prices_id = 4 THEN cantidad ELSE 0 END) as totalPacientes,
+                        SUM(CASE WHEN catalog_prices_id = 5 THEN cantidad ELSE 0 END) + 
+                        SUM(CASE WHEN catalog_prices_id = 1 THEN cantidad * 1 ELSE 0 END) as totalClinica
+                    ")
+                    ->where('user_id', $userId)
+                    ->where('estatus', 1)
+                    ->whereIn('catalog_prices_id', [1,2,3,4,5])
+                    ->first();
+
+        return $getSolicitudes;
+    }
+
+    public static function getUsedStatusPackages()
+    {
+        $packages = self::getStatusPackages();
+        $userId = User::getMyUserPrincipal();
+        $data = [];
+
+        if ($packages != null) {
+            $getUser = User::selectRaw('COUNT(id) as total')->where('usuario_principal', Auth::user()->id)->first();
+            $getClinic = Clinica::selectRaw('COUNT(idclinica) as total')->where('idusrregistra', $userId)->first();
+            $getCon = Consultorio::selectRaw('COUNT(idconsultorios) as total')->where('idusrregistra', $userId)->first();
+            
+            $solicitudes = Solicitud::where('user_id', $userId)
+                ->where('estatus', 1)
+                ->whereIn('catalog_prices_id', [1, 2, 3, 5])
+                ->orderBy('id', 'asc')
+                ->get();
+
+            $usuariosUsados = $getUser->total ?? 0;
+            $consultoriosUsados = $getCon->total ?? 0;
+            $clinicaUsada = $getClinic->total ?? 0;
+
+            $usuariosDisponibles = 0;
+            $consultoriosDisponibles = 0;
+            $clinicaDisponible = 0;
+
+            $usuariosRestantes = $usuariosUsados;
+            $consultoriosRestantes = $consultoriosUsados;
+            $clinicaRestante = $clinicaUsada;
+
+            $solicitudIdUsuarios = null;
+            $solicitudIdConsultorios = null;
+            $solicitudIdClinica = null;
+
+            foreach ($solicitudes as $solicitud) {
+                switch ($solicitud->catalog_prices_id) {
+                    case 1: // Paquete básico (2 usuarios, 2 consultorios, 1 clínica por cada cantidad)
+                        $creditosUsuarios = $solicitud->cantidad * 2;
+                        $creditosConsultorios = $solicitud->cantidad * 2;
+                        $creditosClinica = $solicitud->cantidad;
+
+                        if ($usuariosRestantes > 0) {
+                            $uso = min($usuariosRestantes, $creditosUsuarios);
+                            $usuariosRestantes -= $uso;
+                            $solicitudIdUsuarios = $solicitud->id;
+                        }
+                        if ($consultoriosRestantes > 0) {
+                            $uso = min($consultoriosRestantes, $creditosConsultorios);
+                            $consultoriosRestantes -= $uso;
+                            $solicitudIdConsultorios = $solicitud->id;
+                        }
+                        if ($clinicaRestante > 0) {
+                            $uso = min($clinicaRestante, $creditosClinica);
+                            $clinicaRestante -= $uso;
+                            $solicitudIdClinica = $solicitud->id;
+                        }
+
+                        $usuariosDisponibles += $creditosUsuarios;
+                        $consultoriosDisponibles += $creditosConsultorios;
+                        $clinicaDisponible += $creditosClinica;
+                        break;
+                    case 2: // Usuario extra
+                        $creditosUsuarios = $solicitud->cantidad;
+                        if ($usuariosRestantes > 0) {
+                            $uso = min($usuariosRestantes, $creditosUsuarios);
+                            $usuariosRestantes -= $uso;
+                            $solicitudIdUsuarios = $solicitud->id;
+                        }
+                        $usuariosDisponibles += $creditosUsuarios;
+                        break;
+                    case 3: // Consultorio extra
+                        $creditosConsultorios = $solicitud->cantidad;
+                        if ($consultoriosRestantes > 0) {
+                            $uso = min($consultoriosRestantes, $creditosConsultorios);
+                            $consultoriosRestantes -= $uso;
+                            $solicitudIdConsultorios = $solicitud->id;
+                        }
+                        $consultoriosDisponibles += $creditosConsultorios;
+                        break;
+                    case 5: // Clínica extra
+                        $creditosClinica = $solicitud->cantidad;
+                        if ($clinicaRestante > 0) {
+                            $uso = min($clinicaRestante, $creditosClinica);
+                            $clinicaRestante -= $uso;
+                            $solicitudIdClinica = $solicitud->id;
+                        }
+                        $clinicaDisponible += $creditosClinica;
+                        break;
+                }
+            }
+
+            $data['totalUsuariosSistema'] = [
+                'lbl' => "{$usuariosDisponibles}/{$usuariosUsados}",
+                'isLimit' => $usuariosDisponibles == $usuariosUsados,
+                'solicitudId' => $solicitudIdUsuarios
+            ];
+
+            $data['totalConsultorioExtra'] = [
+                'lbl' => "{$consultoriosDisponibles}/{$consultoriosUsados}",
+                'isLimit' => $consultoriosDisponibles == $consultoriosUsados,
+                'solicitudId' => $solicitudIdConsultorios
+            ];
+
+            $data['totalClinica'] = [
+                'lbl' => "{$clinicaDisponible}/{$clinicaUsada}",
+                'isLimit' => $clinicaDisponible == $clinicaUsada,
+                'solicitudId' => $solicitudIdClinica
+            ];
+
+            $userIds = User::getUsersByRoles(['paciente'])->pluck('id');
+            $totalPacient = SolicitudPaciente::whereIn('paciente_id', $userIds)->count();
+            $data['totalPacientes'] = [
+                'lbl' => "{$packages->totalPacientes}/{$totalPacient}",
+                'isLimit' => $packages->totalPacientes == $totalPacient
+            ];
+        }
+        
+        return $data;
+    }
+
+
+
+
     public static function getPaqueteActivo($solicitud)
     {
         $userId[]     = $solicitud->user_id;

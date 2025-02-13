@@ -2,13 +2,9 @@
 @inject('MComments', 'App\Models\Comment')
 @section('content')
 @php
-    $subtotal = $solicitud->precio * $solicitud->cantidad;
+    $total = $solicitud->precio * $solicitud->cantidad;
 
-    if ($solicitud->catalog_prices_id == 1 || $solicitud->catalog_prices_id == 4) {
-        $total = $subtotal;
-    } else {
-        $total = $subtotal + $paqueteActivo;
-    }
+   
 @endphp
     <div class="container">
         <div class="row">

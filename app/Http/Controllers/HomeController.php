@@ -43,8 +43,9 @@ class HomeController extends Controller
             $consultas              = ConsultaAsignado::getByDay(5);
         }
         $getPorcentajeSistema = User::getPorcentajeSistema();
-        //User::getUsersActive();
-        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'statusPacient', 'earrings', 'consultas', 'getPorcentajeSistema'));
+        $getUsedStatusPackages = Solicitud::getUsedStatusPackages();
+        
+        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'getUsedStatusPackages', 'statusPacient', 'earrings', 'consultas', 'getPorcentajeSistema'));
     }
 
     public function registroMedico()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\CatalogPrice;
 use App\Models\Solicitud;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
@@ -88,14 +89,16 @@ class RegisterController extends Controller
         ]);
         $user->assignRole($rol);
         $codeUser = User::createCode($user->id);
-        User::where('id', $user->id)->update([
+        $newUser = User::where('id', $user->id)->update([
             'codigo_paciente' => $codeUser
         ]);
-        Solicitud::create([
+        $prices = CatalogPrice::find(1);
+        $solicitud = Solicitud::create([
             'catalog_prices_id' => 1,
             'estatus' => 0,
             'cantidad' => 1,
-            'user_id' => $user->id,
+            'cantidad' => 1,
+            'precio_total' => $prices->precio,
         ]);
         return $user;
     }

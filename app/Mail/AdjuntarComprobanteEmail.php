@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class SolicitudUsuarioEmail extends Mailable
+class AdjuntarComprobanteEmail extends Mailable
 {
     use Queueable, SerializesModels;
     public $data;
@@ -29,7 +29,7 @@ class SolicitudUsuarioEmail extends Mailable
      */
     public function build()
     {
-        $send = $this->view('email.notification.solicitud_comprobante') ->with($this->data)->from($this->data['from'])->subject($this->data['subject']);
+        $send = $this->view('email.notification.adjuntar_comprobante') ->with($this->data)->from($this->data['from'])->subject($this->data['subject']);
         if (isset($this->data['cc']) && $this->data['cc'] !== '') {
             $send->cc($this->data['cc']);
         }

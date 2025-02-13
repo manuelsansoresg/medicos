@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Clinica;
 use App\Models\Consultorio;
+use App\Models\Solicitud;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -18,7 +19,8 @@ class ClinicaController extends Controller
     public function index()
     {
         $clinicas = Clinica::getAll();
-        return view('administracion.clinica.list', compact('clinicas'));
+        $getUsedStatusPackages = Solicitud::getUsedStatusPackages();
+        return view('administracion.clinica.list', compact('clinicas', 'getUsedStatusPackages'));
     }
 
     

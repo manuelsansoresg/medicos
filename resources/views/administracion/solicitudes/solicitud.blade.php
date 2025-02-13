@@ -3,13 +3,9 @@
 @section('content')
 <div class="container bg-white py-2">
     @php
-    $subtotal = $solicitud->precio * $solicitud->cantidad;
+    $total = $solicitud->precio * $solicitud->cantidad;
 
-    if ($solicitud->catalog_prices_id == 1 || $solicitud->catalog_prices_id == 4) {
-        $total = $subtotal;
-    } else {
-        $total = $subtotal + $paqueteActivo;
-    }
+    
     
 @endphp
     @hasrole(['administrador'])
@@ -98,12 +94,7 @@
                             <td>PRECIO</td>
                             <td>${{ format_price($solicitud->precio) }}</td>
                         </tr>
-                        @if ($solicitud->catalog_prices_id != 1)
-                            <tr>
-                                <td>PAQUETE BÁSICO</td>
-                                <td>${{ format_price($paqueteActivo) }}</td>
-                            </tr>
-                        @endif
+                        
                         <tr>
                             <td>TOTAL</td>
                             <td>${{ format_price($total) }}

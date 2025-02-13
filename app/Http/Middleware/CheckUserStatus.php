@@ -32,7 +32,7 @@ class CheckUserStatus
             $getSolicitud = Solicitud::where([
                 'catalog_prices_id' => 1,
                 'user_id' => $userId,
-                'estatus' => 0,
+               
             ])->first();
 
             // Excluir rutas específicas de la redirección
@@ -53,18 +53,25 @@ class CheckUserStatus
 
             // Si hay una solicitud, manejar redirección
             if ($getSolicitud !== null) {
+                
                 Session::put('typeError', 1);
+                $isRedirect = false;
 
-                if ($getSolicitud->estatus_validacion_cedula === null) {
-                    $redirectUrl = url('/admin/solicitudes/' . $getSolicitud->id . '/estatus/1');
-                } elseif ($getSolicitud->estatus_validacion_cedula === 1) {
-                    $redirectUrl = url('/admin/solicitudes/' . $getSolicitud->id);
+                if ($getSolicitud->estatus_validacion_cedula === null && $getSolicitud->estatus == 0) {
+                    $redirectUrl = url('/admin/solicitudes/' . $getSolicitud->id . '/estatus/1'); 
+                    $isRedirect = true;
                 }
-
-                \Log::info('Redirigiendo a:', ['url' => $redirectUrl]);
+                 elseif ($getSolicitud->estatus_validacion_cedula === 1 && $getSolicitud->estatus == 0) {
+                    $redirectUrl = url('/admin/solicitudes/' . $getSolicitud->id);
+                    $isRedirect = true;
+                }
+                //dd($isRedirect, $getSolicitud->estatus, $userId);
+                //\Log::info('Redirigiendo a:', ['url' => $redirectUrl]);
 
                 // Evita múltiples redirecciones
-                if ($request->url() !== $redirectUrl) {
+                
+                if ($isRedirect === true && $request->url() !== $redirectUrl) {
+                    
                     return redirect($redirectUrl);
                 }
             }

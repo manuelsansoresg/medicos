@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Clinica;
 use App\Models\Consultorio;
+use App\Models\Solicitud;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +29,8 @@ class ConsultoriosController extends Controller
         if ($getAsignedConsultories != null && $isEmptyConsultorio == false) {
             $isChangeConsultorio = true;
         }
-        return view('administracion.consultorio.list', compact('isEmptyConsultorio', 'query', 'isChangeConsultorio'));
+        $getUsedStatusPackages = Solicitud::getUsedStatusPackages();
+        return view('administracion.consultorio.list', compact('isEmptyConsultorio', 'query', 'isChangeConsultorio', 'getUsedStatusPackages'));
     }
 
     /**

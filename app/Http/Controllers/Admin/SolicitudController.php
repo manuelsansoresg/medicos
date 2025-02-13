@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Lib\NotificationUser;
 use App\Models\CatalogPrice;
 use App\Models\Clinica;
 use App\Models\ClinicaUser;
@@ -48,9 +49,9 @@ class SolicitudController extends Controller
         
     }
 
-    public static function validateCedula($userId, Request $request)
+    public static function validateCedula($userId, $solicitudId, Request $request)
     {
-        $validate = User::validateCedula($userId, $request);
+        $validate = User::validateCedula($userId, $solicitudId, $request);
         return response()->json($validate);
     }
 
@@ -138,13 +139,12 @@ class SolicitudController extends Controller
             'idRel' => $id,
         ])->get();
         //obtener el paquete activo de uso de sistema
-        $paqueteActivo = Solicitud::getPaqueteActivo($solicitud)['price'];
         $pacientes = SolicitudPaciente::where('solicitud_id', $id) ->with('paciente')->get();
         $clinicas   = Clinica::getAll();
         $my_clinics = ClinicaUser::where('user_id', $solicitud->user_id)->get();
         
         $fecha_vencimiento = $solicitud->fecha_vencimiento != '' ? $solicitud->fecha_vencimiento : date('Y-m-d', strtotime('+1 year'));
-        return view('administracion.solicitudes.solicitud', compact('solicitud', 'id', 'comments', 'fecha_vencimiento', 'my_clinics', 'paqueteActivo', 'pacientes', 'clinicas' ));
+        return view('administracion.solicitudes.solicitud', compact('solicitud', 'id', 'comments', 'fecha_vencimiento', 'my_clinics',  'pacientes', 'clinicas' ));
     }
 
     public function adjuntarComprobante(Request $request)
@@ -186,12 +186,14 @@ class SolicitudController extends Controller
                         $dataSolicitud['precio_total'] = $request->precio_total;
                     }
 
-                    SolicitudUsuario::activateRenew($solicitudId);
                    
                 }
                 $archivo->move($rutaDestino, $nombreArchivo);
                 Solicitud::where('id', $solicitudId)->update($dataSolicitud);
 
+                $notification =  new NotificationUser();
+                $notification->verifyPaymentReceipt($solicitudId);
+                
                 return redirect('/admin/solicitudes/'.$solicitudId);
             }
 
@@ -207,11 +209,16 @@ class SolicitudController extends Controller
                 $dataSolicitud['fecha_vencimiento'] = $fechaVencimiento;
                 $dataSolicitud['precio_total'] = $request->precio_total;
                 $dataSolicitud['fecha_activacion'] = date('Y-m-d');
+
+                $notification =  new NotificationUser();
+                $notification->activatesSystem($solicitudId);
             }
             
             Solicitud::where('id', $solicitudId)->update($dataSolicitud);
-            SolicitudUsuario::activateRenew($solicitudId);
+            
         }
+
+        
 
         return redirect('/admin/solicitudes/'.$solicitudId);
     }

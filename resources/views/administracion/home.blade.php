@@ -16,7 +16,7 @@
             <div class="card">
                 <div class="card-body">
                     <a href="/admin/usuarios"><i class="fas fa-users  fs-3"></i>
-                        <br><span>USUARIOS</span>
+                        <br><span>USUARIOS </span>
                     </a>
                     
                 </div>
@@ -87,35 +87,44 @@
         <div class="col-md-4 mb-4">
             <div class="card h-100 d-flex flex-column">
                 <div class="card-body flex-grow-1">
-                    <h6 class="card-title text-center">CONFIGURACIÓN DEL SISTEMA</h6>
+                    <h6 class="card-title text-center">PAQUETE BÁSICO</h6>
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-12">
                             <table class="table table-borderless">
                                 @php
-                                    $classClinic = $getPorcentajeSistema['validateClinic'] > 0 ? null : 'text-danger';
-                                    $classConsultorios = $getPorcentajeSistema['validateCon'] > 0 ? null : 'text-danger';
-                                    $classUsers = $getPorcentajeSistema['validateUsers'] > 0 ? null : 'text-danger';
-                                    $classPacient = $getPorcentajeSistema['validatePacient'] > 0 ? null : 'text-danger';
+                                  
                                     $classTemplate = $getPorcentajeSistema['validateTemplate'] > 0 ? null : 'text-danger';
                                 @endphp
                                 <tr>
-                                    <td><span class="{{ $classClinic }}">CLINICAS</span></td>
+                                    <td><span class="">CLINICAS {{ $getUsedStatusPackages['totalClinica']['lbl'] }} </span></td>
                                     <td><a href="/admin/clinica"  class="color-primary"><i class="fas fa-eye"></i></a></td>
-                                    <td><a href="/admin/clinica/create"  class="color-primary"><i class="fas fa-plus"></i></a></td>
+                                    <td>
+                                        @if ($getUsedStatusPackages['totalClinica']['isLimit']  == false)
+                                            <a href="/admin/clinica/create"  class="color-primary"><i class="fas fa-plus"></i></a>
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td> <span class="{{ $classConsultorios  }}">CONSULTORIOS</span> </td>
+                                    <td> <span class="">CONSULTORIOS {{ $getUsedStatusPackages['totalConsultorioExtra']['lbl'] }}</span> </td>
                                     <td><a href="/admin/consultorio"  class="color-primary"><i class="fas fa-eye"></i></a></td>
-                                    <td><a href="/admin/consultorio/create"  class="color-primary"><i class="fas fa-plus"></i></a></td>
+                                    <td>
+                                        @if ($getUsedStatusPackages['totalConsultorioExtra']['isLimit']  == false)
+                                            <a href="/admin/consultorio/create"  class="color-primary"><i class="fas fa-plus"></i></a>
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><span class="{{ $classUsers }}">USUARIOS</span></td>
+                                    <td><span class="">USUARIOS {{ $getUsedStatusPackages['totalUsuariosSistema']['lbl'] }} </span></td>
                                     <td><a href="/admin/usuarios"  class="color-primary"><i class="fas fa-eye"></i></a></td>
-                                    <td><a href="/admin/usuarios/create"  class="color-primary"><i class="fas fa-plus"></i></a></td>
+                                    <td>
+                                        @if ($getUsedStatusPackages['totalUsuariosSistema']['isLimit']  == false)
+                                            <a href="/admin/usuarios/create"  class="color-primary"><i class="fas fa-plus"></i></a>
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><span class="{{ $classPacient }}">PACIENTES</span></td>
-                                    <td><a href="/admin/pacientes"  class="color-primary"><i class="fas fa-eye"></i></a></td>
+                                    <td><span class="">PACIENTES {{ $getUsedStatusPackages['totalPacientes']['lbl'] }}</span></td>
+                                    <td></td>
                                     <td><a href="/admin/pacientes/create"  class="color-primary"><i class="fas fa-plus"></i></a></td>
                                 </tr>
                                 <tr>
@@ -125,9 +134,7 @@
                                 </tr>
                             </table>
                         </div>
-                        <div class="col-4">
-                            <div id="container"></div>
-                        </div>
+                      
                     </div>
                 </div>
             </div>

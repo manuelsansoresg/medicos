@@ -172,7 +172,7 @@ window.validarCedula = function(userId, solicitudId)
     const isCedulaValid = document.querySelector('input[name="is_cedula_valid"]:checked').value;
     
     axios
-        .post('/admin/solicitudes/'+userId+'/cedula/validate', {
+        .post('/admin/solicitudes/'+userId+'/'+solicitudId+'/cedula/validate', {
             is_cedula_valid: isCedulaValid // Incluye el valor en el cuerpo del POST
         })
         .then(function (response) {

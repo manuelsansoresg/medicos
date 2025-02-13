@@ -29,9 +29,15 @@ class NotificationEmail extends Mailable
      */
     public function build()
     {
-        $send = $this->view('email.notification')->from($this->data['from'])->subject($this->data['subject']);
-        if ($this->data['cc'] !== '') {
+        $send = $this->view('email.notification.solicitud_comprobante')
+                 ->with($this->data)
+                 ->from($this->data['from'])
+                 ->subject($this->data['subject']);
+                 
+        if (isset($this->data['cc']) && $this->data['cc'] !== '') {
             $send->cc($this->data['cc']);
         }
+
+        return $send;
     }
 }

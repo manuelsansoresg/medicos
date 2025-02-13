@@ -25,7 +25,13 @@
 
             <div class="col-12 text-end">
                 <a href="/" class="btn btn-primary"><i class="fas fa-home"></i></a>
+                @hasrole(['administrador'])
                 <a href="/admin/clinica/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                @endrole
+                @if ($getUsedStatusPackages['totalClinica']['isLimit']  == false)
+                    <a href="/admin/clinica/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                    
+                @endif
             </div>
             <div class="col-12">
                 <table class="table mt-3">

@@ -130,7 +130,7 @@ if (document.getElementById('add-field')) {
 
 /* grafica circular porcentaje de avance */
 
-if (document.getElementById('porcentajeSistema')) {
+/* if (document.getElementById('porcentajeSistema')) {
     let porcentajeSistema = $('#porcentajeSistema').val();
     var bar = new ProgressBar.Circle(container, {
     color: '#1a73e8',
@@ -163,4 +163,4 @@ if (document.getElementById('porcentajeSistema')) {
   bar.text.style.fontSize = '2rem';
   
   bar.animate(1.0);  // Number from 0.0 to 1.0
-  }
+  } */
