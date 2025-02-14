@@ -39,8 +39,10 @@ class Clinica extends Model
         $userPrincipal = User::getMyUserPrincipal();
         $data['idusrregistra'] = $userPrincipal;
         $clinica_id = $request->clinica_id;
+
         if ($clinica_id == null) {
             $clinica = Clinica::create($data);
+            VinculacionRenovacion::saveVinculacion($clinica->idclinica, 'totalClinica'); 
         } else {
             $clinica = Clinica::find($clinica_id);
             $clinica->update($data);

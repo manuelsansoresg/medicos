@@ -254,7 +254,8 @@ class Solicitud extends Model
             $totalPacient = SolicitudPaciente::whereIn('paciente_id', $userIds)->count();
             $data['totalPacientes'] = [
                 'lbl' => "{$packages->totalPacientes}/{$totalPacient}",
-                'isLimit' => $packages->totalPacientes == $totalPacient
+                'isLimit' => $packages->totalPacientes == $totalPacient,
+                'solicitudId' => null
             ];
         }
         

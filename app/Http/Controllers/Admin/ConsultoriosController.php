@@ -7,6 +7,7 @@ use App\Models\Clinica;
 use App\Models\Consultorio;
 use App\Models\Solicitud;
 use App\Models\User;
+use App\Models\VinculacionRenovacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -111,6 +112,7 @@ class ConsultoriosController extends Controller
      */
     public function destroy($id)
     {
+        VinculacionRenovacion::deleteVinculacion($id);
         Consultorio::find($id)->delete();
     }
 }

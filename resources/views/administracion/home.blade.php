@@ -105,7 +105,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td> <span class="">CONSULTORIOS {{ $getUsedStatusPackages['totalConsultorioExtra']['lbl'] }}</span> </td>
+                                    <td> <span class="">CONSULTORIOS {{ $getUsedStatusPackages['totalConsultorioExtra']['lbl'] }}  </span> </td>
                                     <td><a href="/admin/consultorio"  class="color-primary"><i class="fas fa-eye"></i></a></td>
                                     <td>
                                         @if ($getUsedStatusPackages['totalConsultorioExtra']['isLimit']  == false)

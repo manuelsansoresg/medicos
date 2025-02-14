@@ -10,6 +10,7 @@ use App\Models\ClinicaUser;
 use App\Models\FormularioConfiguration;
 use App\Models\Solicitud;
 use App\Models\User;
+use App\Models\VinculacionRenovacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -140,6 +141,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        VinculacionRenovacion::deleteVinculacion($id);
         $user  = User::find($id)->delete();
     }
 }

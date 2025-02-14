@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Clinica;
 use App\Models\Consultorio;
 use App\Models\Solicitud;
+use App\Models\VinculacionRenovacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -126,6 +127,7 @@ class ClinicaController extends Controller
      */
     public function destroy($id)
     {
+        VinculacionRenovacion::deleteVinculacion($id);
         Clinica::find($id)->delete();
     }
 }
