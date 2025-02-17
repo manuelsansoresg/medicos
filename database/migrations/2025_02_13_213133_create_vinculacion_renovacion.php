@@ -13,7 +13,7 @@ class CreateVinculacionRenovacion extends Migration
      */
     public function up()
     {
-        Schema::create('vinculacion_renovacion', function (Blueprint $table) {
+        Schema::create('vinculacion_solicitud', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('solicitudId')->nullable();
             $table->unsignedBigInteger('user_id')->nullable(); // el usuario al que se le asigna el permiso
@@ -34,6 +34,6 @@ class CreateVinculacionRenovacion extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vinculacion_renovacion');
+        Schema::dropIfExists('vinculacion_solicitud');
     }
 }

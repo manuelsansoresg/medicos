@@ -6,16 +6,46 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class VinculacionRenovacion extends Model
+class VinculacionSolicitud extends Model
 {
     use HasFactory;
-    protected $table = 'vinculacion_renovacion';
+    protected $table = 'vinculacion_solicitud';
     protected $fillable = [
         'solicitudId',
         'user_id',
         'idusrregistra',
         'idRel',
     ];
+
+    public static function vincularPaquete($solicitudId)
+    {
+        $solicitud = Solicitud::find($solicitudId);
+        $getVinculacion = VinculacionSolicitud::where(['solicitudId'  => $solicitud->id, 'idRel' => $solicitud->user_id ])->count();
+        if ($getVinculacion == 0 ) {
+            VinculacionSolicitud::create(array(
+                'user_id' => $solicitud->user_id,
+                'idusrregistra' => Auth::user()->id,
+                'solicitudId' => $solicitud->id,
+                'idRel' => $solicitud->user_id,
+            ));
+        }
+
+    }
+
+    public static function addVinculacion($solicitudId, $idRel)
+    {
+        $solicitud = Solicitud::find($solicitudId);
+        $getVinculacion = VinculacionSolicitud::where(['solicitudId'  => $solicitudId, 'idRel' => $idRel ])->count();
+        if ($getVinculacion == 0 ) {
+            VinculacionSolicitud::create(array(
+                'user_id' => $solicitud->user_id,
+                'idusrregistra' => Auth::user()->id,
+                'solicitudId' => $solicitud->id,
+                'idRel' => $idRel,
+            ));
+        }
+        return $getVinculacion;
+    }
 
     public static function saveVinculacion($idRel, $type)
     {
@@ -32,7 +62,7 @@ class VinculacionRenovacion extends Model
             $solicitudId = $getUsedStatusPackages[$type]['solicitudId'];
             $data['solicitudId'] = $solicitudId;
             $data['idRel'] = $idRel;
-            VinculacionRenovacion::create($data);
+            VinculacionSolicitud::create($data);
 
 
         }
@@ -50,8 +80,7 @@ class VinculacionRenovacion extends Model
             $solicitudId = $getUsedStatusPackages['totalClinica']['solicitudId'];
             $data['solicitudId'] = $solicitudId;
             $data['idRel'] = $idRel;
-            VinculacionRenovacion::where($data)->delete();
+            VinculacionSolicitud::where($data)->delete();
         }
     }
-    
 }

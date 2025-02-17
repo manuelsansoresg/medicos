@@ -10,7 +10,7 @@ use App\Models\ClinicaUser;
 use App\Models\FormularioConfiguration;
 use App\Models\Solicitud;
 use App\Models\User;
-use App\Models\VinculacionRenovacion;
+use App\Models\VinculacionSolicitud;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -58,6 +58,14 @@ class UserController extends Controller
         $view = \View::make('administracion.user.expedients_download.content_config', compact('userId', 'user', 'configurations'))->render();
         return view('administracion.user.expedients_download.content_config', compact('userId', 'user', 'configurations'));
         return response()->json($view);
+    }
+
+    public function storeVincular(Request $request)
+    {
+        $solicitudId = $request->solicitud_id;
+        $usuarioId = $request->usuario;
+
+        return VinculacionSolicitud::addVinculacion($solicitudId, $usuarioId);
     }
 
     /**
@@ -141,7 +149,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        VinculacionRenovacion::deleteVinculacion($id);
+        VinculacionSolicitud::deleteVinculacion($id);
         $user  = User::find($id)->delete();
     }
 }

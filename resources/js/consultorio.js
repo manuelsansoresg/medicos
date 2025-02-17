@@ -33,6 +33,7 @@ $("#frm-consultorio").submit(function (e) {
         .catch(e => { });
 });
 
+
 //horario consulta
 
 window.changeOffice = function (office, userId) {
@@ -49,13 +50,34 @@ window.changeOffice = function (office, userId) {
 }
 
 
-window.asignarconsult = function () {
+$("#frm-vincular-consultorio").submit(function (e) {
+    e.preventDefault();
+    const form = document.getElementById("frm-vincular-consultorio");
+    const data = new FormData(form);
 
-  
-
-
-};
-
+    axios
+        .post("/admin/consultorio/vincular/store", data)
+        .then(function (response) {
+            let result = response.data;
+            let msg = 'Vinculación realizada';
+            if (result > 0) {
+                msg = 'Ya existe una vinculación';
+            }
+            Swal.fire({
+                title: msg,
+                showDenyButton: false,
+                showCancelButton: false,
+                showConfirmButton: true,
+                confirmButtonText: `Aceptar`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.reload();
+                }
+            })
+            
+        })
+        .catch(e => { });
+});
 
 
 window.validateHours = function(id) {

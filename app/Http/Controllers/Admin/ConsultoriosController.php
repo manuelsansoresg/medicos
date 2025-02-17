@@ -7,7 +7,7 @@ use App\Models\Clinica;
 use App\Models\Consultorio;
 use App\Models\Solicitud;
 use App\Models\User;
-use App\Models\VinculacionRenovacion;
+use App\Models\VinculacionSolicitud;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -76,6 +76,13 @@ class ConsultoriosController extends Controller
         return response()->json($view);
     }
 
+    public function storeVincular(Request $request)
+    {
+        $solicitudId = $request->solicitud_id;
+        $consultorioId = $request->consultorio;
+
+        return VinculacionSolicitud::addVinculacion($solicitudId, $consultorioId);
+    }
     
 
     /**
@@ -112,7 +119,7 @@ class ConsultoriosController extends Controller
      */
     public function destroy($id)
     {
-        VinculacionRenovacion::deleteVinculacion($id);
+        VinculacionSolicitud::deleteVinculacion($id);
         Consultorio::find($id)->delete();
     }
 }

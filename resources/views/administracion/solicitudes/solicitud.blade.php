@@ -9,58 +9,93 @@
     
 @endphp
     @hasrole(['administrador'])
-        <div class="row">
+       
+        @if ($solicitud->nombre == 'Paquete básico')
             
-            <div class="col-12">
-                <h5>ETAPAS</h5>
-            </div>
-            
-        </div>  
         <div class="row">
-            <div class="col-5 card">
-                <div class="card-body">
-                    <table class="table table-borderless">
-                        <tr>
-                            <td> 1- Validar información de la solicitud</td>
-                            <td>
-                                @if ($solicitud->is_cedula_valid == null)
+           
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-12 ">
+                        <h5>ETAPAS</h5>
+                    </div>
+                </div>
+                <div class="card"  style="min-height: 170px">
+                    
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td> 1- Validar información de la solicitud</td>
+                                <td>
+                                    @if ($solicitud->is_cedula_valid == null)
+                                        <span class="badge badge-dim bg-warning">
+                                            <span>En espera </span>
+                                        </span>
+                                    @endif
+                                    
+                                    @if ($solicitud->is_cedula_valid == 1)
+                                        <span class="badge badge-dim bg-success">
+                                            <span>Concluido </span>
+                                        </span>
+                                    @endif
+                                   
+                                </td>
+                                <td>
+                                    <a href="/admin/solicitudes/{{ $solicitud->id }}/task/1" class="btn btn-sm btn-primary">Abrir</a>
+                                  
+                                </td>
+                            </tr>
+                            <tr>
+                                <td> 2- Validar Comprobante pago</td>
+                                <td>
+                                    @if ($solicitud->is_cedula_valid ==  1 && $solicitud->estatus != 1)
                                     <span class="badge badge-dim bg-warning">
                                         <span>En espera </span>
                                     </span>
-                                @endif
-                                
-                                @if ($solicitud->is_cedula_valid == 1)
+                                    @endif
+                                    @if ($solicitud->estatus == 1)
                                     <span class="badge badge-dim bg-success">
-                                        <span>Concluido </span>
+                                        <span> Concluido </span>
                                     </span>
-                                @endif
-                               
-                            </td>
-                            <td>
-                                <a href="/admin/solicitudes/{{ $solicitud->id }}/task/1" class="btn btn-primary">Abrir</a>
-                              
-                            </td>
-                        </tr>
-                        <tr>
-                            <td> 2- Validar Comprobante pago</td>
-                            <td>
-                                @if ($solicitud->is_cedula_valid ==  1 && $solicitud->estatus != 1)
-                                <span class="badge badge-dim bg-warning">
-                                    <span>En espera </span>
-                                </span>
-                                @endif
-                                @if ($solicitud->estatus == 1)
-                                <span class="badge badge-dim bg-success">
-                                    <span> Concluido </span>
-                                </span>
-                                @endif
-                            </td>
-                            <td><a href="/admin/solicitudes/{{ $solicitud->id }}/task/2" class="btn btn-primary">Abrir</a></td>
-                        </tr>
-                    </table>
+                                    @endif
+                                </td>
+                                <td><a href="/admin/solicitudes/{{ $solicitud->id }}/task/2" class="btn btn-sm btn-primary">Abrir</a></td>
+                            </tr>
+                            
+                            
+                        </table>
+                    </div>
                 </div>
             </div>    
+            
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-12 ">
+                        <h5>VINCULAR</h5>
+                    </div>
+                </div>
+                <div class="card">
+                   
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td>CLINICA</td>
+                                <td> <a href="#"  data-bs-toggle="modal" data-bs-target="#modalClinica"><i class="fas fa-plus"></i></a> </td>
+                            </tr>
+                            <tr>
+                                <td>CONSULTORIO</td>
+                                <td><a href="#"  data-bs-toggle="modal" data-bs-target="#modalConsultorio"><i class="fas fa-plus"></i></a></td>
+                            </tr>
+                            <tr>
+                                <td>USUARIO</td>
+                                <td><a href="#"  data-bs-toggle="modal" data-bs-target="#modalUsuario"><i class="fas fa-plus"></i></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>     
+        @endif
     @endrole
         <div class="card-body">
 
@@ -291,4 +326,93 @@
 
   {{-- modal comment --}}
 
+{{-- modal clinica --}}
+<div class="modal fade" id="modalClinica" tabindex="-1" aria-labelledby="modalClinicaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="frm-vincular-clinica">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalClinicaLabel">Vincular clinica</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">SELECCIONE UNA CLINICA</label>
+                    <select name="clinica" class="form-control">
+                        @foreach ($clinicasVincular as $clinicaVincular)
+                            <option value="{{ $clinicaVincular->id }}"> {{ $clinicaVincular->nombre }} </option>
+                        @endforeach
+                    </select>
+                  </div>
+            </div>
+            <input type="hidden" name="solicitud_id" value="{{ $solicitud->id }}">
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button type="submit" class="btn btn-primary">Vincular</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{{-- /modal clinica --}}
+
+{{-- modal consultorio --}}
+<div class="modal fade" id="modalConsultorio" tabindex="-1" aria-labelledby="modalConsultorioLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="frm-vincular-consultorio">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalConsultorioLabel">Vincular consultorio</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">SELECCIONE UN CONSULTORIO</label>
+                    <select name="consultorio" class="form-control">
+                        @foreach ($consultorioVincular as $consultorioVincular)
+                            <option value="{{ $consultorioVincular->idconsultorios }}"> {{ $consultorioVincular->vnumconsultorio }} </option>
+                        @endforeach
+                    </select>
+                  </div>
+            </div>
+            <input type="hidden" name="solicitud_id" value="{{ $solicitud->id }}">
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button type="submit" class="btn btn-primary">Vincular</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{{-- /modal clinica --}}
+
+{{-- modal usuario --}}
+<div class="modal fade" id="modalUsuario" tabindex="-1" aria-labelledby="modalUsuarioLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="frm-vincular-usuario">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalUsuarioLabel">Vincular usuario</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">SELECCIONE UN USUARIO</label>
+                    <select name="usuario" class="form-control">
+                        @foreach ($usuarioVincular as $usuarioVincular)
+                        <option value="{{ $usuarioVincular->id }}"> {{ $usuarioVincular->name }} {{ $usuarioVincular->vapellido }} {{ $usuarioVincular->segundo_apellido }} </option>
+                    @endforeach
+                    </select>
+                  </div>
+            </div>
+            <input type="hidden" name="solicitud_id" value="{{ $solicitud->id }}">
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button type="submit" class="btn btn-primary">Vincular</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{{-- /modal clinica --}}
 @endsection

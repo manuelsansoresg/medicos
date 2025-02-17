@@ -127,3 +127,32 @@ window.deletePaciente = function(user_id)
         } 
       })
 }
+
+$("#frm-vincular-usuario").submit(function (e) {
+    e.preventDefault();
+    const form = document.getElementById("frm-vincular-usuario");
+    const data = new FormData(form);
+
+    axios
+        .post("/admin/usuarios/vincular/store", data)
+        .then(function (response) {
+            let result = response.data;
+            let msg = 'Vinculación realizada';
+            if (result > 0) {
+                msg = 'Ya existe una vinculación';
+            }
+            Swal.fire({
+                title: msg,
+                showDenyButton: false,
+                showCancelButton: false,
+                showConfirmButton: true,
+                confirmButtonText: `Aceptar`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.reload();
+                }
+            })
+            
+        })
+        .catch(e => { });
+});

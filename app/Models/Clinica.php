@@ -42,7 +42,7 @@ class Clinica extends Model
 
         if ($clinica_id == null) {
             $clinica = Clinica::create($data);
-            VinculacionRenovacion::saveVinculacion($clinica->idclinica, 'totalClinica'); 
+            VinculacionSolicitud::saveVinculacion($clinica->idclinica, 'totalClinica'); 
         } else {
             $clinica = Clinica::find($clinica_id);
             $clinica->update($data);

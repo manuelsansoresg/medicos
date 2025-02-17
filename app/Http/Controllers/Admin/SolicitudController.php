@@ -13,6 +13,7 @@ use App\Models\Solicitud;
 use App\Models\SolicitudPaciente;
 use App\Models\SolicitudUsuario;
 use App\Models\User;
+use App\Models\VinculacionSolicitud;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -142,9 +143,18 @@ class SolicitudController extends Controller
         $pacientes = SolicitudPaciente::where('solicitud_id', $id) ->with('paciente')->get();
         $clinicas   = Clinica::getAll();
         $my_clinics = ClinicaUser::where('user_id', $solicitud->user_id)->get();
-        
+        $roles = array('administrador', 'medico', 'auxiliar', 'secretario');
+        $clinicasVincular = Clinica::select('clinica.idclinica as id', 'clinica.tnombre as nombre')
+                            ->where('idusrregistra', $solicitud->user_id)->get();
+        $consultorioVincular = Consultorio::where('idusrregistra', $solicitud->user_id)->get();
+        $usuarioVincular = User::where('usuario_principal', $solicitud->user_id)
+                            ->whereHas('roles', function ($q) use($roles) {
+                                $q->whereIn('name', $roles);
+                                })
+                            ->get();
+
         $fecha_vencimiento = $solicitud->fecha_vencimiento != '' ? $solicitud->fecha_vencimiento : date('Y-m-d', strtotime('+1 year'));
-        return view('administracion.solicitudes.solicitud', compact('solicitud', 'id', 'comments', 'fecha_vencimiento', 'my_clinics',  'pacientes', 'clinicas' ));
+        return view('administracion.solicitudes.solicitud', compact('solicitud', 'usuarioVincular', 'consultorioVincular', 'id', 'clinicasVincular', 'comments', 'fecha_vencimiento', 'my_clinics',  'pacientes', 'clinicas' ));
     }
 
     public function adjuntarComprobante(Request $request)
@@ -212,6 +222,7 @@ class SolicitudController extends Controller
 
                 $notification =  new NotificationUser();
                 $notification->activatesSystem($solicitudId);
+                VinculacionSolicitud::vincularPaquete($solicitudId);
             }
             
             Solicitud::where('id', $solicitudId)->update($dataSolicitud);

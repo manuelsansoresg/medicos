@@ -47,12 +47,17 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/clinica/consultorio/myConfiguration', [App\Http\Controllers\Admin\ClinicaController::class, 'consultorioGet'])->middleware('auth');
     Route::post('/clinica/consultorio/set', [App\Http\Controllers\Admin\ClinicaController::class, 'setClinicaConsultorio'])->middleware('auth');
     Route::get('/clinica/consultorio/get', [App\Http\Controllers\Admin\ClinicaController::class, 'getClinicaConsultorio'])->middleware('auth');
+    Route::post('/clinica/vincular/store', [App\Http\Controllers\Admin\ClinicaController::class, 'storeVincular'])->middleware('auth');
+
 
     Route::resource('consultorio', '\App\Http\Controllers\Admin\ConsultoriosController')->middleware('auth');
     Route::get('/consultorio/{id}/{userId}/show', [App\Http\Controllers\Admin\ConsultoriosController::class, 'show'])->middleware('auth');
+    Route::post('/consultorio/vincular/store', [App\Http\Controllers\Admin\ConsultoriosController::class, 'storeVincular'])->middleware('auth');
 
     Route::resource('usuarios', '\App\Http\Controllers\Admin\UserController')->middleware('auth');
     Route::get('usuarios/{pacientes}/permisos/get', [\App\Http\Controllers\Admin\UserController::class, 'permisosGet'])->middleware('auth');
+    Route::post('/usuarios/vincular/store', [App\Http\Controllers\Admin\UserController::class, 'storeVincular'])->middleware('auth');
+
     Route::resource('solicitudes', '\App\Http\Controllers\Admin\SolicitudController')->middleware('auth');
     Route::get('solicitudes/{solicitudId}/task/{task}', [\App\Http\Controllers\Admin\SolicitudController::class, 'taskSolicitud'])->middleware('auth');
     Route::post('solicitudes/{userId}/{solicitudId}/cedula/validate', [\App\Http\Controllers\Admin\SolicitudController::class, 'validateCedula'])->middleware('auth');

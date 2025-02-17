@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Clinica;
 use App\Models\Consultorio;
 use App\Models\Solicitud;
-use App\Models\VinculacionRenovacion;
+use App\Models\VinculacionSolicitud;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -119,6 +119,14 @@ class ClinicaController extends Controller
         //
     }
 
+    public function storeVincular(Request $request)
+    {
+        $solicitudId = $request->solicitud_id;
+        $clinicaId = $request->clinica;
+
+        return VinculacionSolicitud::addVinculacion($solicitudId, $clinicaId);
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -127,7 +135,7 @@ class ClinicaController extends Controller
      */
     public function destroy($id)
     {
-        VinculacionRenovacion::deleteVinculacion($id);
+        VinculacionSolicitud::deleteVinculacion($id);
         Clinica::find($id)->delete();
     }
 }
