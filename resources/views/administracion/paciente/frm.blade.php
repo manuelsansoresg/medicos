@@ -90,6 +90,14 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
+                                <label for="inputImss" class="form-label">CURP</label>
+                                <small>Consulta tu CURP aquí <a href="https://www.gob.mx/curp/" target="_blank">consulta</a></small>
+                                <input type="text" class="form-control" name="data[curp]" id="curp" value="{{ $user != null ? $user->curp : null }}">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
                                 <label for="inputEstatus" class="form-label">*ACTIVO</label>
                                 <select name="data[status]" id="inputEstatus" class="form-control" required>
                                     

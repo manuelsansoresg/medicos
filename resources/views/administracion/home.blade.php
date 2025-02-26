@@ -48,7 +48,7 @@
             <div class="col-md-2  text-center">
                 <div class="card">
                     <div class="card-body">
-                        <a href="/admin/paciente"><i class="fas fa-user fs-3"></i>
+                        <a href="/admin/pacientes"><i class="fas fa-user fs-3"></i>
                             <br><span>PACIENTE</span>
                         </a>
                         

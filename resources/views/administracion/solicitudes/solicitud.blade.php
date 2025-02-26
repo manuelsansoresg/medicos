@@ -10,7 +10,7 @@
 @endphp
     @hasrole(['administrador'])
        
-        @if ($solicitud->nombre == 'Paquete básico')
+        @if ($solicitud->nombre == 'Paquete básico' || $solicitud->nombre == 'Usuario extra' | $solicitud->nombre == 'consultorio extra' )
             
         <div class="row">
            
@@ -78,22 +78,57 @@
                    
                     <div class="card-body">
                         <table class="table table-borderless">
-                            <tr>
-                                <td>CLINICA</td>
-                                <td> <a href="#"  data-bs-toggle="modal" data-bs-target="#modalClinica"><i class="fas fa-plus"></i></a> </td>
-                            </tr>
-                            <tr>
-                                <td>CONSULTORIO</td>
-                                <td><a href="#"  data-bs-toggle="modal" data-bs-target="#modalConsultorio"><i class="fas fa-plus"></i></a></td>
-                            </tr>
-                            <tr>
-                                <td>USUARIO</td>
-                                <td><a href="#"  data-bs-toggle="modal" data-bs-target="#modalUsuario"><i class="fas fa-plus"></i></a></td>
-                            </tr>
+                            @if ($solicitud->nombre == 'Paquete básico' || $solicitud->nombre == 'clinica extra')
+                                <tr>
+                                    <td>CLINICA</td>
+                                    <td> <a href="#"  data-bs-toggle="modal" data-bs-target="#modalClinica"><i class="fas fa-plus"></i></a> </td>
+                                </tr>
+                            @endif
+                            @if ($solicitud->nombre == 'Paquete básico' || $solicitud->nombre == 'consultorio extra')
+                                <tr>
+                                    <td>CONSULTORIO</td>
+                                    <td><a href="#"  data-bs-toggle="modal" data-bs-target="#modalConsultorio"><i class="fas fa-plus"></i></a></td>
+                                </tr>
+                            @endif
+                            @if ($solicitud->nombre == 'Paquete básico' || $solicitud->nombre == 'Usuario extra')
+                                <tr>
+                                    <td>USUARIO</td>
+                                    <td><a href="#"  data-bs-toggle="modal" data-bs-target="#modalUsuario"><i class="fas fa-plus"></i></a></td>
+                                </tr>
+                            @endif
                         </table>
                     </div>
                 </div>
+               
             </div>
+             <div class="row mt-3">
+                    <div class="col-12 ">
+                        <h5>VINCULACIÓNES</h5>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Clínica</th>
+                                    <th>Consultorio</th>
+                                    <th>Usuarios</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $maxRows = max(count($getVinculacion['clinica']), count($getVinculacion['consultorio']), count($getVinculacion['usuarios']));
+                                @endphp
+                        
+                                @for ($i = 0; $i < $maxRows; $i++)
+                                    <tr>
+                                        <td>{{ $getVinculacion['clinica'][$i] ?? '' }}</td>
+                                        <td>{{ $getVinculacion['consultorio'][$i] ?? '' }}</td>
+                                        <td>{{ $getVinculacion['usuarios'][$i] ?? '' }}</td>
+                                    </tr>
+                                @endfor
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
         </div>     
         @endif
     @endrole

@@ -81,7 +81,7 @@ class ConsultoriosController extends Controller
         $solicitudId = $request->solicitud_id;
         $consultorioId = $request->consultorio;
 
-        return VinculacionSolicitud::addVinculacion($solicitudId, $consultorioId);
+        return VinculacionSolicitud::addVinculacion($solicitudId, $consultorioId, 2);
     }
     
 

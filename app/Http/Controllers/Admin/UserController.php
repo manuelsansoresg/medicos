@@ -65,7 +65,7 @@ class UserController extends Controller
         $solicitudId = $request->solicitud_id;
         $usuarioId = $request->usuario;
 
-        return VinculacionSolicitud::addVinculacion($solicitudId, $usuarioId);
+        return VinculacionSolicitud::addVinculacion($solicitudId, $usuarioId, 3);
     }
 
     /**

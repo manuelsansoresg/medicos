@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -265,59 +266,22 @@ class Solicitud extends Model
 
 
 
-    public static function getPaqueteActivo($solicitud)
+    public static function getPaqueteActivo($solicitudId)
     {
-        $userId[]     = $solicitud->user_id;
-        $getUser      = User::find($solicitud->user_id);
-        $userId[]     = $getUser->usuario_principal;
-        $getSolicitud = Solicitud::where(function($query) use ($userId) {
-                        foreach ($userId as $id) {
-                            $query->orWhere('user_id', $id);
-                        }
-                    })
-                    ->where('catalog_prices_id', 1)
-                    ->where('estatus', 1)
-                    
-                    ->first();
-        $price  = 0;
-        $mesesRestantesParaCompletarDoce = null;
-        
-        if ($getSolicitud != null) {
-            // Asumiendo que $fechaVencimiento contiene la fecha de vencimiento en formato 'Y-m-d'
-            $fechaVencimiento = new DateTime($getSolicitud->fecha_vencimiento);
-            $fechaActual = new DateTime(date('Y-m-d')); // Suponiendo que esta es la fecha del servidor
-            // Verifica si la fecha de vencimiento es mayor que la fecha actual
-            if ($fechaVencimiento > $fechaActual) {
-                
-                // Calcula la diferencia de años y meses sin considerar los días
-                $anioDiff = $fechaVencimiento->format('Y') - $fechaActual->format('Y');
-                $mesDiff = $fechaVencimiento->format('m') - $fechaActual->format('m');
+        $solicitud = self::find($solicitudId);
 
-                // Calcula el total de meses hasta la fecha de vencimiento
-                $mesesTranscurridos = ($anioDiff * 12) + $mesDiff;
-
-                // Asegura que no haya ningún mes transcurrido si el día actual es menor al día del mes de la fecha de vencimiento
-                if ($fechaActual->format('d') < $fechaVencimiento->format('d') && $mesesTranscurridos > 0) {
-                    $mesesTranscurridos--;
-                }
-
-                // Calcula los meses restantes para completar 12
-                $mesesRestantesParaCompletarDoce = 12 - $mesesTranscurridos;
-            } else {
-                // Si la fecha de vencimiento ya ha pasado
-                $mesesTranscurridos = 12; // Todos los meses ya se han consumido
-                $mesesRestantesParaCompletarDoce = 0;
-            }
-            
-            if ($mesesRestantesParaCompletarDoce > 0 ) {
-                $getPrice = CatalogPrice::find($getSolicitud->catalog_prices_id);
-                $precioPaquete = $getPrice->precio / 12;
-                $price = $precioPaquete * $mesesRestantesParaCompletarDoce;
-            }
-            
+        if (!$solicitud || !$solicitud->fecha_vencimiento) {
+            return 0; // Si no se encuentra la solicitud o no tiene fecha de vencimiento, se considera caducado
         }
 
-        return array('price' => $price, 'mesesRestantes' => $mesesRestantesParaCompletarDoce);
+        $fechaVencimiento = Carbon::parse($solicitud->fecha_vencimiento);
+        $fechaActual = Carbon::now();
+
+        if ($fechaVencimiento->isPast()) {
+            return 0; // Si la fecha de vencimiento ya pasó, devolver 0
+        }
+
+        return $fechaActual->diffInMonths($fechaVencimiento);
         
     }
 

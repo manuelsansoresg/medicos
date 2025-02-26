@@ -124,7 +124,7 @@ class ClinicaController extends Controller
         $solicitudId = $request->solicitud_id;
         $clinicaId = $request->clinica;
 
-        return VinculacionSolicitud::addVinculacion($solicitudId, $clinicaId);
+        return VinculacionSolicitud::addVinculacion($solicitudId, $clinicaId, 1);
     }
 
     /**

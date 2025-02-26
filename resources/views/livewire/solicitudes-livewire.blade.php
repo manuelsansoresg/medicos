@@ -55,7 +55,7 @@
                         $fechaVencimiento = $solicitud->fecha_vencimiento;
                         $isVencido = false;
                         if ($solicitud->catalog_prices_id == 1) {
-                            $mesesRestantes = $MSolicitud::getPaqueteActivo($solicitud)['mesesRestantes'];
+                            $mesesRestantes = $MSolicitud::getPaqueteActivo($solicitud->id);
                         }
                     @endphp
                    <tr>
@@ -69,12 +69,12 @@
                         @php
                             
                             $color = 'color-primary';
-                            if ($mesesRestantes >= 10) {
+                            if ($mesesRestantes == 2) {
                                 $color = 'text-warning';
                             }
                             
-                            if ($solicitud->estatus == 2) {
-                                $color = 'text-danger';
+                            if ($mesesRestantes === 0) {
+                                $color = 'text-redsoft';
                                 $isVencido = true;
                                /*  $MSolicitud::where(['id' => $solicitud->id, 'estatus' => 1])->update([
                                     'estatus' => 2
@@ -85,6 +85,7 @@
                         <span class="{{ $color }}">{{ $fechaVencimiento }}  </span>
                     </td>
                     <td>
+                       meses restantes( {{ $mesesRestantes }} )
                         @switch($solicitud->estatus)
                             @case(1)
                                 ACTIVO

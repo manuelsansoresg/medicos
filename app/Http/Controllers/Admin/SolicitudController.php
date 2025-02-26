@@ -152,9 +152,9 @@ class SolicitudController extends Controller
                                 $q->whereIn('name', $roles);
                                 })
                             ->get();
-
+        $getVinculacion = VinculacionSolicitud::getMyVinculacion($id);
         $fecha_vencimiento = $solicitud->fecha_vencimiento != '' ? $solicitud->fecha_vencimiento : date('Y-m-d', strtotime('+1 year'));
-        return view('administracion.solicitudes.solicitud', compact('solicitud', 'usuarioVincular', 'consultorioVincular', 'id', 'clinicasVincular', 'comments', 'fecha_vencimiento', 'my_clinics',  'pacientes', 'clinicas' ));
+        return view('administracion.solicitudes.solicitud', compact('solicitud', 'usuarioVincular', 'getVinculacion', 'consultorioVincular', 'id', 'clinicasVincular', 'comments', 'fecha_vencimiento', 'my_clinics',  'pacientes', 'clinicas' ));
     }
 
     public function adjuntarComprobante(Request $request)
@@ -222,7 +222,7 @@ class SolicitudController extends Controller
 
                 $notification =  new NotificationUser();
                 $notification->activatesSystem($solicitudId);
-                VinculacionSolicitud::vincularPaquete($solicitudId);
+                //VinculacionSolicitud::vincularPaquete($solicitudId);
             }
             
             Solicitud::where('id', $solicitudId)->update($dataSolicitud);

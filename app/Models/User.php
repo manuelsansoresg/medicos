@@ -52,7 +52,8 @@ class User extends Authenticatable
         'foto',
         'ruta_foto',
         'sexo',
-        'alergias'
+        'alergias',
+        'curp'
     ];
 
     /**
@@ -438,7 +439,7 @@ class User extends Authenticatable
         if ($user_id == null) {
             $data['creador_id'] = Auth::user()->id;
             $user = User::create($data);
-            VinculacionSolicitud::saveVinculacion($user->id, 'totalUsuariosSistema'); 
+            VinculacionSolicitud::saveVinculacion($user->id, 'totalUsuariosSistema', 3); 
             $user->assignRole($rol);
         } else {
             $user = User::find($user_id);
