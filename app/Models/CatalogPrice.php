@@ -13,5 +13,19 @@ class CatalogPrice extends Model
         'precio',
         'porcentaje_ganancia',
         'descripcion',
+        'status',
     ];
+
+    public static function saveEdit($request)
+    {
+        $data = $request->data;
+        $id = $request->id;
+
+        if ($id == null ) {
+            $catalog = CatalogPrice::create($data);
+        } else {
+            $catalog = CatalogPrice::where('id', $id)->update($data);
+        }
+        return $catalog;
+    }
 }

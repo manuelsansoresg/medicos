@@ -58,6 +58,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('usuarios/{pacientes}/permisos/get', [\App\Http\Controllers\Admin\UserController::class, 'permisosGet'])->middleware('auth');
     Route::post('/usuarios/vincular/store', [App\Http\Controllers\Admin\UserController::class, 'storeVincular'])->middleware('auth');
 
+    Route::resource('catalogo', '\App\Http\Controllers\Admin\CatalogoController')->middleware('auth');
+    Route::resource('paquete', '\App\Http\Controllers\Admin\PackageController')->middleware('auth');
+
     Route::resource('solicitudes', '\App\Http\Controllers\Admin\SolicitudController')->middleware('auth');
     Route::get('solicitudes/{solicitudId}/task/{task}', [\App\Http\Controllers\Admin\SolicitudController::class, 'taskSolicitud'])->middleware('auth');
     Route::post('solicitudes/{userId}/{solicitudId}/cedula/validate', [\App\Http\Controllers\Admin\SolicitudController::class, 'validateCedula'])->middleware('auth');

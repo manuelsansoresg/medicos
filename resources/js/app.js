@@ -6,6 +6,8 @@ require('./bootstrap');
 require('./sin_citas');
 require('./clinica');
 require('./consultorio');
+require('./catalogo');
+require('./paquete');
 require('./clinicaconsultorio');
 require('./user');
 require('./citas');

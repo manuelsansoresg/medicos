@@ -78,6 +78,28 @@
                 </div>
             </div>
             
+            <div class="col-md-2 mt-3 text-center">
+                <div class="card">
+                    <div class="card-body ">
+                        <a href="/admin/catalogo"><i class="fas fa-list"></i></i>
+                            <br><span>CATALOGO</span>
+                        </a>
+                        
+                    </div>
+                </div>
+            </div>
+           
+            <div class="col-md-2 mt-3 text-center">
+                <div class="card">
+                    <div class="card-body ">
+                        <a href="/admin/paquete"><i class="fas fa-cube"></i></i>
+                            <br><span>PAQUETES</span>
+                        </a>
+                        
+                    </div>
+                </div>
+            </div>
+            
            
        </div>
        @endrole
