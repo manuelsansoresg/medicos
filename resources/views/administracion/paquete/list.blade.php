@@ -39,6 +39,7 @@
                             <th>PRECIO</th>
                             <th>ACTIVO</th>
                             <th>ELEMENTOS</th>
+                            <th>VALIDAR CÉDULA</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -55,6 +56,7 @@
                                         NO
                                     @endif 
                                 </td>
+                               
                                 <td> 
                                     
                                     @if ($query->items->isEmpty())
@@ -65,7 +67,14 @@
                                         @endforeach
                                     @endif
                                 </td>
-                                
+                                <td>
+                                    @if ($query->isValidateCedula == 1)
+                                        SÍ
+                                    @endif 
+                                    @if ($query->isValidateCedula == 0)
+                                        NO
+                                    @endif 
+                                </td>
                                 <td class="col-2">
                                     <a href="/admin/paquete/{{ $query->id }}/edit" class="btn btn-primary"><i
                                             class="fas fa-edit"></i></a>

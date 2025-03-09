@@ -15,7 +15,7 @@ class CreateSolicitudes extends Migration
     {
         Schema::create('solicitudes', function (Blueprint $table) {
             $table->id();
-            $table->integer('catalog_prices_id');
+            $table->integer('solicitud_origin_id');
             $table->string('comprobante')->nullable();
             $table->smallInteger('estatus')->nullable()->default(0);
             $table->integer('cantidad')->nullable();

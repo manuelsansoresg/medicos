@@ -106,6 +106,17 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
+                                <label for="inputValidateCedula" class="form-label">*VALIDAR CÉDULA</label>
+                                <select name="data[isValidateCedula]" id="inputValidateCedula" class="form-control" required>
+                                    <option value="1"{{ $query->isValidateCedula == 1 ? 'selected' : null }}>SÍ</option>
+                                    <option value="0"{{ $query->isValidateCedula == 0 ? 'selected' : null }}>NO</option>
+                                    
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
                                 <label for="inputEstatus" class="form-label">*ACTIVO</label>
                                 <select name="data[status]" id="inputEstatus" class="form-control" required>
 
@@ -117,6 +128,22 @@
                                 </select>
                             </div>
                         </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="inputReporte" class="form-label">SOPORTE</label>
+                                <select name="data[tipoReporte]" id="inputReporte" class="form-control" required>
+
+                                    @foreach (config('enums.soporte') as $key => $item)
+                                        <option value="{{ $key }}"
+                                            {{ $query != null && $query->tipoReporte == $key ? 'selected' : null }}>
+                                            {{ $item }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        
+                        
                         
                       
                        

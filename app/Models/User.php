@@ -575,7 +575,7 @@ class User extends Authenticatable
             'user_id' => $userId
         ])
         ->where('estatus', 1)
-        ->where('catalog_prices_id', 1)
+        ->where('solicitud_origin_id', 1)
         ->first();
         $totalPaquete = $getTotalPaquete == null? 0 : 2;
 
@@ -585,7 +585,7 @@ class User extends Authenticatable
             'user_id' => $userId
         ])
         ->where('estatus', 1)
-        ->where('catalog_prices_id', 2)
+        ->where('solicitud_origin_id', 2)
         ->first();
         $totalUsuariosSolicitud = $totalUsuariosSolicitud == null ? 0 : $totalUsuariosSolicitud->total + $totalPaquete;
         $getUsers               = User::GetListUsers();
@@ -604,16 +604,16 @@ class User extends Authenticatable
         // Consultar solicitudes del usuario principal
         $solicitudes = Solicitud::where('user_id', $userId)
             ->where('estatus', 1) // Solo solicitudes activas
-            ->whereIn('catalog_prices_id', [1,2])
+            ->whereIn('solicitud_origin_id', [1,2])
             ->get();
 
         // Determinar usuarios permitidos con base en solicitudes válidas
         $usuariosPermitidos = 0;
         foreach ($solicitudes as $solicitud) {
             if (Carbon::parse($solicitud->fecha_vencimiento)->isFuture()) {
-                if ($solicitud->catalog_prices_id == 1) {
-                    $usuariosPermitidos += 2; // 2 usuarios para catalog_prices_id = 1
-                } elseif ($solicitud->catalog_prices_id == 2) {
+                if ($solicitud->solicitud_origin_id == 1) {
+                    $usuariosPermitidos += 2; // 2 usuarios para solicitud_origin_id = 1
+                } elseif ($solicitud->solicitud_origin_id == 2) {
                     $usuariosPermitidos += $solicitud->cantidad; // Cantidad definida
                 }
             }

@@ -27,6 +27,8 @@ Route::get('/editProfile', [App\Http\Controllers\HomeController::class, 'editPro
 
 Route::get('/query/clinicaYConsultorio', [App\Http\Controllers\HomeController::class, 'clinicaYConsultorio'])->middleware('auth');
 Route::get('/query/viewClinicaYConsultorio', [App\Http\Controllers\HomeController::class, 'viewClinicaYConsultorio'])->middleware('auth');
+// Agregar esta ruta a tu archivo web.php
+Route::get('/obtener-paquetes', '\App\Http\Controllers\Admin\PackageController@getPackages');
 
 Route::group(['prefix' => 'admin'], function () {
     Route::resource('actividades', '\App\Http\Controllers\Admin\ActividadesController')->middleware('auth');
@@ -60,6 +62,8 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::resource('catalogo', '\App\Http\Controllers\Admin\CatalogoController')->middleware('auth');
     Route::resource('paquete', '\App\Http\Controllers\Admin\PackageController')->middleware('auth');
+
+    
 
     Route::resource('solicitudes', '\App\Http\Controllers\Admin\SolicitudController')->middleware('auth');
     Route::get('solicitudes/{solicitudId}/task/{task}', [\App\Http\Controllers\Admin\SolicitudController::class, 'taskSolicitud'])->middleware('auth');

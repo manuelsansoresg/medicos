@@ -30,7 +30,7 @@ class CheckUserStatus
             $userId = User::getMyUserPrincipal();
 
             $getSolicitud = Solicitud::where([
-                'catalog_prices_id' => 1,
+                'solicitud_origin_id' => 1,
                 'user_id' => $userId,
                
             ])->first();

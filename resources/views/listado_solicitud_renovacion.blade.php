@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
         {{-- usuaarios --}}
-        @if ($solicitudes->catalog_prices_id == 2) 
+        @if ($solicitudes->solicitud_origin_id == 2) 
             <form id="frm-renovar-solicitudes" action="#">
                 <div class="col-12">
                     <table class="table">
@@ -36,7 +36,7 @@
             </form>
         @endif
         {{-- consultorios --}}
-        @if ($solicitudes->catalog_prices_id == 3)
+        @if ($solicitudes->solicitud_origin_id == 3)
         <form id="frm-renovar-solicitudes" action="#">
             <div class="col-12">
                 <table class="table">

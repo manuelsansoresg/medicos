@@ -325,7 +325,7 @@
                 // Multiplicamos la ganancia unitaria por la cantidad para obtener la ganancia total
                 $totalGanancia = format_price($ganancia_unitaria * $cantidad);
 
-                $valorTotal = $ganancia->catalog_prices_id != 4 ? $ganancia->precio_total  : $totalGanancia;
+                $valorTotal = $ganancia->solicitud_origin_id != 4 ? $ganancia->precio_total  : $totalGanancia;
                 $sumTotal += $valorTotal;
                 
             @endphp
@@ -334,7 +334,7 @@
                     <td style="text-align: center"> {{ $ganancia->name }} {{ $ganancia->vapellido }}  </td>
                     <td style="text-align: center"> {{ $ganancia->nombre }} </td>
                     <td style="text-align: center"> 
-                        @if ($ganancia->catalog_prices_id == 1 || $ganancia->catalog_prices_id == 2 || $ganancia->catalog_prices_id == 3)
+                        @if ($ganancia->solicitud_origin_id == 1 || $ganancia->solicitud_origin_id == 2 || $ganancia->solicitud_origin_id == 3)
                             N/A
                             @else
                                 @foreach ($pacientes as $pacientesValue)
@@ -348,7 +348,7 @@
                     <td style="text-align: center">{{ $ganancia->cantidad }}</td>
                    {{--  <td> ${{ format_price($subtotal) }} </td> --}}
                    @hasrole(['administrador'])
-                   @if ($ganancia->catalog_prices_id == 4)
+                   @if ($ganancia->solicitud_origin_id == 4)
                        <td> ${{ $totalGanancia }} </td>
                        @else
                        <td>N/A</td>

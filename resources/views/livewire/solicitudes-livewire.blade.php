@@ -54,7 +54,7 @@
                         $mesesRestantes = null;
                         $fechaVencimiento = $solicitud->fecha_vencimiento;
                         $isVencido = false;
-                        if ($solicitud->catalog_prices_id == 1) {
+                        if ($solicitud->solicitud_origin_id == 1) {
                             $mesesRestantes = $MSolicitud::getPaqueteActivo($solicitud->id);
                         }
                     @endphp
@@ -102,10 +102,10 @@
                     </td>
                     <td>
                         <a href="/admin/solicitudes/{{ $solicitud->id }}"  class="color-primary"><i class="fas fa-eye"></i></a> 
-                        @if ($isVencido === true && $solicitud->catalog_prices_id != 3 && $solicitud->catalog_prices_id != 2)
+                        @if ($isVencido === true && $solicitud->solicitud_origin_id != 3 && $solicitud->solicitud_origin_id != 2)
                             <a class="color-primary pointer" onclick="renew({{ $solicitud->id }})"><i class="fas fa-redo"></i></a>
                         @endif
-                        @if ($isVencido === true && ($solicitud->catalog_prices_id == 3 || $solicitud->catalog_prices_id == 2))
+                        @if ($isVencido === true && ($solicitud->solicitud_origin_id == 3 || $solicitud->solicitud_origin_id == 2))
                             <a class="color-primary pointer" onclick="modalRenewSolicitud({{ $solicitud->id }})"><i class="fas fa-redo"></i></a>
                         @endif
                     </td>

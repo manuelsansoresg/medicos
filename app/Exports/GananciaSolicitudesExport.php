@@ -50,9 +50,9 @@ class GananciaSolicitudesExport implements FromCollection, WithHeadings, WithMap
         $ganancia_unitaria = $precio_unitario * ($porcentaje_ganancia / 100);
         $totalGanancia = format_price($ganancia_unitaria * $cantidad);
 
-        // Verifica si el catalog_prices_id es 4 para mostrar pacientes
+        // Verifica si el solicitud_origin_id es 4 para mostrar pacientes
         $pacientes = 'N/A';
-        if ($solicitud->catalog_prices_id == 4) {
+        if ($solicitud->solicitud_origin_id == 4) {
             $getPacientes = SolicitudPaciente::where('solicitud_id', $solicitud->id)
                                             ->with('paciente')->get();
             if ($getPacientes->isNotEmpty()) {

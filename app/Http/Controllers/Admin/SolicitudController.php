@@ -32,10 +32,10 @@ class SolicitudController extends Controller
     public function taskSolicitud($solicitudId, $task)
     {
         $solicitud = Solicitud::select(
-            'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'is_cedula_valid', 'estatus', 'comprobante', 'fecha_vencimiento', 'name', 'vapellido', 'segundo_apellido', 'vcedula', 'clinica', 'tdireccion', 'solicitudes.user_id', 'catalog_prices_id'
+            'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'is_cedula_valid', 'estatus', 'comprobante', 'fecha_vencimiento', 'name', 'vapellido', 'segundo_apellido', 'vcedula', 'clinica', 'tdireccion', 'solicitudes.user_id', 'solicitud_origin_id'
             )
             ->where('solicitudes.id', $solicitudId)
-            ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
+            ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.solicitud_origin_id')
             ->join('users', 'users.id', 'solicitudes.user_id')
             ->first();
         
@@ -94,15 +94,15 @@ class SolicitudController extends Controller
     public function showDataRenew($solicitudId)
     {
         $title = 'Elije un elemento para activar';
-        $solicitudes = Solicitud::select('cantidad', 'catalog_prices_id', 'cantidad')->where('id', $solicitudId)->first();
+        $solicitudes = Solicitud::select('cantidad', 'solicitud_origin_id', 'cantidad')->where('id', $solicitudId)->first();
         $cantidad = $solicitudes->cantidad;
         $users = null;
         $cons = null;
-        if ($solicitudes->catalog_prices_id == 2) { //usuarios
+        if ($solicitudes->solicitud_origin_id == 2) { //usuarios
             $users        = User::GetListUsers(null, 0);
             
         }
-        if ($solicitudes->catalog_prices_id == 3) { //consultorios
+        if ($solicitudes->solicitud_origin_id == 3) { //consultorios
             $cons              = Consultorio::getAll(null, 0);
             
         }
@@ -129,10 +129,10 @@ class SolicitudController extends Controller
     public function show($id)
     {
         $solicitud = Solicitud::select(
-                        'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'estatus', 'comprobante', 'fecha_vencimiento', 'name', 'users.is_cedula_valid', 'vapellido', 'vcedula', 'clinica', 'solicitudes.user_id', 'catalog_prices_id'
+                        'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'estatus', 'comprobante', 'fecha_vencimiento', 'name', 'users.is_cedula_valid', 'vapellido', 'vcedula', 'clinica', 'solicitudes.user_id', 'solicitud_origin_id'
                         )
                         ->where('solicitudes.id',$id)
-                        ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
+                        ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.solicitud_origin_id')
                         ->join('users', 'users.id', 'solicitudes.user_id')
                         ->first();
         $comments = Comment::where([

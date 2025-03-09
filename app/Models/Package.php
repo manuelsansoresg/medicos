@@ -14,6 +14,8 @@ class Package extends Model
         'precio',
         'status',
         'idusrregistra',
+        'isValidateCedula',
+        'tipoReporte',
     ];
 
     public static function saveEdit($request)

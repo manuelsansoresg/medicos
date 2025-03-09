@@ -12,7 +12,7 @@ class Solicitud extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'catalog_prices_id',
+        'solicitud_origin_id', //puede ser un paquete o algo extra como un usuario , clinica, consultorio
         'comprobante',
         'estatus',
         'estatus_validacion_cedula',
@@ -22,7 +22,7 @@ class Solicitud extends Model
         'fecha_activacion',
         'paciente_id',
         'precio_total',
-        'solicitud_origin_id'
+        'source_id' //1- paquete 0- extra
     ];
 
     protected $table = 'solicitudes';
@@ -35,15 +35,15 @@ class Solicitud extends Model
 
         if ($isAdmin) {
             $solicitud =  Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'solicitudes.updated_at', 'name', 'vapellido', 'fecha_vencimiento', 'catalog_prices_id', 'user_id'
-                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
+                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'solicitudes.updated_at', 'name', 'vapellido', 'fecha_vencimiento', 'solicitud_origin_id', 'user_id'
+                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.solicitud_origin_id')
                 ->join('users', 'users.id', 'solicitudes.user_id')
                 ->whereIn('estatus', [0,1,2, 4])
                 ;
         } else {
             $solicitud =  Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'name', 'vapellido', 'fecha_vencimiento', 'catalog_prices_id', 'user_id'
-                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
+                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'name', 'vapellido', 'fecha_vencimiento', 'solicitud_origin_id', 'user_id'
+                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.solicitud_origin_id')
                 ->join('users', 'users.id', 'solicitudes.user_id')
                 ->where('user_id', $user_id)
                 ->whereIn('estatus', [0,1,2, 4]);
@@ -74,21 +74,21 @@ class Solicitud extends Model
 
         if ($isAdmin) {
             $solicitud =  Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'precio_total' , 'solicitudes.created_at', 'name', 'vapellido', 'fecha_vencimiento', 'porcentaje_ganancia', 'catalog_prices_id', 'user_id', 'estatus', 'fecha_activacion'
-                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
+                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'precio_total' , 'solicitudes.created_at', 'name', 'vapellido', 'fecha_vencimiento', 'porcentaje_ganancia', 'solicitud_origin_id', 'user_id', 'estatus', 'fecha_activacion'
+                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.solicitud_origin_id')
                 ->join('users', 'users.id', 'solicitudes.user_id')
                 ->whereBetween('fecha_activacion', [$fechaInicio, $fechaFinal]) // Filtrar por rango de fechas
                 ->whereIn('estatus', [1,3])
                 ;
         } else {
             $solicitud =  Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'precio_total' , 'solicitudes.created_at', 'name', 'vapellido', 'fecha_vencimiento', 'porcentaje_ganancia', 'catalog_prices_id', 'user_id', 'estatus', 'fecha_activacion'
-                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
+                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'precio_total' , 'solicitudes.created_at', 'name', 'vapellido', 'fecha_vencimiento', 'porcentaje_ganancia', 'solicitud_origin_id', 'user_id', 'estatus', 'fecha_activacion'
+                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.solicitud_origin_id')
                 ->join('users', 'users.id', 'solicitudes.user_id')
                 ->where('user_id', $user_id)
                 ->whereBetween('fecha_activacion', [$fechaInicio, $fechaFinal]) // Filtrar por rango de fechas
                 ->where('estatus', '!=', 0)
-                ->where('catalog_prices_id', 4);
+                ->where('solicitud_origin_id', 4);
         }
 
         if ($search != '') {
@@ -108,7 +108,7 @@ class Solicitud extends Model
     {
         $getSolicitud = Solicitud::find($solicitudId);
         $dataSolicitud = array(
-            'catalog_prices_id' => $getSolicitud->catalog_prices_id ,
+            'solicitud_origin_id' => $getSolicitud->solicitud_origin_id ,
             'estatus' => 0 ,
             'cantidad' => $getSolicitud->cantidad ,
             'user_id' => $getSolicitud->user_id ,
@@ -123,24 +123,23 @@ class Solicitud extends Model
 
     public static function getStatusPackages()
     {
-        $userId       = User::getMyUserPrincipal();
-        //obtener todas las solicitudes activas del cliente
+        /* $userId       = User::getMyUserPrincipal();
         $getSolicitudes = Solicitud::selectRaw("
-                        SUM(CASE WHEN catalog_prices_id = 1 THEN cantidad ELSE 0 END) as totalPaquete,
-                        SUM(CASE WHEN catalog_prices_id = 2 THEN cantidad ELSE 0 END) + 
-                        SUM(CASE WHEN catalog_prices_id = 1 THEN cantidad * 2 ELSE 0 END) as totalUsuariosSistema,
-                        SUM(CASE WHEN catalog_prices_id = 3 THEN cantidad ELSE 0 END) + 
-                        SUM(CASE WHEN catalog_prices_id = 1 THEN cantidad * 2 ELSE 0 END) as totalConsultorioExtra,
-                        SUM(CASE WHEN catalog_prices_id = 4 THEN cantidad ELSE 0 END) as totalPacientes,
-                        SUM(CASE WHEN catalog_prices_id = 5 THEN cantidad ELSE 0 END) + 
-                        SUM(CASE WHEN catalog_prices_id = 1 THEN cantidad * 1 ELSE 0 END) as totalClinica
+                        SUM(CASE WHEN solicitud_origin_id = 1 THEN cantidad ELSE 0 END) as totalPaquete,
+                        SUM(CASE WHEN solicitud_origin_id = 2 THEN cantidad ELSE 0 END) + 
+                        SUM(CASE WHEN solicitud_origin_id = 1 THEN cantidad * 2 ELSE 0 END) as totalUsuariosSistema,
+                        SUM(CASE WHEN solicitud_origin_id = 3 THEN cantidad ELSE 0 END) + 
+                        SUM(CASE WHEN solicitud_origin_id = 1 THEN cantidad * 2 ELSE 0 END) as totalConsultorioExtra,
+                        SUM(CASE WHEN solicitud_origin_id = 4 THEN cantidad ELSE 0 END) as totalPacientes,
+                        SUM(CASE WHEN solicitud_origin_id = 5 THEN cantidad ELSE 0 END) + 
+                        SUM(CASE WHEN solicitud_origin_id = 1 THEN cantidad * 1 ELSE 0 END) as totalClinica
                     ")
                     ->where('user_id', $userId)
                     ->where('estatus', 1)
-                    ->whereIn('catalog_prices_id', [1,2,3,4,5])
+                    ->whereIn('solicitud_origin_id', [1,2,3,4,5])
                     ->first();
 
-        return $getSolicitudes;
+        return $getSolicitudes; */
     }
 
     public static function getUsedStatusPackages()
@@ -156,7 +155,7 @@ class Solicitud extends Model
             
             $solicitudes = Solicitud::where('user_id', $userId)
                 ->where('estatus', 1)
-                ->whereIn('catalog_prices_id', [1, 2, 3, 5])
+                ->whereIn('solicitud_origin_id', [1, 2, 3, 5])
                 ->orderBy('id', 'asc')
                 ->get();
 
@@ -177,7 +176,7 @@ class Solicitud extends Model
             $solicitudIdClinica = null;
 
             foreach ($solicitudes as $solicitud) {
-                switch ($solicitud->catalog_prices_id) {
+                switch ($solicitud->solicitud_origin_id) {
                     case 1: // Paquete básico (2 usuarios, 2 consultorios, 1 clínica por cada cantidad)
                         $creditosUsuarios = $solicitud->cantidad * 2;
                         $creditosConsultorios = $solicitud->cantidad * 2;
@@ -315,14 +314,14 @@ class Solicitud extends Model
             } else {
                 // Verificamos si el usuario ya tiene un paquete básico activo.
                 $getSolicitudBasico = Solicitud::where('user_id', $user_id)
-                                            ->where('catalog_prices_id', 1)
+                                            ->where('solicitud_origin_id', 1)
                                             ->where('estatus', 1)
                                             ->first();
 
-                if ($getSolicitudBasico != null && $data['catalog_prices_id'] == 1) {
+                if ($getSolicitudBasico != null && $data['solicitud_origin_id'] == 1) {
                     $isExistAcceso = true;
                     $errorMessage = 'Solo puedes solicitar 1 paquete básico activo.';
-                } elseif ($getSolicitudBasico == null && $data['catalog_prices_id'] != 1) {
+                } elseif ($getSolicitudBasico == null && $data['solicitud_origin_id'] != 1) {
                     // Si el usuario quiere solicitar un paquete que no es el básico, pero no tiene uno básico activo.
                     $isExistAcceso = true;
                     $errorMessage = 'Para solicitar este paquete debes tener un paquete básico activo.';
@@ -343,7 +342,7 @@ class Solicitud extends Model
                 $solicitud = Solicitud::where('id', $solicitudId)->update($data);
             }
              // vincular paciente con solicitud 
-            if ($data['catalog_prices_id'] == 4) { 
+            if ($data['solicitud_origin_id'] == 4) { 
                 SolicitudPaciente::where('solicitud_id', $solicitud->id)->delete();
                 $pacientesIds = explode(',', $request->pacientes_ids);
                 foreach ($pacientesIds as $pacientesId) {

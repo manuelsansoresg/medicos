@@ -75,7 +75,7 @@
                     <td> {{ format_price($solicitud->precio_total) }} </td>
                     
                     @hasrole(['administrador'])
-                        @if ($solicitud->catalog_prices_id == 4)
+                        @if ($solicitud->solicitud_origin_id == 4)
                             <td> ${{ $totalGanancia }} </td>
                             @else
                             <td>N/A</td>

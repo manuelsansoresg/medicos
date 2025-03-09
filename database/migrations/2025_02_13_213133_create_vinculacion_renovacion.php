@@ -19,7 +19,7 @@ class CreateVinculacionRenovacion extends Migration
             $table->unsignedBigInteger('user_id')->nullable(); // el usuario al que se le asigna el permiso
             $table->unsignedBigInteger('idusrregistra')->nullable(); // usuario el que tiene iniciado la sesion
             $table->bigInteger('idRel')->nullable();
-            $table->bigInteger('catalog_prices_id')->nullable();
+            $table->bigInteger('solicitud_origin_id')->nullable();
 
             $table->foreign('solicitudId')->references('id')->on('solicitudes')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade'); 

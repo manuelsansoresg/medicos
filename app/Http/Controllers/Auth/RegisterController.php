@@ -94,7 +94,7 @@ class RegisterController extends Controller
         ]);
         $prices = CatalogPrice::find(1);
         $solicitud = Solicitud::create([
-            'catalog_prices_id' => 1,
+            'solicitud_origin_id' => 1,
             'estatus' => 0,
             'cantidad' => 1,
             'cantidad' => 1,

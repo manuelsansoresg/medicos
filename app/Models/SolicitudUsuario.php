@@ -21,7 +21,7 @@ class SolicitudUsuario extends Model
         $solicitudId = $request->solicitudId;
         $solicitud = Solicitud::find($solicitudId);
         
-        if ($solicitud->catalog_prices_id == 2) {
+        if ($solicitud->solicitud_origin_id == 2) {
             
             if ($users != null) { //viene con un valor asi que preparar la tabla para crear una renovación
                 foreach ($users as $user) {
@@ -36,7 +36,7 @@ class SolicitudUsuario extends Model
             }
         }
         
-        if ($solicitud->catalog_prices_id == 3) { //consultorios
+        if ($solicitud->solicitud_origin_id == 3) { //consultorios
             
             if ($cons != null) { //viene con un valor asi que preparar la tabla para crear una renovación
                 foreach ($cons as $con) {

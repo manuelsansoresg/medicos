@@ -16,7 +16,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputNombre" class="form-label">*SOLICITUD</label>
-                                <select name="data[catalog_prices_id]" id="catalog_prices_id" class="form-control" required onchange="setSolicitud(this)">
+                                <select name="data[solicitud_origin_id]" id="solicitud_origin_id" class="form-control" required onchange="setSolicitud(this)">
                                     <option value="">Selecciona una opción</option>
                                     @foreach ($catalogPrices as $catalogPrice)
                                         <option value="{{ $catalogPrice->id }}">{{  $catalogPrice->nombre }}</option>

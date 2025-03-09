@@ -223,7 +223,7 @@
                     </div>
                     @endrole
                     @hasrole(['administrador'])
-                        {{-- @if ($solicitud->catalog_prices_id == 1)
+                        {{-- @if ($solicitud->solicitud_origin_id == 1)
                             <div class="mb-3 mt-3">
                             
                                 <label for="inputNombre" class="form-label">ASIGNAR CLINICA</label>

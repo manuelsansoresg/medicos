@@ -135,16 +135,16 @@ class Consultorio extends Model
         // Consultar solicitudes del usuario principal
         $solicitudes = Solicitud::where('user_id', $userId)
             ->where('estatus', 1) // Solo solicitudes activas
-            ->whereIn('catalog_prices_id', [1,3])
+            ->whereIn('solicitud_origin_id', [1,3])
             ->get();
 
         // Determinar usuarios permitidos con base en solicitudes válidas
         $consultoriosPermitidos = 0;
         foreach ($solicitudes as $solicitud) {
             if (Carbon::parse($solicitud->fecha_vencimiento)->isFuture()) {
-                if ($solicitud->catalog_prices_id == 1) {
-                    $consultoriosPermitidos += 2; // 2 usuarios para catalog_prices_id = 1
-                } elseif ($solicitud->catalog_prices_id == 3) {
+                if ($solicitud->solicitud_origin_id == 1) {
+                    $consultoriosPermitidos += 2; // 2 usuarios para solicitud_origin_id = 1
+                } elseif ($solicitud->solicitud_origin_id == 3) {
                     $consultoriosPermitidos += $solicitud->cantidad; // Cantidad definida
                 }
             }

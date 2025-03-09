@@ -49,7 +49,7 @@ class NotificationUser
         $solicitud = Solicitud::select(
                             'solicitudes.user_id', 'catalog_prices.nombre', 'solicitudes.cantidad'
                             )->where('solicitudes.id', $solicitudId)
-                        ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.catalog_prices_id')
+                        ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.solicitud_origin_id')
                         ->first();
         $user = User::find($solicitud->user_id);
         $data = array(

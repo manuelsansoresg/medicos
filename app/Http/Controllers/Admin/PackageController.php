@@ -21,6 +21,21 @@ class PackageController extends Controller
         return view('administracion.paquete.list', compact('query'));
     }
 
+    public function getPackages(Request $request)
+    {
+        $isValidateCedula = $request->query('isValidateCedula', null);
+        
+        // Filtrar paquetes según el valor de isValidateCedula
+        $packages = Package::where('status', 1)
+                          ->where('isValidateCedula', $isValidateCedula)
+                          ->with(['items.catalogPrice'])
+                          ->get();
+        
+        // Retornar la vista parcial con los paquetes
+        
+        return view('packages.package_cards', compact('packages'))->render();
+    }
+
     /**
      * Show the form for creating a new resource.
      *
