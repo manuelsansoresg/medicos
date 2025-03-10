@@ -56,9 +56,6 @@ class RegisterController extends Controller
             'vapellido' => ['required', 'string', 'max:255'],
             'segundo_apellido' => ['required', 'string', 'max:255'],
             'ttelefono' => ['required', 'int'],
-            'clinica' => ['required', 'string', 'max:255'],
-            'vcedula' => ['required', 'string', 'max:255'],
-            'RFC' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -73,13 +70,13 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $rol = 'medico';
+        
         $user =  User::create([
             'name' => $data['name'],
             'vapellido' => $data['vapellido'],
             'segundo_apellido' => $data['segundo_apellido'],
             'ttelefono' => $data['ttelefono'],
             'tdireccion' => $data['tdireccion'],
-            'clinica' => $data['clinica'],
             'vcedula' => $data['vcedula'],
             'RFC' => $data['RFC'],
             'especialidad' => $data['especialidad'],
@@ -92,13 +89,15 @@ class RegisterController extends Controller
         $newUser = User::where('id', $user->id)->update([
             'codigo_paciente' => $codeUser
         ]);
-        $prices = CatalogPrice::find(1);
-        $solicitud = Solicitud::create([
-            'solicitud_origin_id' => 1,
+        
+        Solicitud::create([
+            'solicitud_origin_id' => $data['paquete-id'],
+            'source_id' => 1,
             'estatus' => 0,
             'cantidad' => 1,
             'cantidad' => 1,
-            'precio_total' => $prices->precio,
+            'precio_total' => $data['paquete-precio'],
+            'user_id' => $user->id,
         ]);
         return $user;
     }

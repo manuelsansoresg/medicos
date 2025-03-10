@@ -108,7 +108,25 @@
         
         <div class="col-md-4 mb-4">
             <div class="card h-100 d-flex flex-column">
+
                 <div class="card-body flex-grow-1">
+                    <h6 class="card-title text-center"> {{ $getPackage->nombre }} </h6>
+                    <div class="row">
+                        <div class="col-12">
+                            @if(count($getPackage->items) > 0)
+                                @foreach($getPackage->items as $item)
+                                    <div class="package-feature">
+                                        <i class="fas fa-check"></i> {{ $item->catalogPrice->nombre }}: 
+                                        {{ $item->max ? $item->max : 'Ilimitado' }}
+                                    </div>
+                                @endforeach
+                            @endif
+                        </div>
+                      
+                    </div>
+                </div>
+
+                {{-- <div class="card-body flex-grow-1">
                     <h6 class="card-title text-center">PAQUETE BÁSICO</h6>
                     <div class="row">
                         <div class="col-12">
@@ -158,7 +176,7 @@
                         </div>
                       
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
 

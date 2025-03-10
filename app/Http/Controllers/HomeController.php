@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ClinicaUser;
 use App\Models\ConsultaAsignado;
 use App\Models\Consultorio;
+use App\Models\Package;
 use App\Models\PendienteUsr;
 use App\Models\Solicitud;
 use App\Models\User;
@@ -44,8 +45,9 @@ class HomeController extends Controller
         }
         $getPorcentajeSistema = User::getPorcentajeSistema();
         $getUsedStatusPackages = Solicitud::getUsedStatusPackages();
+        $getPackage = Solicitud::getMyPackage();
         
-        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'getUsedStatusPackages', 'statusPacient', 'earrings', 'consultas', 'getPorcentajeSistema'));
+        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'getUsedStatusPackages', 'statusPacient', 'earrings', 'consultas', 'getPorcentajeSistema', 'getPackage'));
     }
 
     public function registroMedico()

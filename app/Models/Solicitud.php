@@ -121,6 +121,14 @@ class Solicitud extends Model
         return $solicitud;
     }
 
+    public static function getMyPackage()
+    {
+        $userId       = User::getMyUserPrincipal();
+        $getSolicitud =  Solicitud::where('user_id', $userId)->where('source_id', 1)->orderBy('id', 'DESC')->first();
+        $packages = $getSolicitud != null ? Package::find($getSolicitud->solicitud_origin_id) : null;
+        return $packages;
+    }
+
     public static function getStatusPackages()
     {
         /* $userId       = User::getMyUserPrincipal();

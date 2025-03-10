@@ -86,9 +86,9 @@ $(document).ready(function() {
         
         // Actualizar los campos ocultos del formulario
         $('#tipo-registro').val(hasCedula ? 'con_cedula' : 'sin_cedula');
-        $('#paquete_id').val(selectedPackage);
-        $('#paquete_nombre').val(packageName);
-        $('#paquete_precio').val(packagePrice);
+        $('#paquete-id').val(selectedPackage);
+        $('#paquete-nombre').val(packageName);
+        $('#paquete-precio').val(packagePrice);
         
         // Mostrar u ocultar campos de cédula según la selección
         if (hasCedula) {
