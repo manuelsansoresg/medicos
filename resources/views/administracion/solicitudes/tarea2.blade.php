@@ -44,22 +44,7 @@
                         @endif
                     </div>
                     @hasrole(['administrador'])
-                        {{-- @if ($solicitud->solicitud_origin_id == 1)
-                                        <div class = "mb-3 mt-3">
-                                        
-                                            <label  for  = "inputNombre" class = "form-label">ASIGNAR CLINICA</label>
-                                            <select name = "clinica" id        = "" class = "form-control select2multiple"   data-search = "on" multiple = "multiple">
-                                                @foreach ($clinicas as $clinica)
-                                                    <option value = "{{ $clinica->idclinica }}"
-                                                     @foreach ($my_clinics as $my_clinic)
-                                                       {{ $my_clinic->clinica_id == $clinica->idclinica ? 'selected' : null}}
-                                                     @endforeach
-                                                     >{{ $clinica->tnombre }}</option>
-                                                @endforeach
-                                             </select>
-            
-                                        </div>
-                                    @endif --}}
+                       
                         <div class = "mb-3 mt-3">
             
                             <label for  = "inputNombre" class = "form-label">FECHA DE VENCIMIENTO</label>

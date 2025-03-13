@@ -23,14 +23,15 @@
                         <i class="fas fa-check"></i> {{ isset(config('enums.soporte')[$package->tipoReporte])?config('enums.soporte')[$package->tipoReporte] : null }} 
                     </div>
                    @endif
+                   <div class="text-center mt-3">
+                    <h5>${{ $package->precio }}/mes</h5>
+                </div>
                     
                 </div>
             </div>
         </div>
     @endforeach
-    <div class="text-center mt-3">
-        <h5>${{ $package->precio }}/mes</h5>
-    </div>
+    
 @else
     <div class="col-12 text-center">
         <p>No hay paquetes disponibles para este tipo de registro.</p>

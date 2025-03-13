@@ -19,7 +19,6 @@
             <div class="col-12">
                 <table class="table table-borderless">
                     @hasrole(['administrador'])
-                            @if ($solicitud->solicitud_origin_id == 1)
                                 <tr>
                                     <td colspan="2">
                                         <p class="h6 color-secondary">DATOS DEL COMPRADOR</p>
@@ -81,7 +80,6 @@
                                     </td>
                                 </tr>
                            
-                            @endif
                         @endrole
                 </table>
             </div>

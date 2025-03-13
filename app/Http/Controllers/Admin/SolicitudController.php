@@ -128,12 +128,8 @@ class SolicitudController extends Controller
      */
     public function show($id)
     {
-        $solicitud = Solicitud::select(
-                        'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'estatus', 'comprobante', 'fecha_vencimiento', 'name', 'users.is_cedula_valid', 'vapellido', 'vcedula', 'clinica', 'solicitudes.user_id', 'solicitud_origin_id'
-                        )
-                        ->where('solicitudes.id',$id)
-                        ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.solicitud_origin_id')
-                        ->join('users', 'users.id', 'solicitudes.user_id')
+        
+        $solicitud = Solicitud::where('solicitudes.id',$id)
                         ->first();
         $comments = Comment::where([
             'type' => 2,
@@ -152,9 +148,9 @@ class SolicitudController extends Controller
                                 $q->whereIn('name', $roles);
                                 })
                             ->get();
-        $getVinculacion = VinculacionSolicitud::getMyVinculacion($id);
+        //$getVinculacion = VinculacionSolicitud::getMyVinculacion($id);
         $fecha_vencimiento = $solicitud->fecha_vencimiento != '' ? $solicitud->fecha_vencimiento : date('Y-m-d', strtotime('+1 year'));
-        return view('administracion.solicitudes.solicitud', compact('solicitud', 'usuarioVincular', 'getVinculacion', 'consultorioVincular', 'id', 'clinicasVincular', 'comments', 'fecha_vencimiento', 'my_clinics',  'pacientes', 'clinicas' ));
+        return view('administracion.solicitudes.solicitud', compact('solicitud', 'usuarioVincular',  'consultorioVincular', 'id', 'clinicasVincular', 'comments', 'fecha_vencimiento', 'my_clinics',  'pacientes', 'clinicas' ));
     }
 
     public function adjuntarComprobante(Request $request)
