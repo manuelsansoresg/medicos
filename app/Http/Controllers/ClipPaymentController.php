@@ -12,6 +12,16 @@ class ClipPaymentController extends Controller
      */
     public function showPaymentLinkGenerator()
     {
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request('POST', 'https://api.payclip.com/v2/checkout', [
+            'body' => '{"amount":190,"currency":"MXN","purchase_description":"paquete basico","redirection_url":{"success":"https://my-website.com/redirection/success?external_reference=OID123456789","error":"https://my-website.com/redirection/error?external_reference=OID123456789","default":"https://my-website.com/redirection/default"}}',
+            'headers' => [
+              'Authorization' => 'dGVzdF8xOWEzYzFlNS01M2UwLTRhMmItOGZhOS0zODMyMTE1YmJkYWU6YmUyNmVkZmMtMWU2Zi00YmFmLTg1YTgtZDkyMmVmOGY4YjAz',
+              'accept' => 'application/json',
+              'content-type' => 'application/json',
+            ],
+          ]);
+
         // Puedes pasar datos adicionales a la vista si es necesario
         $accessLevels = [
             'basic' => 'Básico',
@@ -21,7 +31,8 @@ class ClipPaymentController extends Controller
         ];
         
         return view('developer.payment-link-generator', [
-            'accessLevels' => $accessLevels
+            'accessLevels' => $accessLevels,
+            'response' => $response,
         ]);
     }
     

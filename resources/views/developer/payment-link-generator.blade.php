@@ -74,6 +74,9 @@
                             <p>Expira el: <strong id="expiresAt"></strong></p>
                             <button class="btn btn-success w-100" id="copyBtn">Copiar Enlace</button>
                         </div>
+                        <div class="col-12">
+                            {{ $response }}
+                        </div>
                     </div>
                 </div>
             </div>
