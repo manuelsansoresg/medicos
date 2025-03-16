@@ -156,6 +156,9 @@ Route::get('/developer/payment-links', [ClipPaymentController::class, 'showPayme
     ->name('developer.payment-links')
    ; // Asegura que solo usuarios autenticados accedan
 
-// Ruta para procesar los webhooks de Clip (opcional)
-Route::post('/webhooks/clip', [ClipPaymentController::class, 'handleClipWebhook'])
-    ->name('webhooks.clip');
+
+   // Rutas para integración con Clip
+Route::get('/payment/clip', [App\Http\Controllers\ClipPaymentController::class, 'showPaymentForm'])->name('clip.payment.form');
+Route::post('/payment/clip/create', [App\Http\Controllers\ClipPaymentController::class, 'createPayment'])->name('clip.payment.create');
+Route::get('/payment/clip/callback', [App\Http\Controllers\ClipPaymentController::class, 'handleCallback'])->name('clip.payment.callback');
+Route::get('/payment/clip/cancel', [App\Http\Controllers\ClipPaymentController::class, 'handleCancellation'])->name('clip.payment.cancel');

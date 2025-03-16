@@ -16,7 +16,7 @@
         "laravel/ui": "^3.4",
         "livewire/livewire": "^2.12",
         "maatwebsite/excel": "^3.1",
-        "nesbot/carbon": "^2.72",
+        "nesbot/carbon": "*",
         "phpoffice/phpspreadsheet": "^1.12",
         "spatie/laravel-permission": "^5.5"
     },
