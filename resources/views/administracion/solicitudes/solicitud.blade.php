@@ -11,277 +11,168 @@
     @hasrole(['administrador'])
     <div class="container mt-4">
         <div class="row">
-            <div class="col-12">
-                <div class="card shadow-sm">
+            <div class="col-12 col-md-6">
+                <div class="card shadow-sm h-100">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
                             <i class="fas fa-file-invoice"></i> Gestión de Solicitud #{{ $solicitud->id }}
                         </h5>
                     </div>
                     <div class="card-body">
-                        <!-- Formulario 1: Datos del Comprador (solo se muestra si source_id es 1) -->
-                        @if($solicitud->source_id == 1)
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <div class="card border-info">
-                                    <div class="card-header bg-info text-white">
-                                        <h6 class="mb-0"><i class="fas fa-user"></i> DATOS DEL COMPRADOR</h6>
+                        <form method="post" action="/admin/solicitudes/{{ $solicitud->id }}/adjuntarComprobante" enctype="multipart/form-data">
+                            @csrf
+                            @php
+                                $pathComprobante = env('PATH_COMPROBANTE');
+                            @endphp
+                            <div class="mb-3 mt-3">
+                                <label for="inputNombre" class="form-label fw-bold">COMPROBANTE</label>
+                                @if ($solicitud->comprobante == null)
+                                    <input type="file" name="comprobante" class="form-control">
+                                    <small class="text-muted">Adjunte el comprobante de la transferencia bancaria</small>
+                                @else
+                                    <div class="col-12">
+                                        <div class="card p-2 border">
+                                            <img class="previewComrobante img-fluid" style="max-height: 300px; width: auto;" src="{{ asset($pathComprobante) . '/' . $solicitud->comprobante }}" alt="">
+                                            <div class="col-12 mt-3">
+                                                <a href="{{ asset($pathComprobante) . '/' . $solicitud->comprobante }}" target="_blank" class="btn btn-primary">
+                                                    <i class="fas fa-eye"></i> Ver completo
+                                                </a>
+                                                <a href="#" class="btn btn-danger" onclick="return confirm('¿Está seguro que desea eliminar este comprobante?')">
+                                                    <i class="fas fa-trash"></i> Eliminar
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="card-body">
-                                        @hasrole(['administrador'])
-                                        <table class="table table-borderless">
-                                            <tbody>
-                                                <tr>
-                                                    <td width="30%"><strong>NOMBRE(S)</strong></td>
-                                                    <td>{{ $solicitud->name }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>PRIMER APELLIDO</strong></td>
-                                                    <td>{{ $solicitud->vapellido }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>SEGUNDO APELLIDO</strong></td>
-                                                    <td>{{ $solicitud->segundo_apellido }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>CLINICA</strong></td>
-                                                    <td>{{ $solicitud->clinica }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>DIRECCIÓN</strong></td>
-                                                    <td>{{ $solicitud->tdireccion }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>CÉDULA PROFESIONAL</strong></td>
-                                                    <td>{{ $solicitud->vcedula }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="2" class="text-end">
-                                                        <a href="https://www.cedulaprofesional.sep.gob.mx/cedula/presidencia/indexAvanzada.action" target="_blank" class="text-primary">
-                                                            <i class="fas fa-external-link-alt me-1"></i>CONSULTAR CÉDULA
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>CÉDULA PROFESIONAL VÁLIDA</strong></td>
-                                                    <td>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio" name="is_cedula_valid" id="is_cedula_valid1" value="1" {{ $solicitud->is_cedula_valid == 1 ? 'checked' : null }}>
-                                                            <label class="form-check-label" for="is_cedula_valid1">SÍ</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio" name="is_cedula_valid" id="is_cedula_valid2" value="0" {{ $solicitud->is_cedula_valid == 0 || $solicitud->is_cedula_valid == null ? 'checked' : null }}>
-                                                            <label class="form-check-label" for="is_cedula_valid2">NO</label>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="2" class="text-end">
-                                                        <a href="/admin/solicitudes/{{ $solicitud->id }}" class="btn btn-success">
-                                                            <i class="fas fa-arrow-left me-1"></i>Volver
-                                                        </a>
-                                                        <a onclick="validarCedula({{ $solicitud->user_id }}, {{ $solicitud->id }})" class="btn btn-primary">
-                                                            <i class="fas fa-save me-1"></i>Guardar
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        @endrole
-                                    </div>
+                                @endif
+                            </div>
+                            
+                            @hasrole(['administrador'])
+                                <div class="mb-3 mt-3">
+                                    <label for="inputNombre" class="form-label fw-bold">FECHA DE VENCIMIENTO</label>
+                                    <input type="date" class="form-control" name="fecha_vencimiento" value="{{ $fecha_vencimiento }}">
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    <label for="inputNombre" class="form-label fw-bold">ACTIVAR</label>
+                                    <select name="estatus" id="estatus" class="form-select">
+                                        <option value="">Seleccione una opción</option>
+                                        <option value="1" {{ $solicitud->estatus == 1 ? 'selected' : null }}>SÍ</option>
+                                        <option value="4" {{ $solicitud->estatus == 0 ? 'selected' : null }}>NO</option>
+                                        <option value="0" {{ $solicitud->estatus == 2 ? 'selected' : null }}>EN REVISIÓN</option>
+                                    </select>
+                                </div>
+                            @endrole
+                            
+                            @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                            
+                            @if (session('success'))
+                                <div class="alert alert-success">
+                                    <i class="fas fa-check-circle me-1"></i> {{ session('success') }}
+                                </div>
+                            @endif
+                            
+                            <div class="col-md-12 text-end py-2">
+                                <div class="mb-3">
+                                    <input type="hidden" name="solicitudId" id="solicitudId" value="{{ $solicitud->id }}">
+                                    @hasrole('administrador')
+                                        <a href="/admin/solicitudes/{{ $solicitud->id }}" class="btn btn-success">
+                                            <i class="fas fa-arrow-left me-1"></i>Volver
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-1"></i>Guardar
+                                        </button>
+                                        
+                                    @endrole
                                 </div>
                             </div>
-                        </div>
-                        @endif
-    
-                        <!-- Formulario 2: Comprobante de Transferencia (siempre visible) -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card border-primary">
-                                    <div class="card-header bg-primary text-white">
-                                        <h6 class="mb-0"><i class="fas fa-money-check-alt"></i> SUBIR COMPROBANTE DE LA TRANSFERENCIA</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <form method="post" action="/admin/solicitudes/{{ $solicitud->id }}/adjuntarComprobante" enctype="multipart/form-data">
-                                            @csrf
-                                            @php
-                                                $pathComprobante = env('PATH_COMPROBANTE');
-                                            @endphp
-                                            <div class="mb-3 mt-3">
-                                                <label for="inputNombre" class="form-label fw-bold">COMPROBANTE</label>
-                                                @if ($solicitud->comprobante == null)
-                                                    <input type="file" name="comprobante" class="form-control">
-                                                    <small class="text-muted">Adjunte el comprobante de la transferencia bancaria</small>
-                                                @else
-                                                    <div class="col-12">
-                                                        <div class="card p-2 border">
-                                                            <img class="previewComrobante img-fluid" style="max-height: 300px; width: auto;" src="{{ asset($pathComprobante) . '/' . $solicitud->comprobante }}" alt="">
-                                                            <div class="col-12 mt-3">
-                                                                <a href="{{ asset($pathComprobante) . '/' . $solicitud->comprobante }}" target="_blank" class="btn btn-primary">
-                                                                    <i class="fas fa-eye"></i> Ver completo
-                                                                </a>
-                                                                <a href="#" class="btn btn-danger" onclick="return confirm('¿Está seguro que desea eliminar este comprobante?')">
-                                                                    <i class="fas fa-trash"></i> Eliminar
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            
-                                            @hasrole(['administrador'])
-                                                <div class="mb-3 mt-3">
-                                                    <label for="inputNombre" class="form-label fw-bold">FECHA DE VENCIMIENTO</label>
-                                                    <input type="date" class="form-control" name="fecha_vencimiento" value="{{ $fecha_vencimiento }}">
-                                                </div>
-                                                <div class="mb-3 mt-3">
-                                                    <label for="inputNombre" class="form-label fw-bold">ACTIVAR</label>
-                                                    <select name="estatus" id="estatus" class="form-select">
-                                                        <option value="">Seleccione una opción</option>
-                                                        <option value="1" {{ $solicitud->estatus == 1 ? 'selected' : null }}>SÍ</option>
-                                                        <option value="4" {{ $solicitud->estatus == 0 ? 'selected' : null }}>NO</option>
-                                                        <option value="0" {{ $solicitud->estatus == 2 ? 'selected' : null }}>EN REVISIÓN</option>
-                                                    </select>
-                                                </div>
-                                            @endrole
-                                            
-                                            @if ($errors->any())
-                                                <div class="alert alert-danger">
-                                                    <ul>
-                                                        @foreach ($errors->all() as $error)
-                                                            <li>{{ $error }}</li>
-                                                        @endforeach
-                                                    </ul>
-                                                </div>
-                                            @endif
-                                            
-                                            @if (session('success'))
-                                                <div class="alert alert-success">
-                                                    <i class="fas fa-check-circle me-1"></i> {{ session('success') }}
-                                                </div>
-                                            @endif
-                                            
-                                            <div class="col-md-12 text-end">
-                                                <div class="mb-3">
-                                                    <input type="hidden" name="solicitudId" id="solicitudId" value="{{ $solicitud->id }}">
-                                                    @hasrole('administrador')
-                                                        <a href="/admin/solicitudes/{{ $solicitud->id }}" class="btn btn-success">
-                                                            <i class="fas fa-arrow-left me-1"></i>Volver
-                                                        </a>
-                                                        <button type="submit" class="btn btn-primary">
-                                                            <i class="fas fa-save me-1"></i>Guardar
-                                                        </button>
-                                                    @endrole
-                                                </div>
-                                            </div>
-                                            
-                                            <input type="hidden" name="precio_total" value="{{ $total }}">
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            
+                            <input type="hidden" name="precio_total" value="{{ $total }}">
+                        </form>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-        
-            
-        <div class="row">
-            
-            
-            
-             <div class="row mt-3">
-
-                
-                    <div class="col-12 ">
-                        <h5>VINCULACIÓNES</h5>
-
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Clínica</th>
-                                    <th>Consultorio</th>
-                                    <th>Usuarios</th>
-                                </tr>
-                            </thead>
+            <div class="col-12 col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-invoice"></i> Datos de la solicitud
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <h5>Datos del comprador</h5>
+                        @hasrole(['administrador'])
+                        <table class="table table-borderless">
                             <tbody>
-                              
+                                <tr>
+                                    <td width="30%"><strong>NOMBRE</strong></td>
+                                    <td>{{ $solicitud->name }} {{ $solicitud->vapellido }} {{ $solicitud->segundo_apellido }} </td>
+                                </tr>
+                               
+                                <tr>
+                                    <td><strong>CORREO</strong></td>
+                                    <td>{{ $solicitud->email }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TELÉFONO</strong></td>
+                                    <td>{{ $solicitud->ttelefono }}</td>
+                                </tr>
                             </tbody>
                         </table>
+                            @endrole
                     </div>
                 </div>
-        </div>     
+
+                <div class="card shadow-sm mt-2">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-invoice"></i> Datos del paquete
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr>
+                                <th>SOLICITUD</th>
+                                <th>NOMBRE</th>
+                                <th>PRECIO</th>
+                                @if ($solicitud->source_id == 1)
+                                    <th>ELEMENTOS</th>
+                                @endif
+                            </tr>
+                            <tr>
+                                @if ($solicitud->source_id == 1)
+                                    <td>PAQUETE</td>
+                                    @else   
+                                    <td>EXTRA</td>
+                                @endif
+                                <td>{{ $solicitud != null ? $solicitud->package_nombre : null }}</td>
+                                <td>${{ format_price($solicitud->precio) }}</td>
+                                @if ($solicitud->source_id == 1)
+                                    <td>
+                                        @foreach($solicitud->package->items as $item)
+                                        <span class="badge bg-info">{{ $item->catalogPrice->nombre }} ({{ $item->max }})</span>
+                                        @endforeach
+                                    </td>
+                                @endif
+                            </tr>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+           
     @endrole
         <div class="card-body">
-
             <div class="col-12 mt-3">
-                
-                
-                   
-                    <table class="table table-borderless">
-                        
-
-                        <tr>
-                            <td colspan="2">
-                                <p class="h6 color-secondary">SOLICITUD</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>PAQUETE</td>
-                            <td>{{ $solicitud->nombre }}</td>
-                        </tr>
-                        @foreach ($pacientes as $pacientesValue)
-                            <tr>
-                                <td> NOMBRE PACIENTE </td>
-                                <td>{{ $pacientesValue->paciente->name }}  {{ $pacientesValue->paciente->vapellido }}</td>
-                            </tr>
-                        @endforeach
-                        <tr>
-                            <td>CANTIDAD</td>
-                            <td>{{ $solicitud->cantidad }}</td>
-                        </tr>
-                        <tr>
-                            <td>PRECIO</td>
-                            <td>${{ format_price($solicitud->precio) }}</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>TOTAL</td>
-                            <td>${{ format_price($total) }}
-                              
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"> <hr> </td>
-                        </tr>
-                        @hasrole(['medico'])
-                        <tr>
-                            <td colspan="2"> <p class="h6 color-secondary">DATOS PARA LA TRANSFERENCIA</p></td>
-                        </tr>
-                        <tr>
-                            <td>NOMBRE</td>
-                            <td>JOSE VAZQUEZ</td>
-                        </tr>
-                        <tr>
-                            <td>CLABE</td>
-                            <td>0123348458585858</td>
-                        </tr>
-                        <tr>
-                            <td>BANCO</td>
-                            <td>BANAMEX</td>
-                        </tr>
-                        <tr>
-                            <td>CANTIDAD A DEPOSITAR</td>
-                            <td>${{ format_price($total) }}</td>
-                        </tr>
-                        @endrole
-                    </table>
-                    
-               
-               
-                    
                 @hasrole(['medico'])
                 <p class="h6 color-secondary mt-5">SUBIR COMPROBANTE DE LA TRANSFERENCIA</p>
                 <form method="post" action="/admin/solicitudes/{{ $id }}/adjuntarComprobante" enctype="multipart/form-data">

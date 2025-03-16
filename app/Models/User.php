@@ -87,10 +87,10 @@ class User extends Authenticatable
         ])->update([
             'estatus_validacion_cedula' => $request->is_cedula_valid
         ]);
-        if ($request->is_cedula_valid == 1) {
+        /* if ($request->is_cedula_valid == 1) {
             $notification = new NotificationUser();
             $notification->requestRegistration($userId, $solicitudId);
-        }
+        } */
         return $user;
     }
     

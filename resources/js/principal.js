@@ -186,7 +186,17 @@ $(document).ready(function() {
         })
         .then(function(response) {
             // Registro exitoso
-            window.location.href = response.data.redirect || '/home';
+            $('#step3').removeClass('active');
+            $('#step4').addClass('active');
+            $('#step3-indicator').removeClass('active').addClass('completed');
+            $('#step4-indicator').addClass('active');
+            
+            // Update payment summary
+            $('#payment-package-name').text($('#summary-paquete-nombre').text());
+            $('#payment-registration-type').text($('#summary-registro-tipo').text());
+            $('#payment-total').text($('#summary-paquete-precio').text());
+            
+            //window.location.href = response.data.redirect || '/home';
         })
         .catch(function(error) {
             // Restaurar el botón de envío
@@ -206,4 +216,48 @@ $(document).ready(function() {
             }
         });
     });
+
+    $('#next-to-step4').click(function() {
+        // Validate step 3 fields first
+        if (validateStep3()) {
+            $('#step3').removeClass('active');
+            $('#step4').addClass('active');
+            $('#step3-indicator').removeClass('active');
+            $('#step4-indicator').addClass('active');
+            
+            // Update payment summary
+            $('#payment-package-name').text($('#summary-paquete-nombre').text());
+            $('#payment-registration-type').text($('#summary-registro-tipo').text());
+            $('#payment-total').text($('#summary-paquete-precio').text());
+        }
+    });
+    
+    $('#back-to-step3').click(function() {
+        $('#step4').removeClass('active');
+        $('#step3').addClass('active');
+        $('#step4-indicator').removeClass('active');
+        $('#step3-indicator').addClass('active');
+    });
+    
+    $('#complete-payment').click(function() {
+        // Add your payment processing logic here
+        
+        // Show success modal
+        $('#successModal').modal('show');
+    });
+    
+    // Basic card validation
+    $('#card-number').on('input', function() {
+        $(this).val($(this).val().replace(/[^\d]/g, '').replace(/(.{4})/g, '$1 ').trim());
+    });
+    
+    $('#card-expiry').on('input', function() {
+        $(this).val($(this).val().replace(/[^\d]/g, '').replace(/^(\d{2})/, '$1/').trim());
+    });
+    
+    $('#card-cvv').on('input', function() {
+        $(this).val($(this).val().replace(/[^\d]/g, '').trim());
+    });
 });
+
+

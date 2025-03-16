@@ -34,4 +34,9 @@ class ItemPackage extends Model
     {
         return $this->belongsTo(CatalogPrice::class, 'catalog_price_id');
     }
+
+    public function items()
+    {
+        return $this->hasMany(ItemPackage::class);
+    }
 }

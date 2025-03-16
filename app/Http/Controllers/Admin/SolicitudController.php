@@ -129,7 +129,16 @@ class SolicitudController extends Controller
     public function show($id)
     {
         
-        $solicitud = Solicitud::where('solicitudes.id',$id)
+        $solicitud = Solicitud::select('solicitudes.*', 'users.name as name', 'users.vapellido as vapellido', 
+                        'users.segundo_apellido as segundo_apellido', 'users.email', 'ttelefono')
+                        ->join('users', 'users.id', 'solicitudes.user_id')
+                        ->where('solicitudes.id',$id)
+                        ->when('solicitudes.source_id', function($query) {
+                            return $query->where('source_id', 1)
+                                    ->join('packages', 'packages.id', '=', 'solicitudes.solicitud_origin_id')
+                                    ->addSelect('packages.nombre as package_nombre', 'precio')
+                                    ->with(['package.items.catalogPrice']);
+                        })
                         ->first();
         $comments = Comment::where([
             'type' => 2,

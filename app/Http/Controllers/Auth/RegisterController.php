@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Lib\NotificationUser;
 use App\Models\CatalogPrice;
 use App\Models\Solicitud;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use App\Models\VinculacionSolicitud;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -90,7 +92,7 @@ class RegisterController extends Controller
             'codigo_paciente' => $codeUser
         ]);
         
-        Solicitud::create([
+        $solicitud = Solicitud::create([
             'solicitud_origin_id' => $data['paquete-id'],
             'source_id' => 1,
             'estatus' => 0,
@@ -99,6 +101,9 @@ class RegisterController extends Controller
             'precio_total' => $data['paquete-precio'],
             'user_id' => $user->id,
         ]);
-        return $user;
+        /* $notification = new NotificationUser();
+        $notification->requestRegistration($user->id, $solicitud->id);
+        */
+        return User::find($user->id);
     }
 }

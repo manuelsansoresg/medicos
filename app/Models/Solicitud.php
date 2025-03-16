@@ -364,6 +364,10 @@ class Solicitud extends Model
        
         return array('solicitud' => $solicitud, 'isReturnError' => $isExistAcceso, 'errorMessage' => $errorMessage);
     }
-
+    
+    public function package()
+    {
+        return $this->belongsTo(Package::class, 'solicitud_origin_id');
+    }
     
 }

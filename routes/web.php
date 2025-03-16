@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\FormularioConfigurationController;
 use App\Http\Controllers\Admin\FormularioController;
+use App\Http\Controllers\ClipPaymentController;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 
@@ -150,3 +151,11 @@ Route::post('/delete-temp-file', function (\Illuminate\Http\Request $request) {
 
     return response()->json(['status' => 'file_not_found'], 404);
 })->name('delete-temp-file');
+
+Route::get('/developer/payment-links', [ClipPaymentController::class, 'showPaymentLinkGenerator'])
+    ->name('developer.payment-links')
+   ; // Asegura que solo usuarios autenticados accedan
+
+// Ruta para procesar los webhooks de Clip (opcional)
+Route::post('/webhooks/clip', [ClipPaymentController::class, 'handleClipWebhook'])
+    ->name('webhooks.clip');

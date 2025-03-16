@@ -22,22 +22,15 @@
                             <td style="padding: 30px 30px 20px">
                                 <p style="margin-bottom: 10px;"><strong>Hola {{ $nombre }}</strong>,</p>
                                 <p style="margin-bottom: 10px;">
-                                    <b> Estatus:</b> comprobación de información válida
-                                 </p>
-                                 <p style="margin-bottom: 10px;">
-                                     Favor de realizar una transferencia utilizando los datos proporcionados, iniciar sesión en el siguiente enlace y adjuntar el comprobante de pago <a href="{{ env('APP_URL') }}/admin/solicitudes/{{ $solicitudId }}">Adjuntar comprobante</a>
-                                 </p>
-                                 <p style="margin-bottom: 10px;">
-
-                                     <b>NOMBRE:</b> JOSE VAZQUEZ
-                                     <br>
-                                     <b>CLABE:</b> 0123348458585858
-                                     <br>
-                                     <b>BANCO:</b> BANAMEX
-                                     <br>
-                                     <b>CANTIDAD A DEPOSITAR:</b> ${{ format_price($total) }}
-                                 </p>
-
+                                    <b>Estatus:</b> Pendiente de confirmación
+                                </p>
+                                <p style="margin-bottom: 15px;">
+                                    Para continuar con su solicitud en el sistema médico, se requiere el siguiente monto: <b>${{ format_price($total) }}</b>
+                                </p>
+                                <p style="margin-bottom: 15px;">
+                                    Por favor, haga clic en el siguiente enlace para proceder: <a href="{{ env('APP_URL') }}/admin/solicitudes/{{ $solicitudId }}" style="color: #3366cc; font-weight: bold;">Continuar con mi solicitud</a>
+                                </p>
+                               
                             </td>
                         </tr>
                     </tbody>

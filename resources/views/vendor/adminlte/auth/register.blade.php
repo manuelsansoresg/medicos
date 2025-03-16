@@ -33,6 +33,11 @@
                 <div class="step-title">Información Personal</div>
                 <div class="step-connector"></div>
             </div>
+            <div class="step" id="step4-indicator">
+                <div class="step-number">4</div>
+                <div class="step-title">Pago</div>
+                <div class="step-connector"></div>
+            </div>
         </div>
         
         <div class="form-content">
@@ -45,16 +50,16 @@
                         <div class="radio-icon">
                             <i class="fas fa-certificate"></i>
                         </div>
-                        <h5>Con Cédula Profesional</h5>
-                        <p class="text-muted small">Para médicos certificados</p>
+                        <h5>Doctores</h5>
+                        <p class="text-muted small">Para médicos con cédula profesional</p>
                     </div>
                     
                     <div class="custom-radio" id="without-cedula">
                         <div class="radio-icon">
                             <i class="fas fa-user-graduate"></i>
                         </div>
-                        <h5>Sin Cédula Profesional</h5>
-                        <p class="text-muted small">Para estudiantes y otros profesionales</p>
+                        <h5>Otros</h5>
+                        <p class="text-muted small">Para otros profesionales de la salud</p>
                     </div>
                 </div>
                 
@@ -276,6 +281,80 @@
                         <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Completar Registro</button>
                     </div>
                 </form>
+            </div>
+            <!-- Paso 4: Pago -->
+            <div class="step-pane" id="step4">
+                <h3 class="text-center mb-4"><i class="fas fa-credit-card"></i> Información de Pago</h3>
+                
+                <!-- Resumen final de la compra -->
+                <div class="payment-summary mb-4">
+                    <h5>Resumen de la Compra</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Paquete:</strong> <span id="payment-package-name"></span></p>
+                                    <p><strong>Tipo de Registro:</strong> <span id="payment-registration-type"></span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Total a Pagar:</strong> <span id="payment-total"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Formulario de tarjeta de crédito -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="card-number">Número de Tarjeta</label>
+                            <input type="text" class="form-control" id="card-number" placeholder="1234 5678 9012 3456" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="card-expiry">Fecha de Expiración</label>
+                                    <input type="text" class="form-control" id="card-expiry" placeholder="MM/AA" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="card-cvv">CVV</label>
+                                    <input type="text" class="form-control" id="card-cvv" placeholder="123" required>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="card-name">Nombre en la Tarjeta</label>
+                            <input type="text" class="form-control" id="card-name" placeholder="Como aparece en la tarjeta" required>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="text-center btn-navigation">
+                    <button type="button" class="btn btn-secondary mr-2" id="back-to-step3">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </button>
+                    <button type="button" class="btn btn-success" id="complete-payment">
+                        <i class="fas fa-lock"></i> Pagar y Finalizar
+                    </button>
+                </div>
+            </div>
+            <!-- Modal de Confirmación -->
+            <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center">
+                            <i class="fas fa-check-circle text-success" style="font-size: 4rem; margin: 20px;"></i>
+                            <h4>¡Registro Exitoso!</h4>
+                            <p>El pago se ha procesado correctamente. Por favor, revise su correo electrónico para activar su cuenta y comenzar a usar nuestros servicios.</p>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Entendido</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
