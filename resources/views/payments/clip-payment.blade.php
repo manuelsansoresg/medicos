@@ -69,7 +69,7 @@
     <script src="{{ asset('js/principal.js') }}"></script>
     
     <script>
-       const options = {
+      const options = {
   method: 'POST',
   headers: {
     accept: 'application/json',
@@ -77,9 +77,9 @@
     Authorization: 'dGVzdF8xOWEzYzFlNS01M2UwLTRhMmItOGZhOS0zODMyMTE1YmJkYWU6YmUyNmVkZmMtMWU2Zi00YmFmLTg1YTgtZDkyMmVmOGY4YjAz'
   },
   body: JSON.stringify({
-    amount: 190,
+    amount: 100.5,
     currency: 'MXN',
-    purchase_description: 'paquete basico',
+    purchase_description: 'ejemplo de compra',
     redirection_url: {
       success: 'https://my-website.com/redirection/success?external_reference=OID123456789',
       error: 'https://my-website.com/redirection/error?external_reference=OID123456789',
@@ -89,26 +89,9 @@
 };
 
 fetch('https://api.payclip.com/v2/checkout', options)
-  .then(response => {
-    if (!response.ok) {
-      return response.json().then(errorData => {
-        console.error('Error de respuesta:', {
-          status: response.status,
-          statusText: response.statusText,
-          data: errorData
-        });
-        throw new Error(`Error HTTP: ${response.status} ${response.statusText}`);
-      });
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log('Respuesta exitosa:', data);
-  })
-  .catch(err => {
-    console.error('Error en la petición:', err.message);
-    console.error('Detalles completos del error:', err);
-  });
+  .then(res => res.json())
+  .then(res => console.log(res))
+  .catch(err => console.error(err));
         </script>
 </body>
 </html>
