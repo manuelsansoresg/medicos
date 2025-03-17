@@ -1,99 +1,81 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Doctores</title>
-    <!-- Bootstrap 4 CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
-    <!-- Font Awesome 5.15.4 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/principal.css') }}">
-</head>
-<body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Pago con Clip</div>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="global.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz@6..12&display=swap"
+      rel="stylesheet"
+    />
+    <title>Transparent Checkout SDK</title>
     
-                    <div class="card-body">
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+    <!-- Importa el SDK de Clip -->
+    <script src="https://sdk.clip.mx/js/clip-sdk.js"></script>
+  </head>
+  <body>
+    <h1>Transparent Checkout SDK</h1>
     
-                        <form method="POST" action="{{ route('clip.payment.create') }}" id="payment-form">
-                            @csrf
-                            <div class="form-group mb-3">
-                                <label for="amount">Monto (MXN)</label>
-                                <input type="number" class="form-control" id="amount" name="amount" min="1" step="0.01" required>
-                            </div>
     
-                            <div class="form-group mb-3">
-                                <label for="description">Descripción</label>
-                                <input type="text" class="form-control" id="description" name="description" required>
-                            </div>
+    <!-- Formulario para obtener el token de la tarjeta -->
+    <form id="payment-form">
+      <div id="checkout"></div>
+      <button id="submit">Get Card Token ID</button>
+      <p id="cardTokenId"></p>
+    </form>
+    <br><br>
     
-                            <div class="form-group mb-3">
-                                <label for="name">Nombre</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
     
-                            <div class="form-group mb-3">
-                                <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-    
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-credit-card mr-2"></i> Pagar con Clip
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Bootstrap & jQuery JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
-    <script src="{{ asset('js/principal.js') }}"></script>
-    
+    <!-- Autenticación -->
     <script>
-      const options = {
-  method: 'POST',
-  headers: {
-    accept: 'application/json',
-    'content-type': 'application/json',
-    Authorization: 'Basic dGVzdF8xOWEzYzFlNS01M2UwLTRhMmItOGZhOS0zODMyMTE1YmJkYWU6YmUyNmVkZmMtMWU2Zi00YmFmLTg1YTgtZDkyMmVmOGY4YjAz'
-  },
-  body: JSON.stringify({
-    amount: 100.5,
-    currency: 'MXN',
-    purchase_description: 'ejemplo de compra',
-    redirection_url: {
-      success: 'https://my-website.com/redirection/success?external_reference=OID123456789',
-      error: 'https://my-website.com/redirection/error?external_reference=OID123456789',
-      default: 'https://my-website.com/redirection/default'
-    }
-  })
-};
+      const API_KEY = "test_0ec19121-9fdc-4c07-907b-a1b23707e747"; //Aquí va tu API Key, no es necesario agregar nada más
 
-fetch('https://api.payclip.com/v2/checkout', options)
-  .then(res => res.json())
-  .then(res => console.log(res))
-  .catch(err => console.error(err));
-        </script>
-</body>
+      // Inicializa el SDK de Clip con la API Key proporcionada
+      const clip = new ClipSDK(API_KEY);
+      
+      // Verifica si la API Key ha sido ingresada correctamente
+      if (API_KEY == "test_0ec19121-9fdc-4c07-907b-a1b23707e747") {
+        alert("Favor de ingresar tu API Key (https://dashboard.developer.clip.mx/applications)");
+      }
+
+      // Crea un elemento tarjeta con el SDK de Clip
+      const card = clip.element.create("Card", {
+        theme: "light",
+        locale: "es",
+      });
+      card.mount("checkout");
+
+      // Maneja el evento de envío del formulario
+      document.querySelector("#payment-form").addEventListener("submit", async (event) => {
+        event.preventDefault();       
+        try {
+          
+          // Obtén el token de la tarjeta
+          const cardToken = await card.cardToken();
+          
+          // Guarda el Card Token ID de la tarjeta en una constante
+          const cardTokenID = cardToken.id;
+          console.log("Card Token ID:", cardTokenID);
+          
+        } catch (error) {
+          
+          // Maneja errores durante la tokenización de la tarjeta
+          switch (error.code) {
+            case "CL2200":
+            case "CL2290":
+              alert("Error: " + error.message);
+              throw error;
+              break;
+            case "AI1300":
+              console.log("Error: ", error.message);
+              break;
+            default:
+              break;
+          }
+        }        
+      });
+    </script>
+  </body>
 </html>
-
-
