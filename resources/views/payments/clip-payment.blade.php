@@ -36,7 +36,7 @@
       const clip = new ClipSDK(API_KEY);
       console.log(clip);
       // Verifica si la API Key ha sido ingresada correctamente
-      if (API_KEY == "dGVzdF8wZWMxOTEyMS05ZmRjLTRjMDctOTA3Yi1hMWIyMzcwN2U3NDc6NmFkMjU0ODktYWYwYS00NGQ5LTk5ZTctMmVmYzAxZWRkZjU5") {
+      if (API_KEY == "XXXXXXXXXX") {
         alert("Favor de ingresar tu API Key (https://dashboard.developer.clip.mx/applications)");
       }
 
