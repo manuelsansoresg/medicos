@@ -74,7 +74,7 @@
   headers: {
     accept: 'application/json',
     'content-type': 'application/json',
-    Authorization: 'dGVzdF8xOWEzYzFlNS01M2UwLTRhMmItOGZhOS0zODMyMTE1YmJkYWU6YmUyNmVkZmMtMWU2Zi00YmFmLTg1YTgtZDkyMmVmOGY4YjAz'
+    Authorization: 'Basic dGVzdF8xOWEzYzFlNS01M2UwLTRhMmItOGZhOS0zODMyMTE1YmJkYWU6YmUyNmVkZmMtMWU2Zi00YmFmLTg1YTgtZDkyMmVmOGY4YjAz'
   },
   body: JSON.stringify({
     amount: 100.5,
