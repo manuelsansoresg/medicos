@@ -30,13 +30,13 @@
     
     <!-- Autenticación -->
     <script>
-      const API_KEY = "test_0ec19121-9fdc-4c07-907b-a1b23707e747"; //Aquí va tu API Key, no es necesario agregar nada más
+      const API_KEY = "dGVzdF8wZWMxOTEyMS05ZmRjLTRjMDctOTA3Yi1hMWIyMzcwN2U3NDc6NmFkMjU0ODktYWYwYS00NGQ5LTk5ZTctMmVmYzAxZWRkZjU5"; //Aquí va tu API Key, no es necesario agregar nada más
 
       // Inicializa el SDK de Clip con la API Key proporcionada
       const clip = new ClipSDK(API_KEY);
       
       // Verifica si la API Key ha sido ingresada correctamente
-      if (API_KEY == "test_0ec19121-9fdc-4c07-907b-a1b23707e747") {
+      if (API_KEY == "dGVzdF8wZWMxOTEyMS05ZmRjLTRjMDctOTA3Yi1hMWIyMzcwN2U3NDc6NmFkMjU0ODktYWYwYS00NGQ5LTk5ZTctMmVmYzAxZWRkZjU5") {
         alert("Favor de ingresar tu API Key (https://dashboard.developer.clip.mx/applications)");
       }
 
