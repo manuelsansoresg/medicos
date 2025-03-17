@@ -34,7 +34,7 @@
 
       // Inicializa el SDK de Clip con la API Key proporcionada
       const clip = new ClipSDK(API_KEY);
-      
+      console.log(clip);
       // Verifica si la API Key ha sido ingresada correctamente
       if (API_KEY == "dGVzdF8wZWMxOTEyMS05ZmRjLTRjMDctOTA3Yi1hMWIyMzcwN2U3NDc6NmFkMjU0ODktYWYwYS00NGQ5LTk5ZTctMmVmYzAxZWRkZjU5") {
         alert("Favor de ingresar tu API Key (https://dashboard.developer.clip.mx/applications)");
