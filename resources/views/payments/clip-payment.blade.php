@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="global.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -20,12 +20,18 @@
     
     
     <!-- Formulario para obtener el token de la tarjeta -->
-    <form id="payment-form">
-      <div id="checkout"></div>
-      <button id="submit">Get Card Token ID</button>
-      <p id="cardTokenId"></p>
-    </form>
-    <br><br>
+  
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <form id="payment-form">
+            <div id="checkout"></div>
+            <button id="submit" class="btn btn-primary">Get Card Token ID</button>
+            <p id="cardTokenId"></p>
+          </form>
+        </div>
+      </div>
+    </div>
     
     
     <!-- Autenticación -->
