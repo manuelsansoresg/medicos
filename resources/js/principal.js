@@ -185,6 +185,8 @@ $(document).ready(function() {
             }
         })
         .then(function(response) {
+            console.log(response.data);
+            $('#user_id').val(response.data.id);
             // Registro exitoso
             $('#step3').removeClass('active');
             $('#step4').addClass('active');
