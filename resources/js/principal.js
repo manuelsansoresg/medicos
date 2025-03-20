@@ -261,8 +261,3 @@ $(document).ready(function() {
 });
 
 
-/* token clip */
-let api_key= "test_19a3c1e5-53e0-4a2b-8fa9-3832115bbdae";
-let api_secret= "be26edfc-1e6f-4baf-85a8-d922ef8f8b03";
-let b64 = btoa(unescape(encodeURIComponent(api_key + ":" + api_secret)));
-console.log(`Basic ${b64}`)
