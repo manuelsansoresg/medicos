@@ -245,7 +245,7 @@ $(document).ready(function() {
         return axios.post('/payment', {
             paquete_id: paqueteId,
             user_id: user_id,
-            card_token: CardTokenID
+            card_token_id: CardTokenID
         })
         .then(function(response) {
             console.log('Payment registered successfully:', response.data);
