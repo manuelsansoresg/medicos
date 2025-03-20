@@ -41,6 +41,7 @@
             </div>
         </div>
         
+        
         <div class="form-content">
             <!-- Paso 1: Tipo de Registro -->
             <div class="step-pane active" id="step1">
