@@ -9,6 +9,7 @@
     <!-- Font Awesome 5.15.4 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/principal.css') }}">
+    <script src="https://sdk.clip.mx/js/clip-sdk.js"></script>
 </head>
 <body>
     <div class="registration-container">
@@ -18,7 +19,7 @@
         </div>
         
         <div class="steps">
-            <div class="step active" id="step1-indicator">
+            <div class="step" id="step1-indicator">
                 <div class="step-number">1</div>
                 <div class="step-title">Tipo de Registro</div>
                 <div class="step-connector"></div>
@@ -33,7 +34,7 @@
                 <div class="step-title">Información Personal</div>
                 <div class="step-connector"></div>
             </div>
-            <div class="step" id="step4-indicator">
+            <div class="step active" id="step4-indicator">
                 <div class="step-number">4</div>
                 <div class="step-title">Pago</div>
                 <div class="step-connector"></div>
@@ -42,7 +43,7 @@
         
         <div class="form-content">
             <!-- Paso 1: Tipo de Registro -->
-            <div class="step-pane active" id="step1">
+            <div class="step-pane" id="step1">
                 <h3 class="text-center mb-4"><i class="fas fa-id-card-alt"></i> Seleccione su tipo de registro</h3>
                 
                 <div class="radio-container">
@@ -283,65 +284,53 @@
                 </form>
             </div>
             <!-- Paso 4: Pago -->
-            <div class="step-pane" id="step4">
+            <div class="step-pane active" id="step4">
                 <h3 class="text-center mb-4"><i class="fas fa-credit-card"></i> Información de Pago</h3>
+                <form id="payment-form">
+                    <!-- Resumen final de la compra -->
+                    <div class="payment-summary mb-4">
+                        <h5>Resumen de la Compra</h5>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Paquete:</strong> <span id="payment-package-name"></span></p>
+                                        <p><strong>Tipo de Registro:</strong> <span id="payment-registration-type"></span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Total a Pagar:</strong> <span id="payment-total"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 
-                <!-- Resumen final de la compra -->
-                <div class="payment-summary mb-4">
-                    <h5>Resumen de la Compra</h5>
+                    <!-- Formulario de tarjeta de crédito -->
                     <div class="card">
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Paquete:</strong> <span id="payment-package-name"></span></p>
-                                    <p><strong>Tipo de Registro:</strong> <span id="payment-registration-type"></span></p>
+                            <div class="container">
+                                <div class="row">
+                                <div class="col-12">
+                                    
+                                    <div id="checkout"></div>
+                                    
+                                    <p id="cardTokenId"></p>
+                                    
                                 </div>
-                                <div class="col-md-6">
-                                    <p><strong>Total a Pagar:</strong> <span id="payment-total"></span></p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            
-                <!-- Formulario de tarjeta de crédito -->
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="card-number">Número de Tarjeta</label>
-                            <input type="text" class="form-control" id="card-number" placeholder="1234 5678 9012 3456" required>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="card-expiry">Fecha de Expiración</label>
-                                    <input type="text" class="form-control" id="card-expiry" placeholder="MM/AA" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="card-cvv">CVV</label>
-                                    <input type="text" class="form-control" id="card-cvv" placeholder="123" required>
-                                </div>
-                            </div>
-                        </div>
-            
-                        <div class="form-group">
-                            <label for="card-name">Nombre en la Tarjeta</label>
-                            <input type="text" class="form-control" id="card-name" placeholder="Como aparece en la tarjeta" required>
-                        </div>
+                
+                    <div class="text-center btn-navigation">
+                        <button type="button" class="btn btn-secondary mr-2" id="back-to-step3">
+                            <i class="fas fa-arrow-left"></i> Anterior
+                        </button>
+                        <button type="button" class="btn btn-success" id="complete-payment">
+                            <i class="fas fa-lock"></i> Pagar y Finalizar
+                        </button>
                     </div>
-                </div>
-            
-                <div class="text-center btn-navigation">
-                    <button type="button" class="btn btn-secondary mr-2" id="back-to-step3">
-                        <i class="fas fa-arrow-left"></i> Anterior
-                    </button>
-                    <button type="button" class="btn btn-success" id="complete-payment">
-                        <i class="fas fa-lock"></i> Pagar y Finalizar
-                    </button>
-                </div>
+                </form>
             </div>
             <!-- Modal de Confirmación -->
             <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-hidden="true">

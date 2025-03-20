@@ -239,11 +239,33 @@ $(document).ready(function() {
         $('#step3-indicator').addClass('active');
     });
     
-    $('#complete-payment').click(function() {
-        // Add your payment processing logic here
+    $('#complete-payment').click(async function(e) {
+        e.preventDefault();
         
-        // Show success modal
-        $('#successModal').modal('show');
+        try {
+            // Obtén el token de la tarjeta
+            const cardToken = await card.cardToken();
+            
+            // Guarda el Card Token ID de la tarjeta en una constante
+            const cardTokenID = cardToken.id;
+            console.log("Card Token ID:", cardTokenID);
+            
+            // Aquí puedes agregar el código para enviar el cardTokenID a tu servidor
+            
+        } catch (error) {
+            // Maneja errores durante la tokenización de la tarjeta
+            switch (error.code) {
+                case "CL2200":
+                case "CL2290":
+                    alert("Error: " + error.message);
+                    throw error;
+                case "AI1300":
+                    console.log("Error: ", error.message);
+                    break;
+                default:
+                    break;
+            }
+        }
     });
     
     // Basic card validation
@@ -261,3 +283,18 @@ $(document).ready(function() {
 });
 
 
+/* pago por clip */
+const API_KEY = "test_0ec19121-9fdc-4c07-907b-a1b23707e747"; //Aquí va tu API Key, no es necesario agregar nada más
+
+// Inicializa el SDK de Clip con la API Key proporcionada
+const clip = new ClipSDK(API_KEY);
+
+// Verifica si la API Key ha sido ingresada correctamente
+
+
+// Crea un elemento tarjeta con el SDK de Clip
+const card = clip.element.create("Card", {
+theme: "light",
+locale: "es",
+});
+card.mount("checkout");
