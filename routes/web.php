@@ -158,7 +158,9 @@ Route::get('/developer/payment-links', [ClipPaymentController::class, 'showPayme
 
 
    // Rutas para integración con Clip
-Route::get('/payment/clip', [App\Http\Controllers\ClipPaymentController::class, 'showPaymentForm'])->name('clip.payment.form');
+/* Route::get('/payment/clip', [App\Http\Controllers\ClipPaymentController::class, 'showPaymentForm'])->name('clip.payment.form');
 Route::post('/payment/clip/create', [App\Http\Controllers\ClipPaymentController::class, 'createPayment'])->name('clip.payment.create');
 Route::get('/payment/clip/callback', [App\Http\Controllers\ClipPaymentController::class, 'handleCallback'])->name('clip.payment.callback');
-Route::get('/payment/clip/cancel', [App\Http\Controllers\ClipPaymentController::class, 'handleCancellation'])->name('clip.payment.cancel');
+Route::get('/payment/clip/cancel', [App\Http\Controllers\ClipPaymentController::class, 'handleCancellation'])->name('clip.payment.cancel'); */
+
+Route::resource('payment', '\App\Http\Controllers\Admin\PaymentController');

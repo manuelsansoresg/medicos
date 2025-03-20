@@ -239,6 +239,24 @@ $(document).ready(function() {
         $('#step3-indicator').addClass('active');
     });
     
+    function registerPayment(CardTokenID){
+        let paqueteId = $('#paquete-id').val();
+        let user_id = $('#user_id').val();
+        return axios.post('/payment', {
+            paquete_id: paqueteId,
+            user_id: user_id,
+            card_token: CardTokenID
+        })
+        .then(function(response) {
+            console.log('Payment registered successfully:', response.data);
+            return response.data;
+        })
+        .catch(function(error) {
+            console.error('Error registering payment:', error);
+            throw error;
+        });
+    }
+
     $('#complete-payment').click(async function(e) {
         e.preventDefault();
         
@@ -248,7 +266,7 @@ $(document).ready(function() {
             
             // Guarda el Card Token ID de la tarjeta en una constante
             const cardTokenID = cardToken.id;
-            console.log("Card Token ID:", cardTokenID);
+            registerPayment(cardTokenID);
             
             // Aquí puedes agregar el código para enviar el cardTokenID a tu servidor
             

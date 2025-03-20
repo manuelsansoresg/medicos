@@ -19,7 +19,7 @@
         </div>
         
         <div class="steps">
-            <div class="step" id="step1-indicator">
+            <div class="step active" id="step1-indicator">
                 <div class="step-number">1</div>
                 <div class="step-title">Tipo de Registro</div>
                 <div class="step-connector"></div>
@@ -34,7 +34,7 @@
                 <div class="step-title">Información Personal</div>
                 <div class="step-connector"></div>
             </div>
-            <div class="step active" id="step4-indicator">
+            <div class="step" id="step4-indicator">
                 <div class="step-number">4</div>
                 <div class="step-title">Pago</div>
                 <div class="step-connector"></div>
@@ -43,7 +43,7 @@
         
         <div class="form-content">
             <!-- Paso 1: Tipo de Registro -->
-            <div class="step-pane" id="step1">
+            <div class="step-pane active" id="step1">
                 <h3 class="text-center mb-4"><i class="fas fa-id-card-alt"></i> Seleccione su tipo de registro</h3>
                 
                 <div class="radio-container">
@@ -284,7 +284,7 @@
                 </form>
             </div>
             <!-- Paso 4: Pago -->
-            <div class="step-pane active" id="step4">
+            <div class="step-pane" id="step4">
                 <h3 class="text-center mb-4"><i class="fas fa-credit-card"></i> Información de Pago</h3>
                 <form id="payment-form">
                     <!-- Resumen final de la compra -->
@@ -299,6 +299,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <p><strong>Total a Pagar:</strong> <span id="payment-total"></span></p>
+                                        <input type="hidden" id="user_id" name="user_id">
                                     </div>
                                 </div>
                             </div>
