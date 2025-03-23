@@ -334,7 +334,19 @@
                     </div>
                 </form>
             </div>
-            <!-- Modal de Confirmación -->
+            <!-- Modal de Error de Pago -->
+            <div class="modal fade" id="errorPaymentModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center">
+                            <i class="fas fa-times-circle text-danger" style="font-size: 4rem; margin: 20px;"></i>
+                            <h4>Error en el Pago</h4>
+                            <p>Lo sentimos, no se pudo procesar su pago correctamente. Por favor, verifique los datos de su tarjeta e intente nuevamente.</p>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
