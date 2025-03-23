@@ -124,6 +124,7 @@
                     @php( $login_url = $login_url ? url($login_url) : '' )
                     @php( $register_url = $register_url ? url($register_url) : '' )
                 @endif
+                
                 <form action="{{ $register_url }}" method="post" id="registration-form">
                     @csrf
                     <!-- Campos ocultos para los valores de los pasos anteriores -->

@@ -10,7 +10,6 @@ use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Models\VinculacionSolicitud;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -72,54 +71,10 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $rol = 'medico';
-        
-        $user =  User::create([
+        return User::create([
             'name' => $data['name'],
-            'vapellido' => $data['vapellido'],
-            'segundo_apellido' => $data['segundo_apellido'],
-            'ttelefono' => $data['ttelefono'],
-            'tdireccion' => $data['tdireccion'],
-            'vcedula' => $data['vcedula'],
-            'RFC' => $data['RFC'],
-            'especialidad' => $data['especialidad'],
             'email' => $data['email'],
-            'status' => 0,
             'password' => Hash::make($data['password']),
         ]);
-        $user->assignRole($rol);
-        $codeUser = User::createCode($user->id);
-        $newUser = User::where('id', $user->id)->update([
-            'codigo_paciente' => $codeUser
-        ]);
-        
-        $solicitud = Solicitud::create([
-            'solicitud_origin_id' => $data['paquete-id'],
-            'source_id' => 1,
-            'estatus' => 0,
-            'cantidad' => 1,
-            'cantidad' => 1,
-            'precio_total' => $data['paquete-precio'],
-            'user_id' => $user->id,
-        ]);
-        /* $notification = new NotificationUser();
-        $notification->requestRegistration($user->id, $solicitud->id);
-        */
-        return response()->json([
-            'user' => User::find($user->id)
-        ]);
-     
-    }
-
-    /**
-     * The user has been registered.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  mixed  $user
-     * @return mixed
-     */
-    protected function registered(Request $request, $user)
-    {
-        // No hacemos nada aquí - no llamamos a Auth::guard()->login($user)
     }
 }

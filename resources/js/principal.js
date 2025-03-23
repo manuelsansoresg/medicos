@@ -178,7 +178,7 @@ $(document).ready(function() {
         const formData = new FormData(this);
         
         // Enviar los datos al servidor usando axios
-        axios.post($(this).attr('action'), formData, {
+        axios.post('/register', formData, {
             headers: {
                 'X-CSRF-TOKEN': token,
                 'Content-Type': 'multipart/form-data'
