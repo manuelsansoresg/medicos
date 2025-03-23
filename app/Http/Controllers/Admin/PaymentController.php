@@ -49,7 +49,7 @@ class PaymentController extends Controller
 
         $payment = Payment::create([
             'card_token_id' => $validatedData['card_token_id'],
-            'user_id' => $$userId,
+            'user_id' => $userId,
             'paquete_id' => $validatedData['paquete_id'],
             'status' => 1,
             'amount' => $amount,
