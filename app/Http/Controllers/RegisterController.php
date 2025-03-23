@@ -66,7 +66,7 @@ class RegisterController extends Controller
                 'precio_total' => $request->get('paquete-precio'),
                 'user_id' => $user->id,
             ]);
-
+            session(['user_id' => $user->id]);
             return response()->json([
                 'status' => 'success',
                 'user' => User::find($user->id),

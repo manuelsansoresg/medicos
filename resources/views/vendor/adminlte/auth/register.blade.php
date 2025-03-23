@@ -124,7 +124,7 @@
                     @php( $login_url = $login_url ? url($login_url) : '' )
                     @php( $register_url = $register_url ? url($register_url) : '' )
                 @endif
-                
+
                 <form action="{{ $register_url }}" method="post" id="registration-form">
                     @csrf
                     <!-- Campos ocultos para los valores de los pasos anteriores -->
@@ -301,7 +301,6 @@
                                     </div>
                                     <div class="col-md-6">
                                         <p><strong>Total a Pagar:</strong> <span id="payment-total"></span></p>
-                                        <input type="hidden" id="user_id" name="user_id">
                                     </div>
                                 </div>
                             </div>

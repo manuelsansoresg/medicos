@@ -40,10 +40,9 @@ class PaymentController extends Controller
         $package = Package::find($request->paquete_id);
         $amount = $package->precio;
         $description = 'Pago de '.$package->nombre;
-        
+        $validatedData['user_id'] = session('user_id');
         $validatedData = $request->validate([
             'card_token_id' => 'required|string',
-            'user_id' => 'required|integer',
             'paquete_id' => 'required|integer',
             'description' => 'nullable|string',
         ]);
