@@ -40,7 +40,7 @@ class PaymentController extends Controller
         $package = Package::find($request->paquete_id);
         $amount = $package->precio;
         $description = 'Pago de '.$package->nombre;
-        $validatedData['user_id'] = session('user_id');
+        $userId = session('user_id');
         $validatedData = $request->validate([
             'card_token_id' => 'required|string',
             'paquete_id' => 'required|integer',
@@ -49,7 +49,7 @@ class PaymentController extends Controller
 
         $payment = Payment::create([
             'card_token_id' => $validatedData['card_token_id'],
-            'user_id' => $validatedData['user_id'],
+            'user_id' => $$userId,
             'paquete_id' => $validatedData['paquete_id'],
             'status' => 1,
             'amount' => $amount,
