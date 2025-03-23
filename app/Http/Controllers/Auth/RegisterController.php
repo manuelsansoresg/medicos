@@ -10,6 +10,7 @@ use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Models\VinculacionSolicitud;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -104,6 +105,21 @@ class RegisterController extends Controller
         /* $notification = new NotificationUser();
         $notification->requestRegistration($user->id, $solicitud->id);
         */
-        return User::find($user->id);
+        return response()->json([
+            'user' => User::find($user->id)
+        ]);
+     
+    }
+
+    /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function registered(Request $request, $user)
+    {
+        // No hacemos nada aquí - no llamamos a Auth::guard()->login($user)
     }
 }
