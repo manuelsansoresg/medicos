@@ -119,7 +119,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('configuracion-descargas', '\App\Http\Controllers\Admin\UserConfigDownload');
 
     
-
+    Route::resource('setting', '\App\Http\Controllers\Admin\SettingController');
 
 });
 
@@ -164,6 +164,8 @@ Route::get('/payment/clip/callback', [App\Http\Controllers\ClipPaymentController
 Route::get('/payment/clip/cancel', [App\Http\Controllers\ClipPaymentController::class, 'handleCancellation'])->name('clip.payment.cancel'); */
 
 Route::resource('payment', '\App\Http\Controllers\Admin\PaymentController');
+
+
 
 // ... existing code ...
 Route::post('/register', [App\Http\Controllers\RegisterController::class, 'register']);
