@@ -23,7 +23,7 @@ class NotificationUser
             'nombre' => $user->name. ' '.$user->vapellido.' '.$user->segundo_apellido,
             'solicitud' => $solicitud,
             'from' => 'contacto@umbralcreepy.xyz',
-            'subject' => 'Solicitud comprobante',
+            'subject' => 'Pago registrado',
             'total' => $total,
             'solicitudId' => $solicitudId,
         );

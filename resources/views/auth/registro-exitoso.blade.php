@@ -38,11 +38,7 @@
             <i class="fas fa-check-circle success-icon"></i>
             <h2 class="mb-4">¡Registro Exitoso!</h2>
             <p class="lead mb-4">El pago se ha procesado correctamente. Por favor, revise su correo electrónico para activar su cuenta y comenzar a usar nuestros servicios.</p>
-            <div class="mt-4">
-                <a href="{{ route('login') }}" class="btn btn-primary btn-lg">
-                    <i class="fas fa-sign-in-alt mr-2"></i>Ir al Login
-                </a>
-            </div>
+            
         </div>
     </div>
 </body>
