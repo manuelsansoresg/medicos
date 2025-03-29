@@ -7,6 +7,7 @@ use App\Lib\NotificationUser;
 use App\Models\Package;
 use App\Models\Payment;
 use App\Models\Solicitud;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -70,7 +71,8 @@ class PaymentController extends Controller
 
         $notification = new NotificationUser();
         $notification->requestRegistration($userId, $solicitud->id);
-
+        
+        User::where('id', $userId)->update(['status' => 1]);
         return response()->json($payment, 201);
     }
 
