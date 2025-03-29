@@ -251,9 +251,7 @@ $(document).ready(function() {
         })
         .then(function(response) {
             console.log('Payment registered successfully:', response.data);
-            $('#successModal').modal('show');
-            
-            return response.data;
+            window.location.href = '/registro-exitoso';
         })
         .catch(function(error) {
             console.error('Error registering payment:', error);

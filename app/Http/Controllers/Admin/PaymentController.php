@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Lib\NotificationUser;
 use App\Models\Package;
 use App\Models\Payment;
+use App\Models\Solicitud;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -46,6 +48,15 @@ class PaymentController extends Controller
             'paquete_id' => 'required|integer',
             'description' => 'nullable|string',
         ]);
+        //crear solicitud de registro
+        $solicitud = Solicitud::create([
+            'solicitud_origin_id' => $package->id,
+            'source_id' => 1,
+            'estatus' => 1,
+            'cantidad' => 1,
+            'precio_total' => $amount,
+            'user_id' => $userId,
+        ]);
 
         $payment = Payment::create([
             'card_token_id' => $validatedData['card_token_id'],
@@ -56,6 +67,9 @@ class PaymentController extends Controller
             'currency' => 'MXN',
             'description' => $description,
         ]);
+
+        $notification = new NotificationUser();
+        $notification->requestRegistration($userId, $solicitud->id);
 
         return response()->json($payment, 201);
     }

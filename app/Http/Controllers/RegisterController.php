@@ -58,14 +58,7 @@ class RegisterController extends Controller
                 'codigo_paciente' => $codeUser
             ]);
             
-            $solicitud = Solicitud::create([
-                'solicitud_origin_id' => $request->get('paquete-id'),
-                'source_id' => 1,
-                'estatus' => 0,
-                'cantidad' => 1,
-                'precio_total' => $request->get('paquete-precio'),
-                'user_id' => $user->id,
-            ]);
+            
             session(['user_id' => $user->id]);
             return response()->json([
                 'status' => 'success',

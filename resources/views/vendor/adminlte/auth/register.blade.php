@@ -347,18 +347,6 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body text-center">
-                            <i class="fas fa-check-circle text-success" style="font-size: 4rem; margin: 20px;"></i>
-                            <h4>¡Registro Exitoso!</h4>
-                            <p>El pago se ha procesado correctamente. Por favor, revise su correo electrónico para activar su cuenta y comenzar a usar nuestros servicios.</p>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">Entendido</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
     

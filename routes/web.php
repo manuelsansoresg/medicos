@@ -167,3 +167,7 @@ Route::resource('payment', '\App\Http\Controllers\Admin\PaymentController');
 
 // ... existing code ...
 Route::post('/register', [App\Http\Controllers\RegisterController::class, 'register']);
+
+Route::get('/registro-exitoso', function () {
+    return view('auth.registro-exitoso');
+})->name('registro.exitoso');
