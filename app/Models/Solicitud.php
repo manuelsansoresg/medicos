@@ -14,7 +14,7 @@ class Solicitud extends Model
     protected $fillable = [
         'solicitud_origin_id', //puede ser un paquete o algo extra como un usuario , clinica, consultorio
         'comprobante',
-        'estatus',
+        'estatus', //TODO: verificar 0- pendiente 1- activo 2- caducado 3- cancelado
         'estatus_validacion_cedula',
         'cantidad',
         'user_id',

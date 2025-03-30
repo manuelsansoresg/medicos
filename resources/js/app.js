@@ -20,6 +20,7 @@ require('./configuracion');
 require('./config_download_expedient');
 require('./expedient');
 require('./solicitud');
+require('./setting');
 
 document.addEventListener('DOMContentLoaded', function() {
     $('.select2multiple').select2({

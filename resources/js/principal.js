@@ -262,30 +262,51 @@ $(document).ready(function() {
 
     $('#complete-payment').click(async function(e) {
         e.preventDefault();
-        
-        try {
-            // Obtén el token de la tarjeta
-            const cardToken = await card.cardToken();
-            
-            // Guarda el Card Token ID de la tarjeta en una constante
-            const cardTokenID = cardToken.id;
-            registerPayment(cardTokenID);
-            
-            // Aquí puedes agregar el código para enviar el cardTokenID a tu servidor
-            
-        } catch (error) {
-            // Maneja errores durante la tokenización de la tarjeta
-            switch (error.code) {
-                case "CL2200":
-                case "CL2290":
-                    alert("Error: " + error.message);
-                    throw error;
-                case "AI1300":
-                    console.log("Error: ", error.message);
-                    break;
-                default:
-                    break;
+        let cardPayment = $('#cardPayment').val();
+        let transferPayment = $('#transferPayment').val();
+        console.log(cardPayment);
+        console.log(transferPayment);
+        if (cardPayment == 'card') {
+            try {
+                // Obtén el token de la tarjeta
+                const cardToken = await card.cardToken();
+                
+                // Guarda el Card Token ID de la tarjeta en una constante
+                const cardTokenID = cardToken.id;
+                registerPayment(cardTokenID);
+                
+                // Aquí puedes agregar el código para enviar el cardTokenID a tu servidor
+                
+            } catch (error) {
+                // Maneja errores durante la tokenización de la tarjeta
+                switch (error.code) {
+                    case "CL2200":
+                    case "CL2290":
+                        alert("Error: " + error.message);
+                        throw error;
+                    case "AI1300":
+                        console.log("Error: ", error.message);
+                        break;
+                    default:
+                        break;
+                }
             }
+        }
+        if (transferPayment == 'transfer') {
+            let paqueteId = $('#paquete-id').val();
+            let user_id = $('#user_id').val();
+            
+
+            const form = document.getElementById("payment-form");
+            const data = new FormData(form);
+            data.append('paquete_id', paqueteId);
+            data.append('user_id', user_id);
+            axios
+                .post("/payment/transfer/save", data)
+                .then(function (response) {
+                    window.location.href = '/registro-exitoso-transfer';
+                })
+                .catch(e => { });
         }
     });
     
@@ -303,6 +324,31 @@ $(document).ready(function() {
     });
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    const cardPayment = document.getElementById('cardPayment');
+    const transferPayment = document.getElementById('transferPayment');
+    const cardContent = document.getElementById('cardPaymentContent');
+    const transferContent = document.getElementById('transferPaymentContent');
+    const checkoutDiv = document.getElementById('checkout');
+
+    function togglePaymentContent() {
+        if (cardPayment.checked) {
+            cardContent.style.display = 'block';
+            transferContent.style.display = 'none';
+            checkoutDiv.style.display = 'block';
+        } else {
+            cardContent.style.display = 'none';
+            transferContent.style.display = 'block';
+            checkoutDiv.style.display = 'none';
+        }
+    }
+
+    cardPayment.addEventListener('change', togglePaymentContent);
+    transferPayment.addEventListener('change', togglePaymentContent);
+});
+
+
+
 
 /* pago por clip */
 const API_KEY = "test_0ec19121-9fdc-4c07-907b-a1b23707e747"; //Aquí va tu API Key, no es necesario agregar nada más
@@ -319,3 +365,5 @@ theme: "light",
 locale: "es",
 });
 card.mount("checkout");
+
+

@@ -17,7 +17,10 @@ class CreateSettings extends Migration
             $table->id();
             $table->smallInteger('is_payment_card');
             $table->smallInteger('is_payment_transfer');
-            $table->text('transfer_data');
+            $table->string('banco');
+            $table->string('titular');
+            $table->string('cuenta')->nullable();
+            $table->string('clabe');
             $table->timestamps();
         });
     }

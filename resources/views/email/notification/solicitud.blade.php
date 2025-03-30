@@ -21,17 +21,38 @@
                         <tr>
                             <td style="padding: 30px 30px 20px">
                                 <p style="margin-bottom: 10px;"><strong>Hola {{ $nombre }}</strong>,</p>
+                                @if($paymentMethod == 'card')
                                 <p style="margin-bottom: 10px;">
                                     <b>Estatus:</b> Pago registrado
                                 </p>
+                                @else
+                                <p style="margin-bottom: 10px;">
+                                    <b>Estatus:</b> Pago pendiente
+                                </p>
+                                @endif
+                                @if($paymentMethod == 'card')
                                 <p style="margin-bottom: 15px;">
                                  El pago se ha registrado correctamente por la cantidad de: <b>${{ format_price($total) }}</b>
-
                                 </p>
+                                @else
+                                <p style="margin-bottom: 15px;">
+                                    Para completar la activación del sistema, realice la transferencia correspondiente por la cantidad de: <b>${{ format_price($total) }}</b> y revise su correo electrónico. 
+                                    <br>En el correo encontrará las instrucciones para subir el comprobante de pago y continuar con la validación.
+                                </p>
+                                @endif
+                                @if($paymentMethod == 'card')
                                 <p style="margin-bottom: 15px;">
                                     Por favor, haga clic en el siguiente enlace para iniciar sesion: <a href="{{ env('APP_URL') }}/login" style="color: #3366cc; font-weight: bold;">Continuar con mi solicitud</a>
                                 </p>
-                               
+                                @else
+                                <div class="alert alert-info text-left">
+                                    <h6><i class="fas fa-university"></i> Datos para Transferencia Bancaria</h6>
+                                    <p class="mb-1"><strong>Banco:</strong> {{ $setting->banco }}</p>
+                                    <p class="mb-1"><strong>Titular:</strong> {{ $setting->titular }}</p>
+                                    <p class="mb-1"><strong>Cuenta:</strong> {{ $setting->cuenta }}</p>
+                                    <p class="mb-1"><strong>CLABE:</strong> {{ $setting->clabe }}</p>
+                                </div>
+                                @endif
                             </td>
                         </tr>
                     </tbody>

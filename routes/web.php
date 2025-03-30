@@ -164,6 +164,7 @@ Route::get('/payment/clip/callback', [App\Http\Controllers\ClipPaymentController
 Route::get('/payment/clip/cancel', [App\Http\Controllers\ClipPaymentController::class, 'handleCancellation'])->name('clip.payment.cancel'); */
 
 Route::resource('payment', '\App\Http\Controllers\Admin\PaymentController');
+Route::post('payment/transfer/save', '\App\Http\Controllers\Admin\PaymentController@storeTransfer');
 
 
 
@@ -173,3 +174,7 @@ Route::post('/register', [App\Http\Controllers\RegisterController::class, 'regis
 Route::get('/registro-exitoso', function () {
     return view('auth.registro-exitoso');
 })->name('registro.exitoso');
+
+Route::get('/registro-exitoso-transfer', function () {
+    return view('auth.registro-exitoso-transfer');
+})->name('registro.exitoso.transfer');

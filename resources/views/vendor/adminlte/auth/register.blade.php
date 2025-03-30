@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/principal.css') }}">
     <script src="https://sdk.clip.mx/js/clip-sdk.js"></script>
+    @inject('setting', 'App\Models\Setting')
 </head>
 <body>
     <div class="registration-container">
@@ -308,17 +309,56 @@
                     </div>
                 
                     <!-- Formulario de tarjeta de crédito -->
+                   <?php
+                        $setting = $setting->find(1);
+                    ?>
                     <div class="card">
                         <div class="card-body">
                             <div class="container">
                                 <div class="row">
-                                <div class="col-12">
-                                    
-                                    <div id="checkout"></div>
-                                    
-                                    <p id="cardTokenId"></p>
-                                    
-                                </div>
+                                    <div class="col-12">
+                                        <div class="payment-method-selection mb-4">
+                                            <h5>Método de Pago</h5>
+                                           
+                                            @if($setting->is_payment_card == 1)
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="cardPayment" value="card">
+                                                <label class="form-check-label" for="cardPayment">
+                                                    Pago con Tarjeta
+                                                </label>
+                                            </div>
+                                            @endif
+                                            @if($setting->is_payment_transfer == 1)
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="transferPayment" value="transfer">
+                                                <label class="form-check-label" for="transferPayment">
+                                                    Transferencia Bancaria
+                                                </label>
+                                            </div>
+                                            @endif
+
+                                            <!-- Contenido para pago con tarjeta -->
+                                            <div id="cardPaymentContent" class="payment-content">
+                                                <div id="checkout"></div>
+                                                <p id="cardTokenId"></p>
+                                            </div>
+
+                                            <!-- Contenido para transferencia -->
+                                            <div id="transferPaymentContent" class="payment-content" style="display: none;">
+                                                <div class="alert alert-info">
+                                                    <h6><i class="fas fa-university"></i> Datos para Transferencia Bancaria</h6>
+                                                    <p class="mb-1"><strong>Banco:</strong> {{ $setting->banco }}</p>
+                                                    <p class="mb-1"><strong>Titular:</strong> {{ $setting->titular }}</p>
+                                                    <p class="mb-1"><strong>Cuenta:</strong> {{ $setting->cuenta }}</p>
+                                                    <p class="mb-1"><strong>CLABE:</strong> {{ $setting->clabe }}</p>
+                                                    <p class="mb-0"><small>Una vez realizada la transferencia, por favor revisar el correo electronico para proceder a validar el pago </small></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        
+                                    </div>
                                 </div>
                             </div>
                         </div>

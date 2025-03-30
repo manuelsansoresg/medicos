@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
@@ -24,7 +25,8 @@ class SettingController extends Controller
      */
     public function create()
     {
-        return view('administracion.setting.form');
+        $setting = Setting::find(1);
+        return view('administracion.setting.form', compact('setting'));
     }
 
     /**
@@ -35,7 +37,7 @@ class SettingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Setting::saveEdit($request);
     }
 
     /**

@@ -30,7 +30,7 @@ class SolicitudUsuarioEmail extends Mailable
     public function build()
     {
         try {
-            $send = $this->view('email.notification.solicitud_comprobante') ->with($this->data)->from($this->data['from'])->subject($this->data['subject']);
+            $send = $this->view('email.notification.solicitud') ->with($this->data)->from($this->data['from'])->subject($this->data['subject']);
             if (isset($this->data['cc']) && $this->data['cc'] !== '') {
                 $send->cc($this->data['cc']);
             }

@@ -5,17 +5,18 @@ namespace App\Lib;
 use App\Mail\ActivateSystemEmail;
 use App\Mail\AdjuntarComprobanteEmail;
 use App\Mail\SolicitudUsuarioEmail;
+use App\Models\Setting;
 use App\Models\Solicitud;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 
 class NotificationUser
 {
-    public function requestRegistration($userId, $solicitudId)
+    public function requestRegistration($userId, $solicitudId, $paymentMethod = 'card')
     {
         $solicitud = Solicitud::find($solicitudId);
         $total = $solicitud->precio_total * $solicitud->cantidad;
-
+        $setting = Setting::find(1);
        
         
         $user = User::find($userId);
@@ -26,6 +27,8 @@ class NotificationUser
             'subject' => 'Pago registrado',
             'total' => $total,
             'solicitudId' => $solicitudId,
+            'paymentMethod' => $paymentMethod,
+            'setting' => $setting,
         );
         Mail::to($user->email)->send(new SolicitudUsuarioEmail($data));
         

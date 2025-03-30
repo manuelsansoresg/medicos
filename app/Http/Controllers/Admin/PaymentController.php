@@ -32,6 +32,26 @@ class PaymentController extends Controller
         //
     }
 
+    public function storeTransfer(Request $request)
+    {
+        $userId = $request->user_id;
+        $paqueteId = $request->paquete_id;
+        $package = Package::find($paqueteId);
+        $amount = $package->precio;
+        //crear solicitud de registro
+        $solicitud = Solicitud::create([
+            'solicitud_origin_id' => $package->id,
+            'source_id' => 1,
+            'estatus' => 0,
+            'cantidad' => 1,
+            'precio_total' => $amount,
+            'user_id' => $userId,
+        ]);
+
+        $notification = new NotificationUser();
+        $notification->requestRegistration($userId, $solicitud->id, 'transfer');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
