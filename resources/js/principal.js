@@ -324,46 +324,80 @@ $(document).ready(function() {
     });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const cardPayment = document.getElementById('cardPayment');
-    const transferPayment = document.getElementById('transferPayment');
-    const cardContent = document.getElementById('cardPaymentContent');
-    const transferContent = document.getElementById('transferPaymentContent');
-    const checkoutDiv = document.getElementById('checkout');
-
-    function togglePaymentContent() {
-        if (cardPayment.checked) {
-            cardContent.style.display = 'block';
-            transferContent.style.display = 'none';
-            checkoutDiv.style.display = 'block';
-        } else {
-            cardContent.style.display = 'none';
-            transferContent.style.display = 'block';
-            checkoutDiv.style.display = 'none';
+if (document.getElementById('cardPayment')) {
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const cardPayment = document.getElementById('cardPayment');
+        const transferPayment = document.getElementById('transferPayment');
+        const cardContent = document.getElementById('cardPaymentContent');
+        const transferContent = document.getElementById('transferPaymentContent');
+        const checkoutDiv = document.getElementById('checkout');
+    
+        function togglePaymentContent() {
+            if (cardPayment.checked) {
+                cardContent.style.display = 'block';
+                transferContent.style.display = 'none';
+                checkoutDiv.style.display = 'block';
+            } else {
+                cardContent.style.display = 'none';
+                transferContent.style.display = 'block';
+                checkoutDiv.style.display = 'none';
+            }
         }
-    }
-
-    cardPayment.addEventListener('change', togglePaymentContent);
-    transferPayment.addEventListener('change', togglePaymentContent);
-});
+    
+        cardPayment.addEventListener('change', togglePaymentContent);
+        transferPayment.addEventListener('change', togglePaymentContent);
+    });
+}
 
 
 
 
 /* pago por clip */
-const API_KEY = "test_0ec19121-9fdc-4c07-907b-a1b23707e747"; //Aquí va tu API Key, no es necesario agregar nada más
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+      const API_KEY = "test_0ec19121-9fdc-4c07-907b-a1b23707e747";
+      
+      // Verificar que ClipSDK está disponible
+      if (typeof ClipSDK === 'undefined') {
+        console.warn("ClipSDK no disponible");
+        return;
+      }
+      
+      // Inicializar SDK y crear elemento tarjeta
+      const clip = new ClipSDK(API_KEY);
+      
+      // Continuar solo si clip se inicializó correctamente
+      if (clip && clip.element) {
+        const card = clip.element.create("Card", {
+          theme: "light",
+          locale: "es",
+        });
+        
+        // Montar tarjeta si el elemento existe
+        const checkoutElement = document.getElementById("checkout");
+        if (checkoutElement) {
+          card.mount("checkout");
+        }
+      }
+    } catch (error) {
+      // Capturar cualquier error pero permitir que el resto del código siga funcionando
+      console.warn("Error con ClipSDK:", error.message || "Error desconocido");
+    }
+    
+    // El resto de tu código seguirá ejecutándose normalmente
+  });
 
-// Inicializa el SDK de Clip con la API Key proporcionada
-const clip = new ClipSDK(API_KEY);
 
-// Verifica si la API Key ha sido ingresada correctamente
-
-
-// Crea un elemento tarjeta con el SDK de Clip
-const card = clip.element.create("Card", {
-theme: "light",
-locale: "es",
+$("#comprobanteForm").submit(function (e) {
+    e.preventDefault();
+    const form = document.getElementById("comprobanteForm");
+    const data = new FormData(form);
+    let solicitudId = $('#solicitudId').val();
+    axios
+        .post("/solicitud/"+solicitudId+"/comprobante/adjuntar/store", data)
+        .then(function (response) {
+            window.location = '/solicitud/'+solicitudId+'/comprobante/exitoso';
+        })
+        .catch(e => { });
 });
-card.mount("checkout");
-
-

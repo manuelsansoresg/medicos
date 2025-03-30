@@ -7,6 +7,7 @@ use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class Solicitud extends Model
 {
@@ -22,7 +23,10 @@ class Solicitud extends Model
         'fecha_activacion',
         'paciente_id',
         'precio_total',
-        'source_id' //1- paquete 0- extra
+        'source_id', //1- paquete 0- extra
+        'payment_type',
+        'observaciones',
+        'fecha_pago'
     ];
 
     protected $table = 'solicitudes';
@@ -270,7 +274,39 @@ class Solicitud extends Model
         return $data;
     }
 
+    public static function adjuntarComprobante($request, $solicitudId)
+    {
+        $comprobante = null;
+        if ($request->hasFile('comprobante')) {
+            // Validar el archivo de comprobante
+            $validator = Validator::make($request->all(), [
+                'comprobante' => 'mimes:jpeg,png,jpg,pdf|max:1024' // Máximo 1MB
+            ]);
 
+            // Si la validación falla, redireccionar con errores
+            if ($validator->fails()) {
+                
+                return back()->withErrors($validator)->withInput();
+            }
+
+            // Procesar y guardar el archivo si la validación es exitosa
+            if ($request->file('comprobante')->isValid()) {
+                
+                $archivo = $request->file('comprobante');
+                $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
+                $rutaDestino = public_path('comprobante');
+                $archivo->move($rutaDestino, $nombreArchivo);
+                $comprobante = $nombreArchivo;
+            }
+        }
+        
+        Solicitud::where('id', $solicitudId)->update([
+            'payment_type' => $request->data['payment_type'],
+            'observaciones' => $request->data['observaciones'],
+            'fecha_pago' => $request->data['fecha_pago'],
+            'comprobante' => $comprobante
+        ]);
+    }
 
 
     public static function getPaqueteActivo($solicitudId)

@@ -14,6 +14,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
@@ -25,6 +26,30 @@ class HomeController extends Controller
     public function __construct()
     {
         
+    }
+
+    public function adjuntarComprobante($solicitudId)
+    {
+        $solicitud = Solicitud::find($solicitudId);
+        $package = Package::find($solicitud->solicitud_origin_id);
+        $user = User::find($solicitud->user_id);
+        
+        return view('adjuntar_comprobante', compact('solicitud', 'package', 'user'));
+    }
+
+    public function storeComprobante(Request $request, $solicitudId)
+    {
+        Solicitud::adjuntarComprobante($request, $solicitudId);
+
+       /*  $notification =  new NotificationUser();
+        $notification->verifyPaymentReceipt($solicitudId); */
+    }
+
+    public function salidaComprobanteExitoso($solicitudId)
+    {
+        $solicitud = Solicitud::find($solicitudId);
+        $user = User::find($solicitud->user_id);
+        return view('payments.salida_subir_comprobante', compact('solicitud', 'user'));
     }
 
     /**

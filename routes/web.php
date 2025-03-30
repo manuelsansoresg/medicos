@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\FormularioConfigurationController;
 use App\Http\Controllers\Admin\FormularioController;
 use App\Http\Controllers\ClipPaymentController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 
@@ -178,3 +179,7 @@ Route::get('/registro-exitoso', function () {
 Route::get('/registro-exitoso-transfer', function () {
     return view('auth.registro-exitoso-transfer');
 })->name('registro.exitoso.transfer');
+
+Route::get('solicitud/{solicitudId}/comprobante/adjuntar', [HomeController::class, 'adjuntarComprobante'])->name('formularios.show');
+Route::post('solicitud/{solicitudId}/comprobante/adjuntar/store', [HomeController::class, 'storeComprobante'])->name('formulario-adjuntado.store');
+Route::get('solicitud/{solicitudId}/comprobante/exitoso', [HomeController::class, 'salidaComprobanteExitoso'])->name('solicitud.comprobante.exitoso');

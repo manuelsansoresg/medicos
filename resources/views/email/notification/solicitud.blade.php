@@ -36,8 +36,7 @@
                                 </p>
                                 @else
                                 <p style="margin-bottom: 15px;">
-                                    Para completar la activación del sistema, realice la transferencia correspondiente por la cantidad de: <b>${{ format_price($total) }}</b> y revise su correo electrónico. 
-                                    <br>En el correo encontrará las instrucciones para subir el comprobante de pago y continuar con la validación.
+                                    Para completar la activación del sistema, realice la transferencia correspondiente por la cantidad de: <b>${{ format_price($total) }}</b>  y darle click al botón de adjuntar comprobante de pago.
                                 </p>
                                 @endif
                                 @if($paymentMethod == 'card')
@@ -51,6 +50,7 @@
                                     <p class="mb-1"><strong>Titular:</strong> {{ $setting->titular }}</p>
                                     <p class="mb-1"><strong>Cuenta:</strong> {{ $setting->cuenta }}</p>
                                     <p class="mb-1"><strong>CLABE:</strong> {{ $setting->clabe }}</p>
+                                    <a href="{{ env('APP_URL') }}/solicitud/{{ $solicitud->id }}/comprobante/adjuntar" style="color: #3366cc; font-weight: bold;">Adjuntar comprobante de pago</a>
                                 </div>
                                 @endif
                             </td>
