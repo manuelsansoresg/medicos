@@ -19,32 +19,43 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <form method="post" action="/admin/solicitudes/{{ $solicitud->id }}/adjuntarComprobante" enctype="multipart/form-data">
+                        <form method="post" action="/admin/solicitudes/{{ $solicitud->id }}/adjuntarComprobante" id="frm-solicitud-validacion" enctype="multipart/form-data">
                             @csrf
                             @php
                                 $pathComprobante = env('PATH_COMPROBANTE');
                             @endphp
-                            <div class="mb-3 mt-3">
-                                <label for="inputNombre" class="form-label fw-bold">COMPROBANTE</label>
-                                @if ($solicitud->comprobante == null)
-                                    <input type="file" name="comprobante" class="form-control">
-                                    <small class="text-muted">Adjunte el comprobante de la transferencia bancaria</small>
-                                @else
-                                    <div class="col-12">
-                                        <div class="card p-2 border">
-                                            <img class="previewComrobante img-fluid" style="max-height: 300px; width: auto;" src="{{ asset($pathComprobante) . '/' . $solicitud->comprobante }}" alt="">
-                                            <div class="col-12 mt-3">
-                                                <a href="{{ asset($pathComprobante) . '/' . $solicitud->comprobante }}" target="_blank" class="btn btn-primary">
-                                                    <i class="fas fa-eye"></i> Ver completo
-                                                </a>
-                                                <a href="#" class="btn btn-danger" onclick="return confirm('¿Está seguro que desea eliminar este comprobante?')">
-                                                    <i class="fas fa-trash"></i> Eliminar
-                                                </a>
+                            <label for="inputNombre" class="form-label"> <b>TIPO DE PAGO</b> {{ $solicitud->payment_type == 'transferencia' || $solicitud->payment_type == 'deposito' ? $solicitud->payment_type : 'Tarjeta de Crédito' }}   </label>
+                            
+                            @if ($solicitud->payment_type == 'transferencia' || $solicitud->payment_type == 'deposito')
+                                
+                            @endif
+                            @if ($solicitud->payment_type == 'tarjeta')
+                                
+                            @endif
+                            @if ($solicitud->payment_type == 'transferencia' || $solicitud->payment_type == 'deposito')
+                                <div class="mb-3 mt-3">
+                                    <label for="inputNombre" class="form-label fw-bold">COMPROBANTE</label>
+                                    @if ($solicitud->comprobante == null)
+                                        <input type="file" name="comprobante" class="form-control">
+                                        <small class="text-muted">Adjunte el comprobante de la transferencia bancaria</small>
+                                    @else
+                                        <div class="col-12">
+                                            <div class="card p-2 border">
+                                                <img class="previewComrobante" src="{{ asset($pathComprobante) . '/' . $solicitud->comprobante }}" alt="">
+                                                <div class="col-12 mt-3">
+                                                    <a href="{{ asset($pathComprobante) . '/' . $solicitud->comprobante }}" target="_blank" class="btn btn-primary">
+                                                        <i class="fas fa-eye"></i> Ver completo
+                                                    </a>
+                                                    <a href="#" class="btn btn-danger" onclick="return confirm('¿Está seguro que desea eliminar este comprobante?')">
+                                                        <i class="fas fa-trash"></i> Eliminar
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endif
-                            </div>
+                                    @endif
+                                </div>
+                            @endif
+                            
                             
                             @hasrole(['administrador'])
                                 <div class="mb-3 mt-3">
@@ -85,14 +96,19 @@
                                         <a href="/admin/solicitudes/{{ $solicitud->id }}" class="btn btn-success">
                                             <i class="fas fa-arrow-left me-1"></i>Volver
                                         </a>
+                                        <button type="button" onclick="saveAndNotifySolicitud()" class="btn btn-primary">
+                                            <i class="fas fa-save me-1"></i>Guardar y notificar
+                                        </button>
+
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-save me-1"></i>Guardar
                                         </button>
+                                       
                                         
                                     @endrole
                                 </div>
                             </div>
-                            
+                            <input type="hidden" name="isNotify" id="isNotify" value="0">
                             <input type="hidden" name="precio_total" value="{{ $total }}">
                         </form>
                     </div>

@@ -27,6 +27,14 @@ $("#frm-solicitud").submit(function (e) {
         });
 });
 
+
+
+window.saveAndNotifySolicitud = function()
+{
+    $('#isNotify').val(1);
+    $('#frm-solicitud-validacion').submit();
+}
+
 window.setSolicitud = function(getSolicitud)
 {
     let solicitud = getSolicitud.value;

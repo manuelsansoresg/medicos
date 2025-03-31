@@ -206,8 +206,7 @@ class SolicitudController extends Controller
                 $archivo->move($rutaDestino, $nombreArchivo);
                 Solicitud::where('id', $solicitudId)->update($dataSolicitud);
 
-                $notification =  new NotificationUser();
-                $notification->verifyPaymentReceipt($solicitudId);
+                
                 
                 return redirect('/admin/solicitudes/'.$solicitudId);
             }
@@ -225,8 +224,11 @@ class SolicitudController extends Controller
                 $dataSolicitud['precio_total'] = $request->precio_total;
                 $dataSolicitud['fecha_activacion'] = date('Y-m-d');
 
-                $notification =  new NotificationUser();
-                $notification->activatesSystem($solicitudId);
+                if ($request->isNotify == 1) {
+                    $notification =  new NotificationUser();
+                    $notification->activatesSystem($solicitudId);
+                }
+                
                 //VinculacionSolicitud::vincularPaquete($solicitudId);
             }
             

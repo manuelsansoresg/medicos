@@ -59,7 +59,7 @@
                         }
                     @endphp
                    <tr>
-                    <td>{{ $solicitud->nombre }}</td>
+                    <td>{{ $solicitud->package_nombre }}</td>
                     @hasrole(['administrador'])
                     <td> {{ $solicitud->name }} {{ $solicitud->apellido }}  </td>
                     @endrole

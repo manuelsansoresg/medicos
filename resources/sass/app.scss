@@ -57,3 +57,13 @@ thead > tr > th {
     height: 100px;
     object-fit: cover;
   }
+
+  .previewComrobante {
+    max-height: 300px;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}

@@ -39,8 +39,29 @@ class Solicitud extends Model
 
         if ($isAdmin) {
             $solicitud =  Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'solicitudes.updated_at', 'name', 'vapellido', 'fecha_vencimiento', 'solicitud_origin_id', 'user_id'
-                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.solicitud_origin_id')
+                'solicitudes.id', 
+                'solicitudes.cantidad', 
+                'solicitudes.estatus', 
+                'solicitudes.created_at', 
+                'solicitudes.updated_at', 
+                'solicitudes.solicitud_origin_id',
+                'solicitudes.user_id',
+                'solicitudes.source_id',
+                'users.name', 
+                'users.vapellido',
+                'fecha_vencimiento',
+                'packages.nombre as package_nombre',
+                'packages.precio as package_precio',
+                'users_origin.name as user_origin_name',
+                )
+                ->leftJoin('packages', function ($join) {
+                    $join->on('packages.id', '=', 'solicitudes.solicitud_origin_id')
+                         ->where('solicitudes.source_id', '=', 1);
+                })
+                ->leftJoin('users as users_origin', function ($join) {
+                    $join->on('users_origin.id', '=', 'solicitudes.solicitud_origin_id')
+                         ->where('solicitudes.source_id', '=', 2);
+                })
                 ->join('users', 'users.id', 'solicitudes.user_id')
                 ->whereIn('estatus', [0,1,2, 4])
                 ;
@@ -386,7 +407,7 @@ class Solicitud extends Model
                 $solicitud = Solicitud::where('id', $solicitudId)->update($data);
             }
              // vincular paciente con solicitud 
-            if ($data['solicitud_origin_id'] == 4) { 
+            if ($solicitudId == 4) { 
                 SolicitudPaciente::where('solicitud_id', $solicitud->id)->delete();
                 $pacientesIds = explode(',', $request->pacientes_ids);
                 foreach ($pacientesIds as $pacientesId) {
