@@ -47,7 +47,7 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         //1 verificar solicitudes a caducar y marcarlos caducados
-        $rolesValidate = $user->hasRole(['medico', 'auxiliar']);
+        /* $rolesValidate = $user->hasRole(['medico', 'auxiliar']);
         if ($rolesValidate) {
             $userId = User::getMyUserPrincipal();
             Solicitud::where('user_id', $userId)
@@ -57,7 +57,7 @@ class LoginController extends Controller
             
         }
         User::updateUserFinishDate();
-        Consultorio::updateConFinishDate();
+        Consultorio::updateConFinishDate(); */
     }
 
     protected function credentials(Request $request)

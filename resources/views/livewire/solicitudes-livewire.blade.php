@@ -85,7 +85,7 @@
                         <span class="{{ $color }}">{{ $fechaVencimiento }}  </span>
                     </td>
                     <td>
-                       meses restantes( {{ $mesesRestantes }} )
+                       
                         @switch($solicitud->estatus)
                             @case(1)
                                 ACTIVO
