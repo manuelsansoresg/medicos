@@ -22,8 +22,8 @@
                             <td style="padding: 30px 30px 20px">
                                 <p style="margin-bottom: 10px;"><strong>Hola {{ $nombre }}</strong>,</p>
                                 <p style="margin-bottom: 10px;">
-                                    @if ($solicitud->nombre === 'Paquete básico')
-                                        <b> Estatus:</b> Activación del sistema
+                                    <b> Estatus:</b> Activación del sistema
+                                   {{--  @if ($solicitud->nombre === 'Paquete básico')
                                     @endif
                                     
                                     @if ($solicitud->nombre === 'Usuario extra')
@@ -35,11 +35,12 @@
                                     
                                     @if ($solicitud->nombre === 'Paciente')
                                         <b> Estatus:</b> Consultorio extra activado
-                                    @endif
+                                    @endif --}}
                                     
                                  </p>
                                  <p style="margin-bottom: 10px;">
-                                    @if ($solicitud->nombre === 'Paquete básico')
+                                 Su acceso al sistema ha sido activado <a href="{{ env('APP_URL') }}" class="btn-primary"> Acceder </a>
+                                  {{--   @if ($solicitud->nombre === 'Paquete básico')
                                         Su acceso al sistema ha sido activado <a href="{{ env('APP_URL') }}" class="btn-primary"> Acceder </a>
                                     @endif
                                     @if ($solicitud->nombre === 'Usuario extra')
@@ -50,7 +51,7 @@
                                     @endif
                                     @if ($solicitud->nombre === 'Paciente')
                                         Se ha activado la compra de {{ $solicitud->cantidad  }} paciente(s) extra
-                                    @endif
+                                    @endif --}}
                                  </p>
                             </td>
                         </tr>
