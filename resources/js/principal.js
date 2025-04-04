@@ -405,10 +405,11 @@ $("#comprobanteForm").submit(function (e) {
 
 window.setPaymentMethod  = function(method) {
     if (method == 1) {
-        $('#complete-payment').show();
-        $('#submit').hide();
-    } else {
         $('#complete-payment').hide();
         $('#submit').show();
+    } else {
+        $('#complete-payment').show();
+        $('#submit').hide();
+        
     }
 }
