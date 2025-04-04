@@ -275,6 +275,7 @@ $(document).ready(function() {
             
             // Guarda el Card Token ID de la tarjeta en una constante
             const cardTokenID = cardToken.id;
+            console.log(cardTokenID);
             registerPayment(cardTokenID);
             
             // Aquí puedes agregar el código para enviar el cardTokenID a tu servidor
