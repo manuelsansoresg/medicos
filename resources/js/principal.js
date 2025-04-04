@@ -266,7 +266,7 @@ $(document).ready(function() {
         // Obtener el valor del radio button seleccionado
         let selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
         
-        if (selectedPaymentMethod === 'card') {
+        if (selectedPaymentMethod == 'card') {
             try {
                 // Obtén el token de la tarjeta
                 const cardToken = await card.cardToken();
