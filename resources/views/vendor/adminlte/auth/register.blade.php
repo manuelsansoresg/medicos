@@ -45,7 +45,7 @@
         
         <div class="form-content">
             <!-- Paso 1: Tipo de Registro -->
-            <div class="step-pane active" id="step1">
+            <div class="step-pane" id="step1">
                 <h3 class="text-center mb-4"><i class="fas fa-id-card-alt"></i> Seleccione su tipo de registro</h3>
                 
                 <div class="radio-container">
@@ -287,7 +287,7 @@
                 </form>
             </div>
             <!-- Paso 4: Pago -->
-            <div class="step-pane" id="step4">
+            <div class="step-pane active" id="step4">
                 <h3 class="text-center mb-4"><i class="fas fa-credit-card"></i> Información de Pago</h3>
                 <form id="payment-form">
                     <!-- Resumen final de la compra -->
