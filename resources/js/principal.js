@@ -291,7 +291,7 @@ $(document).ready(function () {
     });
 });
 
-window.paymentMethod = function(method) {
+window.paymentMethod  = function(method) {
     if (method == 1) {
         $('#complete-payment').show();
         $('#submit').show();
