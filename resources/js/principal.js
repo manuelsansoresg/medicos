@@ -267,33 +267,33 @@ $(document).ready(function() {
         let selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
         
         if (selectedPaymentMethod == 'card') {
-            try {
-                // Obtén el token de la tarjeta
-                const cardToken = await card.cardToken();
-                
-                // Guarda el Card Token ID de la tarjeta en una constante
-                const cardTokenID = cardToken.id;
-                registerPayment(cardTokenID);
-                
-                // Aquí puedes agregar el código para enviar el cardTokenID a tu servidor
-                
-            } catch (error) {
-                // Maneja errores durante la tokenización de la tarjeta
-                switch (error.code) {
-                    case "CL2200":
-                    case "CL2290":
-                        alert("Error: " + error.message);
-                        throw error;
-                    case "AI1300":
-                        console.log("Error: ", error.message);
-                        break;
-                    default:
-                        break;
-                }
+            
+        }
+        try {
+            // Obtén el token de la tarjeta
+            const cardToken = await card.cardToken();
+            
+            // Guarda el Card Token ID de la tarjeta en una constante
+            const cardTokenID = cardToken.id;
+            registerPayment(cardTokenID);
+            
+            // Aquí puedes agregar el código para enviar el cardTokenID a tu servidor
+            
+        } catch (error) {
+            // Maneja errores durante la tokenización de la tarjeta
+            switch (error.code) {
+                case "CL2200":
+                case "CL2290":
+                    alert("Error: " + error.message);
+                    throw error;
+                case "AI1300":
+                    console.log("Error: ", error.message);
+                    break;
+                default:
+                    break;
             }
         }
-        
-        if (selectedPaymentMethod === 'transfer') {
+        /* if (selectedPaymentMethod === 'transfer') {
             let paqueteId = $('#paquete-id').val();
             let user_id = $('#user_id').val();
 
@@ -307,7 +307,7 @@ $(document).ready(function() {
                     window.location.href = '/registro-exitoso-transfer';
                 })
                 .catch(e => { });
-        }
+        } */
     });
     
     // Basic card validation
