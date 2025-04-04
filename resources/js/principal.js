@@ -406,9 +406,9 @@ $("#comprobanteForm").submit(function (e) {
 window.setPaymentMethod  = function(method) {
     if (method == 1) {
         $('#complete-payment').show();
-        $('#submit').show();
+        $('#submit').hide();
     } else {
         $('#complete-payment').hide();
-        $('#submit').hide();
+        $('#submit').show();
     }
 }
