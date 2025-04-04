@@ -322,7 +322,7 @@
                                            
                                             @if($setting->is_payment_card == 1)
                                             <div class="form-check mb-2">
-                                                <input class="form-check-input" type="radio" name="paymentMethod" id="cardPayment" value="card" onclick="paymentMethod(1)">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="cardPayment" value="card" onclick="setPaymentMethod(1)">
                                                 <label class="form-check-label" for="cardPayment">
                                                     Pago con Tarjeta
                                                 </label>
@@ -330,7 +330,7 @@
                                             @endif
                                             @if($setting->is_payment_transfer == 1)
                                             <div class="form-check mb-3">
-                                                <input class="form-check-input" type="radio" name="paymentMethod" id="transferPayment" value="transfer" onclick="paymentMethod(2)">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="transferPayment" value="transfer" onclick="setPaymentMethod(2)">
                                                 <label class="form-check-label" for="transferPayment">
                                                     Transferencia Bancaria
                                                 </label>

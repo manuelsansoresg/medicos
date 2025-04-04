@@ -403,7 +403,7 @@ $("#comprobanteForm").submit(function (e) {
         .catch(e => { });
 });
 
-window.paymentMethod  = function(method) {
+window.setPaymentMethod  = function(method) {
     if (method == 1) {
         $('#complete-payment').show();
         $('#submit').show();
