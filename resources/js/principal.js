@@ -291,15 +291,7 @@ $(document).ready(function () {
     });
 });
 
-window.paymentMethod  = function(method) {
-    if (method == 1) {
-        $('#complete-payment').show();
-        $('#submit').show();
-    } else {
-        $('#complete-payment').hide();
-        $('#submit').hide();
-    }
-}
+
 
 if (document.getElementById('cardPayment')) {
 
@@ -410,3 +402,13 @@ $("#comprobanteForm").submit(function (e) {
         })
         .catch(e => { });
 });
+
+window.paymentMethod  = function(method) {
+    if (method == 1) {
+        $('#complete-payment').show();
+        $('#submit').show();
+    } else {
+        $('#complete-payment').hide();
+        $('#submit').hide();
+    }
+}
