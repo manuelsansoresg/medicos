@@ -338,8 +338,9 @@
                                             @endif
 
                                             <!-- Contenido para pago con tarjeta -->
-                                            <div id="cardPaymentContent" class="payment-content">
+                                            <div id="cardPaymentContent" class="payment-content" style="display: none;">
                                                 <div id="checkout"></div>
+                                                <button id="submit">Get Card Token ID</button>
                                                 <p id="cardTokenId"></p>
                                             </div>
 
