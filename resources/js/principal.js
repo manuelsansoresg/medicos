@@ -185,8 +185,13 @@ $(document).ready(function () {
             }
         })
             .then(function (response) {
+                // Restaurar el botón de envío
+                submitBtn.html(originalBtnText);
+                submitBtn.prop('disabled', false);
+
                 console.log(response.data);
                 let user = response.data.user;
+                $('#user_id').val(user.id);
                 // Registro exitoso
                 $('#step3').removeClass('active');
                 $('#step4').addClass('active');

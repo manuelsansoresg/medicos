@@ -364,7 +364,7 @@
                             </div>
                         </div>
                     </div>
-                
+                    <input type="hidden" id="user_id" name="user_id" value="">
                     <div class="text-center btn-navigation">
                         <button type="button" class="btn btn-secondary mr-2" id="back-to-step3">
                             <i class="fas fa-arrow-left"></i> Anterior
