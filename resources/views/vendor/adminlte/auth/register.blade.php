@@ -340,7 +340,7 @@
                                             <!-- Contenido para pago con tarjeta -->
                                             <div id="cardPaymentContent" class="payment-content" style="display: none;">
                                                 <div id="checkout"></div>
-                                                <button id="submit">Get Card Token ID</button>
+                                                
                                                 <p id="cardTokenId"></p>
                                             </div>
 
@@ -372,6 +372,7 @@
                         <button type="button" class="btn btn-success" id="complete-payment">
                             <i class="fas fa-lock"></i> Pagar y Finalizar
                         </button>
+                        <button id="submit" class="btn btn-success">Pagar y Finalizar</button>
                     </div>
                 </form>
             </div>
