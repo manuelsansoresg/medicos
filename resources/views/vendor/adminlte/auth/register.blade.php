@@ -322,7 +322,7 @@
                                            
                                             @if($setting->is_payment_card == 1)
                                             <div class="form-check mb-2">
-                                                <input class="form-check-input" type="radio" name="paymentMethod" id="cardPayment" value="card">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="cardPayment" value="card" onclick="paymentMethod(1)">
                                                 <label class="form-check-label" for="cardPayment">
                                                     Pago con Tarjeta
                                                 </label>
@@ -330,7 +330,7 @@
                                             @endif
                                             @if($setting->is_payment_transfer == 1)
                                             <div class="form-check mb-3">
-                                                <input class="form-check-input" type="radio" name="paymentMethod" id="transferPayment" value="transfer">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="transferPayment" value="transfer" onclick="paymentMethod(2)">
                                                 <label class="form-check-label" for="transferPayment">
                                                     Transferencia Bancaria
                                                 </label>
@@ -369,10 +369,10 @@
                         <button type="button" class="btn btn-secondary mr-2" id="back-to-step3">
                             <i class="fas fa-arrow-left"></i> Anterior
                         </button>
-                        <button type="button" class="btn btn-success" id="complete-payment">
+                        <button type="button" class="btn btn-success" id="complete-payment" style="display: none;">
                             <i class="fas fa-lock"></i> Pagar y Finalizar
                         </button>
-                        <button id="submit" class="btn btn-success">Pagar y Finalizar</button>
+                        <button id="submit" class="btn btn-success" style="display: none;"> <i class="fas fa-lock"></i> Pagar y Finalizar</button>
                     </div>
                 </form>
             </div>

@@ -262,53 +262,19 @@ $(document).ready(function () {
 
     $('#complete-payment').click(async function (e) {
         e.preventDefault();
+        let paqueteId = $('#paquete-id').val();
+        let user_id = $('#user_id').val();
 
-        // Obtener el valor del radio button seleccionado
-        let selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
-
-        if (selectedPaymentMethod == 'card') {
-
-        }
-        try {
-            // Obtén el token de la tarjeta
-            const cardToken = await card.cardToken();
-
-            // Guarda el Card Token ID de la tarjeta en una constante
-            const cardTokenID = cardToken.id;
-            console.log(cardTokenID);
-            registerPayment(cardTokenID);
-
-            // Aquí puedes agregar el código para enviar el cardTokenID a tu servidor
-
-        } catch (error) {
-            // Maneja errores durante la tokenización de la tarjeta
-            switch (error.code) {
-                case "CL2200":
-                case "CL2290":
-                    alert("Error: " + error.message);
-                    throw error;
-                case "AI1300":
-                    console.log("Error: ", error.message);
-                    break;
-                default:
-                    break;
-            }
-        }
-        /* if (selectedPaymentMethod === 'transfer') {
-            let paqueteId = $('#paquete-id').val();
-            let user_id = $('#user_id').val();
-
-            const form = document.getElementById("payment-form");
-            const data = new FormData(form);
-            data.append('paquete_id', paqueteId);
-            data.append('user_id', user_id);
-            axios
-                .post("/payment/transfer/save", data)
-                .then(function (response) {
-                    window.location.href = '/registro-exitoso-transfer';
-                })
-                .catch(e => { });
-        } */
+        const form = document.getElementById("payment-form");
+        const data = new FormData(form);
+        data.append('paquete_id', paqueteId);
+        data.append('user_id', user_id);
+        axios
+            .post("/payment/transfer/save", data)
+            .then(function (response) {
+                window.location.href = '/registro-exitoso-transfer';
+            })
+            .catch(e => { });
     });
 
     // Basic card validation
@@ -325,7 +291,15 @@ $(document).ready(function () {
     });
 });
 
-
+window.paymentMethod = function(method) {
+    if (method == 1) {
+        $('#complete-payment').show();
+        $('#submit').show();
+    } else {
+        $('#complete-payment').hide();
+        $('#submit').hide();
+    }
+}
 
 if (document.getElementById('cardPayment')) {
 
