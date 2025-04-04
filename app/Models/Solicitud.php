@@ -156,23 +156,23 @@ class Solicitud extends Model
 
     public static function getStatusPackages()
     {
-        /* $userId       = User::getMyUserPrincipal();
+        $userId       = User::getMyUserPrincipal();
         $getSolicitudes = Solicitud::selectRaw("
-                        SUM(CASE WHEN solicitud_origin_id = 1 THEN cantidad ELSE 0 END) as totalPaquete,
-                        SUM(CASE WHEN solicitud_origin_id = 2 THEN cantidad ELSE 0 END) + 
-                        SUM(CASE WHEN solicitud_origin_id = 1 THEN cantidad * 2 ELSE 0 END) as totalUsuariosSistema,
-                        SUM(CASE WHEN solicitud_origin_id = 3 THEN cantidad ELSE 0 END) + 
-                        SUM(CASE WHEN solicitud_origin_id = 1 THEN cantidad * 2 ELSE 0 END) as totalConsultorioExtra,
-                        SUM(CASE WHEN solicitud_origin_id = 4 THEN cantidad ELSE 0 END) as totalPacientes,
-                        SUM(CASE WHEN solicitud_origin_id = 5 THEN cantidad ELSE 0 END) + 
-                        SUM(CASE WHEN solicitud_origin_id = 1 THEN cantidad * 1 ELSE 0 END) as totalClinica
+                        SUM(CASE WHEN source_id = 1 THEN cantidad ELSE 0 END) as totalPaquete,
+                        SUM(CASE WHEN source_id = 2 THEN cantidad ELSE 0 END) + 
+                        SUM(CASE WHEN source_id = 1 THEN cantidad * 2 ELSE 0 END) as totalUsuariosSistema,
+                        SUM(CASE WHEN source_id = 3 THEN cantidad ELSE 0 END) + 
+                        SUM(CASE WHEN source_id = 1 THEN cantidad * 2 ELSE 0 END) as totalConsultorioExtra,
+                        SUM(CASE WHEN source_id = 4 THEN cantidad ELSE 0 END) as totalPacientes,
+                        SUM(CASE WHEN source_id = 5 THEN cantidad ELSE 0 END) + 
+                        SUM(CASE WHEN source_id = 1 THEN cantidad * 1 ELSE 0 END) as totalClinica
                     ")
                     ->where('user_id', $userId)
                     ->where('estatus', 1)
-                    ->whereIn('solicitud_origin_id', [1,2,3,4,5])
+                    ->whereIn('source_id', [1,2,3,4,5])
                     ->first();
-
-        return $getSolicitudes; */
+        //dd($getSolicitudes);
+        return $getSolicitudes;
     }
 
     public static function getUsedStatusPackages()
@@ -180,7 +180,6 @@ class Solicitud extends Model
         $packages = self::getStatusPackages();
         $userId = User::getMyUserPrincipal();
         $data = [];
-
         if ($packages != null) {
             $getUser = User::selectRaw('COUNT(id) as total')->where('usuario_principal', Auth::user()->id)->first();
             $getClinic = Clinica::selectRaw('COUNT(idclinica) as total')->where('idusrregistra', $userId)->first();
@@ -191,6 +190,7 @@ class Solicitud extends Model
                 ->whereIn('solicitud_origin_id', [1, 2, 3, 5])
                 ->orderBy('id', 'asc')
                 ->get();
+
 
             $usuariosUsados = $getUser->total ?? 0;
             $consultoriosUsados = $getCon->total ?? 0;

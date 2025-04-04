@@ -262,11 +262,11 @@ $(document).ready(function() {
 
     $('#complete-payment').click(async function(e) {
         e.preventDefault();
-        let cardPayment = $('#cardPayment').val();
-        let transferPayment = $('#transferPayment').val();
-        console.log(cardPayment);
-        console.log(transferPayment);
-        if (cardPayment == 'card') {
+        
+        // Obtener el valor del radio button seleccionado
+        let selectedPaymentMethod = $('input[name="paymentMethod"]:checked').val();
+        
+        if (selectedPaymentMethod === 'card') {
             try {
                 // Obtén el token de la tarjeta
                 const cardToken = await card.cardToken();
@@ -292,10 +292,10 @@ $(document).ready(function() {
                 }
             }
         }
-        if (transferPayment == 'transfer') {
+        
+        if (selectedPaymentMethod === 'transfer') {
             let paqueteId = $('#paquete-id').val();
             let user_id = $('#user_id').val();
-            
 
             const form = document.getElementById("payment-form");
             const data = new FormData(form);
