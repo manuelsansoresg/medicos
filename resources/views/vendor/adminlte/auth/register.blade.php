@@ -30,12 +30,12 @@
                 <div class="step-title">Selección de Paquete</div>
                 <div class="step-connector"></div>
             </div>
-            <div class="step active" id="step3-indicator">
+            <div class="step" id="step3-indicator">
                 <div class="step-number">3</div>
                 <div class="step-title">Información Personal</div>
                 <div class="step-connector"></div>
             </div>
-            <div class="step" id="step4-indicator">
+            <div class="step active" id="step4-indicator">
                 <div class="step-number">4</div>
                 <div class="step-title">Pago</div>
                 <div class="step-connector"></div>
