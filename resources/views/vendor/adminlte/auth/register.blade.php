@@ -20,7 +20,7 @@
         </div>
         
         <div class="steps">
-            <div class="step active" id="step1-indicator">
+            <div class="step" id="step1-indicator">
                 <div class="step-number">1</div>
                 <div class="step-title">Tipo de Registro</div>
                 <div class="step-connector"></div>
@@ -30,7 +30,7 @@
                 <div class="step-title">Selección de Paquete</div>
                 <div class="step-connector"></div>
             </div>
-            <div class="step" id="step3-indicator">
+            <div class="step active" id="step3-indicator">
                 <div class="step-number">3</div>
                 <div class="step-title">Información Personal</div>
                 <div class="step-connector"></div>

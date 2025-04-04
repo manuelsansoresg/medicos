@@ -367,7 +367,8 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Inicializar SDK y crear elemento tarjeta
       const clip = new ClipSDK(API_KEY);
-      
+      console.log('clip');
+      console.log(clip);
       // Continuar solo si clip se inicializó correctamente
       if (clip && clip.element) {
         const card = clip.element.create("Card", {
