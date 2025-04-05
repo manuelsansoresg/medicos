@@ -108,8 +108,8 @@
                             <div class="mb-3">
                                 <label for="inputValidateCedula" class="form-label">*VALIDAR CÉDULA</label>
                                 <select name="data[isValidateCedula]" id="inputValidateCedula" class="form-control" required>
-                                    <option value="1"{{ $query->isValidateCedula == 1 ? 'selected' : null }}>SÍ</option>
-                                    <option value="0"{{ $query->isValidateCedula == 0 ? 'selected' : null }}>NO</option>
+                                    <option value="1"{{ $query != null &&  $query->isValidateCedula == 1 ? 'selected' : null }}>SÍ</option>
+                                    <option value="0"{{ $query != null &&  $query->isValidateCedula == 0 ? 'selected' : null }}>NO</option>
                                     
                                 </select>
                             </div>
