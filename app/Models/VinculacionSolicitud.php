@@ -54,21 +54,25 @@ class VinculacionSolicitud extends Model
     {
         $isMedico = Auth::user()->hasRole('medico');
         $isAuxiliar = Auth::user()->hasRole('auxiliar');
+        $isAdmin = Auth::user()->hasRole('administrador');
         $data = array();
-        if ($isMedico == true || $isAuxiliar == true) {
+        if ($isMedico == true || $isAuxiliar == true || $isAdmin == true) {
             $userPrincipal = User::getMyUserPrincipal();
             $data['user_id'] = Auth::user()->id;
             $data['idusrregistra'] = $userPrincipal;
             
-    
-            $getUsedStatusPackages = Solicitud::getUsedStatusPackages();
-            $solicitudId = $getUsedStatusPackages[$type]['solicitudId'];
-            $data['solicitudId'] = $solicitudId;
+            //$getUsedStatusPackages = Solicitud::getUsedStatusPackages();
+            //$solicitudId = $getUsedStatusPackages[$type]['solicitudId'];
+            $data['solicitudId'] = $solicitud_origin_id;
             $data['idRel'] = $idRel;
-            $data['solicitud_origin_id'] = $solicitud_origin_id;
-            VinculacionSolicitud::create($data);
+            $exists = VinculacionSolicitud::where([
+                'solicitudId' => $solicitud_origin_id,
+                'idRel' => $idRel,
+            ])->exists();
 
-
+            if (!$exists) {
+                VinculacionSolicitud::create($data);
+            }
         }
     }
 

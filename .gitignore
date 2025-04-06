@@ -4,6 +4,7 @@
 /storage/*.key
 /vendor
 /public/estudios
+/public/comprobante
 /public/expedientes
 .env
 .env.backup

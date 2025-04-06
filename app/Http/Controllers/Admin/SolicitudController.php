@@ -196,9 +196,11 @@ class SolicitudController extends Controller
                 if ($estatus != null) {
                     $dataSolicitud['estatus'] = $estatus;
                     if ($estatus == 1) {
+                        
                         $dataSolicitud['fecha_vencimiento'] = $fechaVencimiento;
                         $dataSolicitud['fecha_activacion'] = date('Y-m-d');
                         $dataSolicitud['precio_total'] = $request->precio_total;
+                        
                     }
 
                    
@@ -215,6 +217,7 @@ class SolicitudController extends Controller
         }
 
         // Si no hay archivo, solo se actualiza el estatus
+        
         if ($estatus != null) {
             $dataSolicitud = array(
                 'estatus' => $estatus,
@@ -228,7 +231,12 @@ class SolicitudController extends Controller
                     $notification =  new NotificationUser();
                     $notification->activatesSystem($solicitudId);
                 }
-                
+                $getSolicitud = Solicitud::find($solicitudId);
+                $userId = $getSolicitud != null ? $getSolicitud->user_id : null;
+                if ($userId != null) {
+                    VinculacionSolicitud::saveVinculacion($userId, 'totalUsuariosSistema', $getSolicitud->id); 
+                    User::where('id', $userId)->update(['status' => 1]);
+                }
                 //VinculacionSolicitud::vincularPaquete($solicitudId);
             }
             
