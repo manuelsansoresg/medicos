@@ -49,7 +49,7 @@
                                 @foreach ($elementos as $key => $elemento)
                                     <div class="form-check mb-2">
                                         <div class="row align-items-center">
-                                            <div class="col-4">
+                                            <div class="col-6 col-md-4">
                                                 <input class="form-check-input" 
                                                     name="elementos[]"  
                                                     type="checkbox" 
@@ -61,8 +61,8 @@
                                                     {{ $elemento->nombre }}
                                                 </label>
                                             </div>
-                                            <div class="col-5">
-                                                <div class="input-group input-group-sm">
+                                            <div class="col-6 col-md-5">
+                                                <div class="input-group input-group-sm mb-2">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Máximo:</span>
                                                     </div>
@@ -75,10 +75,32 @@
                                                         value="{{ isset($elementosMaximos[$elemento->id]) ? $elementosMaximos[$elemento->id] : '' }}"
                                                         {{ $elementosGuardados != null &&  !in_array($elemento->id, $elementosGuardados) ? 'disabled' : '' }}>
                                                 </div>
+                                                <div class="input-group input-group-sm">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Precio:</span>
+                                                        
+                                                    </div>
+                                                    <input type="number" 
+                                                        id="precio-{{ $elemento->id }}"
+                                                        class="form-control form-control-sm" 
+                                                        disabled
+                                                        placeholder="Precio" 
+                                                        min="0"
+                                                        step="0.01"
+                                                        value="{{ $elemento->precio }}">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 @endforeach
+                                <div class="mt-3 col-12 col-md-9 text-end">
+                                    <strong>Total: ${{ $elementos->sum('precio') }}</strong>
+                                    <br>
+                                    
+                                </div>
+                                <div class="col-12">
+                                    <small>Este texto informativo es la suma de los precios individualmente de los elementos del paquete </small>
+                                </div>
                             </div>
                         </div>
                         

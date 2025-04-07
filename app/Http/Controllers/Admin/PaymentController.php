@@ -79,6 +79,7 @@ class PaymentController extends Controller
             'precio_total' => $amount,
             'user_id' => $userId,
             'payment_type' => 'tarjeta',
+            
         ]);
 
         $payment = Payment::create([

@@ -1,9 +1,57 @@
 @extends('layouts.template')
 
-
-
 @section('content')
-<div class="container bg-white py-2">
+<div class="container bg-white py-3">
+    <!-- Usuario Status & Notificaciones -->
+    <div class="row mb-4 mt-3">
+        
+        <div class="col-12">
+            <div class="border-0 h-100">
+                <div class="bg-white border-bottom-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">Notificaciones</h6>
+                        <span class="badge bg-primary rounded-pill">3</span>
+                    </div>
+                </div>
+                <div class=" py-0">
+                    <div class="notification-list">
+                        <div class="notification-item d-flex align-items-center py-2 border-bottom">
+                            <div class="notification-icon bg-info rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px">
+                                <i class="fas fa-calendar-check text-white"></i>
+                            </div>
+                            <div>
+                                <p class="mb-0 small">Nueva cita programada para hoy a las 15:00</p>
+                                <small class="text-muted">Hace 30 minutos</small>
+                            </div>
+                        </div>
+                        <div class="notification-item d-flex align-items-center py-2 border-bottom">
+                            <div class="notification-icon bg-warning rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px">
+                                <i class="fas fa-exclamation-triangle text-white"></i>
+                            </div>
+                            <div>
+                                <p class="mb-0 small">Recordatorio: Actualizar plantillas médicas</p>
+                                <small class="text-muted">Hace 1 hora</small>
+                            </div>
+                        </div>
+                        <div class="notification-item d-flex align-items-center py-2">
+                            <div class="notification-icon bg-danger rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px">
+                                <i class="fas fa-user-plus text-white"></i>
+                            </div>
+                            <div>
+                                <p class="mb-0 small">Nuevo paciente registrado: Ana López</p>
+                                <small class="text-muted">Hace 3 horas</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top-0 text-center">
+                    <a href="#" class="text-decoration-none small">Ver todas las notificaciones</a>
+                    <hr>
+                </div>
+            </div>
+        </div>
+        
+    </div>
     
     <div class="row mt-2">
        <div class="col-12 text-center">
@@ -12,240 +60,243 @@
        
        @hasrole(['administrador'])
        <div class="row justify-content-center">
-            <div class="col-md-2 text-center">
-            <div class="card">
-                <div class="card-body">
-                    <a href="/admin/usuarios"><i class="fas fa-users  fs-3"></i>
-                        <br><span>USUARIOS </span>
+            <div class="col-md-2 text-center mb-3">
+            <div class="card shadow-sm border-0 h-100 transition-hover">
+                <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                    <a href="/admin/usuarios" class="text-decoration-none">
+                        <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                            <i class="fas fa-users fs-3 text-primary"></i>
+                        </div>
+                        <span class="fw-bold text-dark">USUARIOS</span>
                     </a>
-                    
                 </div>
             </div>
             </div>
             
-            <div class="col-md-2  text-center">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="/admin/clinica"><i class="fas fa-clinic-medical fs-3"></i>
-                            <br><span>CLÍNICA</span>
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/clinica" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-clinic-medical fs-3 text-primary"></i>
+                            </div>
+                            <span class="fw-bold text-dark">CLÍNICA</span>
                         </a>
-                        
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-2  text-center">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="/admin/consultorio"><i class="fas fa-building fs-3"></i>
-                            <br><span>CONSULTORIOS</span>
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/consultorio" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-building fs-3 text-primary"></i>
+                            </div>
+                            <span class="fw-bold text-dark">CONSULTORIOS</span>
                         </a>
-                        
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-2  text-center">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="/admin/pacientes"><i class="fas fa-user fs-3"></i>
-                            <br><span>PACIENTE</span>
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/pacientes" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-user fs-3 text-primary"></i>
+                            </div>
+                            <span class="fw-bold text-dark">PACIENTE</span>
                         </a>
-                        
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-2  text-center">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="/admin/expedientes"><i class="fas fa-folder-open fs-3"></i></i>
-                            <br><span>EXPEDIENTES</span>
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/expedientes" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-folder-open fs-3 text-primary"></i>
+                            </div>
+                            <span class="fw-bold text-dark">EXPEDIENTES</span>
                         </a>
-                        
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-2  text-center">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="/admin/template-formulario"><i class="fas fa-edit fs3"></i></i>
-                            <br><span>PLANTILLAS</span>
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/template-formulario" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-edit fs-3 text-primary"></i>
+                            </div>
+                            <span class="fw-bold text-dark">PLANTILLAS</span>
                         </a>
-                        
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-2 mt-3 text-center">
-                <div class="card">
-                    <div class="card-body ">
-                        <a href="/admin/catalogo"><i class="fas fa-list"></i></i>
-                            <br><span>CATALOGO</span>
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/catalogo" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-list fs-3 text-primary"></i>
+                            </div>
+                            <span class="fw-bold text-dark">CATALOGO</span>
                         </a>
-                        
                     </div>
                 </div>
             </div>
            
-            <div class="col-md-2 mt-3 text-center">
-                <div class="card">
-                    <div class="card-body ">
-                        <a href="/admin/paquete"><i class="fas fa-cube"></i></i>
-                            <br><span>PAQUETES</span>
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/paquete" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-cube fs-3 text-primary"></i>
+                            </div>
+                            <span class="fw-bold text-dark">PAQUETES</span>
                         </a>
-                        
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-2 mt-3 text-center">
-                <div class="card">
-                    <div class="card-body ">
-                        <a href="/admin/setting/create"><i class="fas fa-cube"></i></i>
-                            <br><span>Configuración</span>
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/setting/create" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-cog fs-3 text-primary"></i>
+                            </div>
+                            <span class="fw-bold text-dark">CONFIGURACIÓN</span>
                         </a>
-                        
                     </div>
                 </div>
             </div>
-            
-           
        </div>
        @endrole
-        <!-- Primera columna -->
+       
+        <!-- Dashboard para médicos y auxiliares -->
         @hasrole(['medico','auxiliar'])
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 d-flex flex-column">
-
-                <div class="card-body flex-grow-1">
-                    <h6 class="card-title text-center"> {{ $getPackage->nombre }} </h6>
-                    <div class="row">
-                        <div class="col-12">
-                            @if(count($getPackage->items) > 0)
-                                @foreach($getPackage->items as $item)
-                                    <div class="package-feature">
-                                        <i class="fas fa-check"></i> {{ $item->catalogPrice->nombre }}: 
-                                        {{ $item->max ? $item->max : 'Ilimitado' }}
+        <div class="row">
+            <!-- Widget de Progreso del Paquete -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-header bg-white py-3 border-0">
+                        <h6 class="card-title text-center m-0">{{ $getPackage->nombre }}</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="progress-wrapper mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-muted small">Uso del paquete</span>
+                                        <span class="badge bg-success">70%</span>
                                     </div>
-                                @endforeach
-                            @endif
-                        </div>
-                      
-                    </div>
-                </div>
-
-                {{-- <div class="card-body flex-grow-1">
-                    <h6 class="card-title text-center">PAQUETE BÁSICO</h6>
-                    <div class="row">
-                        <div class="col-12">
-                            <table class="table table-borderless">
-                                @php
-                                  
-                                    $classTemplate = $getPorcentajeSistema['validateTemplate'] > 0 ? null : 'text-danger';
-                                @endphp
-                                <tr>
-                                    <td><span class="">CLINICAS {{ $getUsedStatusPackages['totalClinica']['lbl'] }} </span></td>
-                                    <td><a href="/admin/clinica"  class="color-primary"><i class="fas fa-eye"></i></a></td>
-                                    <td>
-                                        @if ($getUsedStatusPackages['totalClinica']['isLimit']  == false)
-                                            <a href="/admin/clinica/create"  class="color-primary"><i class="fas fa-plus"></i></a>
-                                        @endif
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td> <span class="">CONSULTORIOS {{ $getUsedStatusPackages['totalConsultorioExtra']['lbl'] }}  </span> </td>
-                                    <td><a href="/admin/consultorio"  class="color-primary"><i class="fas fa-eye"></i></a></td>
-                                    <td>
-                                        @if ($getUsedStatusPackages['totalConsultorioExtra']['isLimit']  == false)
-                                            <a href="/admin/consultorio/create"  class="color-primary"><i class="fas fa-plus"></i></a>
-                                        @endif
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="">USUARIOS {{ $getUsedStatusPackages['totalUsuariosSistema']['lbl'] }} </span></td>
-                                    <td><a href="/admin/usuarios"  class="color-primary"><i class="fas fa-eye"></i></a></td>
-                                    <td>
-                                        @if ($getUsedStatusPackages['totalUsuariosSistema']['isLimit']  == false)
-                                            <a href="/admin/usuarios/create"  class="color-primary"><i class="fas fa-plus"></i></a>
-                                        @endif
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="">PACIENTES {{ $getUsedStatusPackages['totalPacientes']['lbl'] }}</span></td>
-                                    <td></td>
-                                    <td><a href="/admin/pacientes/create"  class="color-primary"><i class="fas fa-plus"></i></a></td>
-                                </tr>
-                                <tr>
-                                    <td><span class="{{ $classTemplate }}">PLANTILLA CONSULTA</span></td>
-                                    <td><a href="/admin/template-formulario"  class="color-primary"><i class="fas fa-eye"></i></a></td>
-                                    <td><a href="/admin/template-formulario/create"  class="color-primary"><i class="fas fa-plus"></i></a></td>
-                                </tr>
-                            </table>
-                        </div>
-                      
-                    </div>
-                </div> --}}
-            </div>
-        </div>
-
-        
-        <!-- Segunda columna -->
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 d-flex flex-column">
-                <div class="card-body flex-grow-1">
-                    <h6 class="card-title text-center">PENDIENTES 
-                        <a href="admin/pendientes/create" target="_blank" class="color-primary"><i class="fas fa-plus"></i></a> 
-                        <a href="/admin/pendientes" target="_blank" class="color-primary"><i class="fas fa-table"></i></a>
-                    </h6>
-                    
-                    <div class="row">
-                        <div class="col-12">
-                            <table class="table table-borderless">
-                                @foreach ($earrings as $earring)
-                                <tr>
-                                    <td>{{ \Illuminate\Support\Str::limit($earring->pendiente, 40) }}
-                                    </td>
-                                    <td><a href="/admin/clinica" target="_blank" class="color-primary"><i class="fas fa-eye"></i></a></td>
-                                </tr>
-                                @endforeach
-                            </table>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- tercera columna -->
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 d-flex flex-column">
-                <div class="card-body flex-grow-1">
-                    <h6 class="card-title text-center">CITAS <a href="/admin/citas" target="_blank" class="color-primary"><i class="fas fa-plus"></i></a> </h6>
-                    <div class="row">
-                        <div class="col-10">
-                            <table class="table table-borderless">
-                                @if ($consultas != null)
-                                    @foreach ($consultas as $consulta)
-                                    <tr>
-                                        <td>
-                                             
-                                            <a href="/admin/consulta/{{ $consulta->id}}/{{ $consulta->idconsultasignado }}/registro">
-                                                DE {{ $consulta->ihorainicial }}:00 HRS. A
-                                                {{ $consulta->ihorafinal }}:00 HRS.<br>
-                                            </a>
-                                           
-                                        </td>
-                                    </tr>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                
+                                @if(count($getPackage->items) > 0)
+                                    @foreach($getPackage->items as $item)
+                                        <div class="package-feature d-flex justify-content-between align-items-center mb-2 p-2 border-bottom">
+                                            <div>
+                                                <i class="fas fa-check-circle text-success me-2"></i> 
+                                                <span>{{ $item->catalogPrice->nombre }}</span>
+                                            </div>
+                                            <span class="badge bg-info">
+                                                {{ $item->max ? $item->max : 'Ilimitado' }}
+                                            </span>
+                                        </div>
                                     @endforeach
                                 @endif
-                               
-                                
-                            </table>
+                            </div>
                         </div>
-                        <div class="col-2 text-center">
-                            
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pendientes -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                        <h6 class="card-title m-0">PENDIENTES</h6>
+                        <div>
+                            <a href="admin/pendientes/create" class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="tooltip" title="Agregar pendiente">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                            <a href="/admin/pendientes" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Ver todos">
+                                <i class="fas fa-table"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            @foreach ($earrings as $earring)
+                            <div class="list-group-item border-0 border-bottom py-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="text-warning me-3">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0">{{ \Illuminate\Support\Str::limit($earring->pendiente, 40) }}</p>
+                                            <small class="text-muted">Vence: en 3 días</small>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="/admin/clinica" class="btn btn-sm btn-outline-info" data-bs-toggle="tooltip" title="Ver detalles">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Citas -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                        <h6 class="card-title m-0">CITAS DEL DÍA</h6>
+                        <a href="/admin/citas" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Agregar cita">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            @if ($consultas != null)
+                                @foreach ($consultas as $consulta)
+                                <a href="/admin/consulta/{{ $consulta->id}}/{{ $consulta->idconsultasignado }}/registro" class="list-group-item list-group-item-action border-0 border-bottom py-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div class="text-primary me-3">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </div>
+                                            <div>
+                                                <p class="mb-0">De {{ $consulta->ihorainicial }}:00 hrs. a {{ $consulta->ihorafinal }}:00 hrs.</p>
+                                                <small class="text-muted">Paciente: María González</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge bg-success">Confirmada</span>
+                                    </div>
+                                </a>
+                                @endforeach
+                            @else
+                                <div class="text-center py-4">
+                                    <i class="fas fa-calendar-check text-muted mb-2" style="font-size: 2rem;"></i>
+                                    <p class="text-muted">No hay citas programadas para hoy</p>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -253,61 +304,72 @@
         </div>
         @endrole
 
-        
-    </div>
-    @hasrole(['medico','auxiliar'])
-        <div class="row justify-content-center">
-            <div class="col-md-2 text-center">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="/admin/sin_citas"><i class="fas fa-calendar-day fs-3"></i>
-                            <br><span>DÍAS SIN CITAS</span>
+        <!-- Accesos Rápidos para Médicos y Auxiliares -->
+        @hasrole(['medico','auxiliar'])
+        <div class="row justify-content-center mt-3">
+            <div class="col-12 mb-3">
+                <h6 class="border-bottom pb-2">ACCESOS RÁPIDOS</h6>
+            </div>
+            
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/sin_citas" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-calendar-day fs-3"></i>
+                            </div>
+                            <span class="fw-bold text-dark">DÍAS SIN CITAS</span>
                         </a>
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-2  text-center">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="/admin/expedientes"><i class="fas fa-folder-open fs-3"></i>
-                            <br><span>EXPEDIENTES</span>
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/expedientes" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-folder-open fs-3"></i>
+                            </div>
+                            <span class="fw-bold text-dark">EXPEDIENTES</span>
                         </a>
-                        
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-2  text-center">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="/admin/actividades"><i class="fas fa-check-double fs3"></i>
-                            <br><span>ACTIVIDADES</span>
+    
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/actividades" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-check-double fs-3"></i>
+                            </div>
+                            <span class="fw-bold text-dark">ACTIVIDADES</span>
                         </a>
-                        
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-2  text-center">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="/admin/template-formulario"><i class="fas fa-edit fs3"></i>
-                            <br><span>PLANTILLAS</span>
+    
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/template-formulario" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-edit fs-3"></i>
+                            </div>
+                            <span class="fw-bold text-dark">PLANTILLAS</span>
                         </a>
-                        
                     </div>
                 </div>
             </div>
-            
         </div>
-       @endrole
+        @endrole
        
-    <livewire:solicitudes-livewire :limit="50"  />
+    <livewire:solicitudes-livewire :limit="50" />
    
-    <livewire:ganancias-livewire :limit="50"  />
+    <livewire:ganancias-livewire :limit="50" />
 
-   <input type="hidden" id="porcentajeSistema" value="{{ $getPorcentajeSistema['percent'] }}">
+    <input type="hidden" id="porcentajeSistema" value="{{ $getPorcentajeSistema['percent'] }}">
     
 </div>
 
@@ -322,8 +384,32 @@
         <div class="modal-body">
           <div id="modalReactivacionContent"></div>
         </div>
-       
       </div>
     </div>
-  </div>
+</div>
+
+<style>
+/* Estilos adicionales */
+.transition-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.transition-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+.card {
+  border-radius: 10px;
+  overflow: hidden;
+}
+.notification-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+.icon-wrapper {
+  transition: all 0.3s ease;
+}
+.card:hover .icon-wrapper {
+  background-color: #f8f9fa !important;
+}
+</style>
 @stop
