@@ -38,14 +38,28 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
+                                <label for="inputImss" class="form-label">CURP</label>
+                                <small>Consulta tu CURP aquí <a href="https://www.gob.mx/curp/" target="_blank">consulta</a></small>
+                                <input type="text" class="form-control" name="data[curp]" id="lead-curp" value="{{ $user != null ? $user->curp : null }}">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
                                 <label for="inputNombre" class="form-label">*NOMBRE(S)</label>
-                                <input type="text" class="form-control" name="data[name]" id="inputNombre" value="{{ $user != null ? $user->name : null }}" required>
+                                <input type="text" class="form-control" name="data[name]" id="lead-nombre" value="{{ $user != null ? $user->name : null }}" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="inputApellido" class="form-label">*APELLIDO(S)</label>
-                                <input type="text" class="form-control" name="data[vapellido]" id="inputApellido" value="{{ $user != null ? $user->vapellido : null }}" required>
+                                <label for="inputApellido" class="form-label">*APELLIDO MATERNO</label>
+                                <input type="text" class="form-control" name="data[vapellido]" id="lead-apellido" value="{{ $user != null ? $user->vapellido : null }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="inputApellido" class="form-label">*APELLIDO PATERNO</label>
+                                <input type="text" class="form-control" name="data[segundo_apellido]" id="lead-segundo-apellido" value="{{ $user != null ? $user->segundo_apellido : null }}" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -88,13 +102,7 @@
                             </div>
                         </div>
                         
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="inputImss" class="form-label">CURP</label>
-                                <small>Consulta tu CURP aquí <a href="https://www.gob.mx/curp/" target="_blank">consulta</a></small>
-                                <input type="text" class="form-control" name="data[curp]" id="curp" value="{{ $user != null ? $user->curp : null }}">
-                            </div>
-                        </div>
+                       
                         
                         <div class="col-md-6">
                             <div class="mb-3">

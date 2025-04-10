@@ -21,6 +21,7 @@ require('./config_download_expedient');
 require('./expedient');
 require('./solicitud');
 require('./setting');
+require('./paciente');
 
 document.addEventListener('DOMContentLoaded', function() {
     $('.select2multiple').select2({

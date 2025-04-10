@@ -27,6 +27,13 @@ class PacientesController extends Controller
         return response()->json($pacientes);
     }
 
+    public function curp(Request $request)
+    {
+        $curp = $request->curp;
+        $paciente = User::where('curp', $curp)->first();
+        return response()->json($paciente);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

@@ -428,6 +428,7 @@ class User extends Authenticatable
         $password     = $request->password;
         $rol          = isset( $request->rol)?  $request->rol : 'paciente';
         $current_user = Auth::user();
+        $usuario_principal = null;
 
         if ($current_user->hasRole('medico')) {
             $data['usuario_principal'] = null;
@@ -440,6 +441,7 @@ class User extends Authenticatable
         if ($user_id == null) {
             $data['creador_id'] = Auth::user()->id;
             $user = User::create($data);
+            
             
             $user->assignRole($rol);
         } else {
@@ -463,25 +465,33 @@ class User extends Authenticatable
         ClinicaUser::saveEdit($user->id, $request);
         if (!isset($data['usuario_principal'])) {
             if ($current_user->hasRole('administrador')) {
+                $usuario_principal = $user->id;
                 User::where('id', $user->id)->update([
                     'usuario_principal' => $user->id
                 ]);
             } elseif ($current_user->hasRole('medico')) {
+                $usuario_principal = Auth::user()->id;
                 User::where('id', $user->id)->update([
                     'usuario_principal' => Auth::user()->id
                 ]);
             } elseif ($current_user->hasRole('auxiliar') || $current_user->hasRole('paciente')) {
                 $myUser = User::find(Auth::user()->id);
+                $usuario_principal = $myUser->usuario_principal;
                 User::where('id', $user->id)->update([
                     'usuario_principal' => $myUser->usuario_principal
                 ]);
             }
         } else {
+            $usuario_principal = $data['usuario_principal'];
             User::where('id', $user->id)->update([
                 'usuario_principal' => $data['usuario_principal']
             ]);
         }
     
+        VinculoPacienteUsuario::firstOrCreate([
+            'user_id' => $usuario_principal,
+            'paciente_id' => $user->id
+        ]);
         return $user;
     }
 
