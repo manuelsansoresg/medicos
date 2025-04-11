@@ -16,6 +16,8 @@ class Paciente extends Model
         'idlpaciente','vnombre','vapellido','ttelefono','vfechan','vfecham','vcodigopasiente','vpass','istatus','vpeso','tdireccion','vnumeroseguro','tobservaciones','vfoto','vruta','mail','idclinica','isexo','idreveusr'
     ];
 
+    
+
     public static function search($request)
     {
         $clinica     = Session::get('clinica');

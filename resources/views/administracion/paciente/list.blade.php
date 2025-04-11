@@ -37,20 +37,35 @@
                             @foreach ($users as $user)
                                 @php
                                     $isExistPacientePermissions = $MmSolicitudPaciente::where('paciente_id', $user->id)->count();
+                                    $isLinked = $user->isLinkedToMyList($user->id);
                                 @endphp
                                 <tr>
-                                    <td>{{ $user->name }} {{  $user->vapellido }} </td>
+                                    <td>{{ $user->name }} {{  $user->vapellido }} 
+                                        @if ($isLinked)
+                                            <span class="badge bg-success me-2">
+                                                <i class="fas fa-link"></i> Vinculado
+                                            </span>
+                                        @endif    
+                                    </td>
                                     <td> {{ $user->email }} </td>
                                     <td class="col-3">
-                                        @if ($isExistPacientePermissions > 0)
-                                        <a href="#" onclick="permisosPaciente({{ $user->id }})" class="btn btn-success"><i
-                                            class="fas fa-users-cog"></i></a>
-                                        @endif
-                                     
-                                        <a href="/admin/pacientes/{{ $user->id }}/edit" class="btn btn-primary"><i
-                                                class="fas fa-edit"></i></a>
-                                        <a href="#" onclick="deletePaciente({{ $user->id }})" class="btn btn-danger"><i
+                                        @if ($isLinked)
+                                        <a href="/admin/pacientes/{{ $user->id }}" class="btn btn-primary"><i
+                                            class="fas fa-eye"></i></a>
+                                            <a href="#" onclick="deleteVinculo({{ $user->id }})" class="btn btn-danger"><i
                                                 class="fas fa-trash"></i></a>
+                                        @else
+                                            @if ($isExistPacientePermissions > 0)
+                                            <a href="#" onclick="permisosPaciente({{ $user->id }})" class="btn btn-success"><i
+                                                class="fas fa-users-cog"></i></a>
+                                            @endif
+                                    
+                                            <a href="/admin/pacientes/{{ $user->id }}/edit" class="btn btn-primary"><i
+                                                    class="fas fa-edit"></i></a>
+
+                                            <a href="#" onclick="deletePaciente({{ $user->id }})" class="btn btn-danger"><i
+                                                    class="fas fa-trash"></i></a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

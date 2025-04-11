@@ -40,26 +40,26 @@
                             <div class="mb-3">
                                 <label for="inputImss" class="form-label">CURP</label>
                                 <small>Consulta tu CURP aquí <a href="https://www.gob.mx/curp/" target="_blank">consulta</a></small>
-                                <input type="text" class="form-control" name="data[curp]" id="lead-curp" value="{{ $user != null ? $user->curp : null }}">
+                                <input type="text" class="form-control" name="data[curp]" id="paciente-curp" value="{{ $user != null ? $user->curp : null }}">
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputNombre" class="form-label">*NOMBRE(S)</label>
-                                <input type="text" class="form-control" name="data[name]" id="lead-nombre" value="{{ $user != null ? $user->name : null }}" required>
+                                <input type="text" class="form-control" name="data[name]" id="paciente-nombre" value="{{ $user != null ? $user->name : null }}" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputApellido" class="form-label">*APELLIDO MATERNO</label>
-                                <input type="text" class="form-control" name="data[vapellido]" id="lead-apellido" value="{{ $user != null ? $user->vapellido : null }}" required>
+                                <input type="text" class="form-control" name="data[vapellido]" id="paciente-apellido" value="{{ $user != null ? $user->vapellido : null }}" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputApellido" class="form-label">*APELLIDO PATERNO</label>
-                                <input type="text" class="form-control" name="data[segundo_apellido]" id="lead-segundo-apellido" value="{{ $user != null ? $user->segundo_apellido : null }}" required>
+                                <input type="text" class="form-control" name="data[segundo_apellido]" id="paciente-segundo-apellido" value="{{ $user != null ? $user->segundo_apellido : null }}" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -77,37 +77,37 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="inputTelefono" class="form-label">FECHA NACIMIENTO</label>
+                                <label for="fecha_nacimiento" class="form-label">FECHA NACIMIENTO</label>
                                 <input type="date" class="form-control" name="data[fecha_nacimiento]" id="fecha_nacimiento" value="{{ $user != null ? $user->fecha_nacimiento : null }}">
                             </div>
                         </div>
     
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="inputTelefono" class="form-label">TELEFONO</label>
-                                <input type="text" class="form-control" name="data[ttelefono]" id="inputTelefono" value="{{ $user != null ? $user->ttelefono : null }}">
+                                <label for="telefono" class="form-label">TELEFONO</label>
+                                <input type="text" class="form-control" name="data[ttelefono]" id="telefono" value="{{ $user != null ? $user->ttelefono : null }}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="inputDireccion" class="form-label">DIRECCIÓN</label>
-                                <textarea name="data[tdireccion]" id="inputDireccion" cols="30" rows="5" class="form-control">{{ $user != null ? $user->tdireccion : null }}</textarea>
+                                <label for="direccion" class="form-label">DIRECCIÓN</label>
+                                <textarea name="data[tdireccion]" id="direccion" cols="30" rows="5" class="form-control">{{ $user != null ? $user->tdireccion : null }}</textarea>
                             </div>
                         </div>
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="inputImss" class="form-label">N° I.M.S.S</label>
+                                <label for="num_seguro" class="form-label">N° I.M.S.S</label>
                                 <input type="text" class="form-control" name="data[num_seguro]" id="num_seguro" value="{{ $user != null ? $user->num_seguro : null }}">
                             </div>
                         </div>
                         
                        
                         
-                        <div class="col-md-6">
+                        <div class="col-md-6" id="content-status">
                             <div class="mb-3">
-                                <label for="inputEstatus" class="form-label">*ACTIVO</label>
-                                <select name="data[status]" id="inputEstatus" class="form-control" required>
+                                <label for="status" class="form-label">*ACTIVO</label>
+                                <select name="data[status]" id="status" class="form-control" required>
                                     
                                    @foreach (config('enums.status') as $key => $item)
                                        <option value="{{ $key }}" {{ $user != null && $user->status == $key ? 'selected' : null  }}>{{ $item }}</option>
@@ -128,21 +128,23 @@
                             </div>
                         </div>
                         @endrole
-    
-                        <div class="col-12 py-3 mt-3">
-                            <p class="lead">DATOS PARA INGRESAR AL SISTEMA</p>
-                            <p class="text-info">Solo llenar cuando se quiera dar acceso al sistema</p>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="inputCorreo" class="form-label">CORREO</label>
-                                <input type="email" class="form-control" name="data[email]" id="inputCorreo" value="{{ $user != null ? $user->email : null }}">
+                        <div id="content-data-system">
+
+                            <div class="col-12 py-3 mt-3">
+                                <p class="lead">DATOS PARA INGRESAR AL SISTEMA</p>
+                                <p class="text-info">Solo llenar cuando se quiera dar acceso al sistema</p>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="inputPassword" class="form-label">CONTRASEÑA</label>
-                                <input type="password" class="form-control" name="password" id="inputPassword">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="inputCorreo" class="form-label">CORREO</label>
+                                    <input type="email" class="form-control" name="data[email]" id="inputCorreo" value="{{ $user != null ? $user->email : null }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="inputPassword" class="form-label">CONTRASEÑA</label>
+                                    <input type="password" class="form-control" name="password" id="inputPassword">
+                                </div>
                             </div>
                         </div>
                         
@@ -150,7 +152,8 @@
                         <div class="col-md-12 text-end">
                             <div class="mb-3">
                                 <input type="hidden" id="user_id" name="user_id" value="{{ $user_id }}" >
-                                <button class="btn btn-primary">Guardar</button>
+                                <button class="btn btn-primary" id="btn-guardar-paciente">Guardar</button>
+                                <button class="btn btn-primary" id="btn-vincular-paciente" style="display: none;" onclick="vincularPaciente()">Vincular paciente</button>
                             </div>
                         </div>
                     </div>

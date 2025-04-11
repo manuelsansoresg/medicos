@@ -76,6 +76,20 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public static function vincularPaciente($paciente_id)
+    {
+        $userId = User::getMyUserPrincipal();
+        $vinculo = new VinculoPacienteUsuario();
+        $vinculo->user_id = $userId;
+        $vinculo->paciente_id = $paciente_id;
+        $vinculo->save();
+    }
+
+    public static function deleteVinculo($paciente_id)
+    {
+        $userId = User::getMyUserPrincipal();
+        $vinculo = VinculoPacienteUsuario::where('user_id', $userId)->where('paciente_id', $paciente_id)->delete();
+    }
 
     public static function validateCedula($userId, $solicitudId, $request)
     {
@@ -173,8 +187,12 @@ class User extends Authenticatable
             $users->where('usuario_principal', $setUserId);
         }
         if (!$isAdmin) {
-            $usuarioPrincipal = User::getMyUserPrincipal();
-            $users->where('usuario_principal', $usuarioPrincipal);
+            $vinculos = VinculoPacienteUsuario::where('user_id', Auth::user()->id)->get();  
+            $pacientes = [];
+            foreach ($vinculos as $vinculo) {
+                $pacientes[] = $vinculo->paciente_id;
+            }
+            $users->whereIn('id', $pacientes);
         }
 
         if ($search != '') {
@@ -646,5 +664,37 @@ class User extends Authenticatable
             $usuario->update();
             $contador++;
         }
+    }
+
+    public function vinculos()
+    {
+        return $this->hasMany(VinculoPacienteUsuario::class, 'user_id', 'id');
+    }
+
+    /**
+     * Check if this user is linked to the current user's list
+     */
+    public static function isLinkedToMyList($userId)
+    {
+        $currentUserId = Auth::user()->id;
+        return VinculoPacienteUsuario::where('user_id', $currentUserId)
+            ->where('paciente_id', $userId)
+            ->exists();
+    }
+
+    /**
+     * Get all patients linked to this user
+     */
+    public function getLinkedPatients()
+    {
+        return $this->vinculos()->with('paciente')->get()->pluck('paciente');
+    }
+
+    /**
+     * Check if this user is linked to a specific patient
+     */
+    public function isLinkedToPatient($pacienteId)
+    {
+        return $this->vinculos()->where('paciente_id', $pacienteId)->exists();
     }
 }

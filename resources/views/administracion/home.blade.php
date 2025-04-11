@@ -61,16 +61,16 @@
        @hasrole(['administrador'])
        <div class="row justify-content-center">
             <div class="col-md-2 text-center mb-3">
-            <div class="card shadow-sm border-0 h-100 transition-hover">
-                <div class="card-body d-flex flex-column align-items-center justify-content-center">
-                    <a href="/admin/usuarios" class="text-decoration-none">
-                        <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
-                            <i class="fas fa-users fs-3 text-primary"></i>
-                        </div>
-                        <span class="fw-bold text-dark">USUARIOS</span>
-                    </a>
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/usuarios" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-users fs-3 text-primary"></i>
+                            </div>
+                            <span class="fw-bold text-dark">USUARIOS</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
             </div>
             
             <div class="col-md-2 text-center mb-3">
@@ -309,6 +309,57 @@
         <div class="row justify-content-center mt-3">
             <div class="col-12 mb-3">
                 <h6 class="border-bottom pb-2">ACCESOS RÁPIDOS</h6>
+            </div>
+
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/usuarios" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-users fs-3 text-primary"></i>
+                            </div>
+                            <span class="fw-bold text-dark">USUARIOS</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/clinica" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-clinic-medical fs-3 text-primary"></i>
+                            </div>
+                            <span class="fw-bold text-dark">CLÍNICA</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/consultorio" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-building fs-3 text-primary"></i>
+                            </div>
+                            <span class="fw-bold text-dark">CONSULTORIOS</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/pacientes" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-user fs-3 text-primary"></i>
+                            </div>
+                            <span class="fw-bold text-dark">PACIENTE</span>
+                        </a>
+                    </div>
+                </div>
             </div>
             
             <div class="col-md-2 text-center mb-3">

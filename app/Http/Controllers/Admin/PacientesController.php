@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Paciente;
 use App\Models\User;
+use App\Models\VinculoPacienteUsuario;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -31,7 +32,23 @@ class PacientesController extends Controller
     {
         $curp = $request->curp;
         $paciente = User::where('curp', $curp)->first();
-        return response()->json($paciente);
+        $error = true;
+        if($paciente->hasRole('paciente')){
+            $error = false;
+        }
+        return response()->json(['error' => $error, 'data' => $paciente]);
+    }
+
+    public function vincular(Request $request)
+    {
+        $paciente = User::find($request->user_id);
+        User::vincularPaciente($paciente->id);
+    }
+
+    public function deleteVinculo(Request $request)
+    {
+        $paciente = User::find($request->user_id);
+        User::deleteVinculo($paciente->id);
     }
 
     /**
@@ -91,7 +108,9 @@ class PacientesController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::find($id);
+        $user_id = $id;
+        return view('administracion.paciente.info', compact('user', 'user_id'));
     }
 
     /**
