@@ -6,6 +6,7 @@
 /public/estudios
 /public/comprobante
 /public/expedientes
+/public/ine
 .env
 .env.backup
 .phpunit.result.cache

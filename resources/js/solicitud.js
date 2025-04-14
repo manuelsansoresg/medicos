@@ -41,7 +41,7 @@ window.setSolicitud = function(getSolicitud)
     let cantidadInput = document.getElementById("cantidad");
     $('#content-solicitud-pacientes').hide();
     // Establece el valor máximo del input en función de la solicitud
-    if (solicitud == 1) {
+    if (solicitud == 0) {
         cantidadInput.setAttribute("max", "1");
     } 
     if(solicitud == 4) {

@@ -24,7 +24,7 @@ class CheckUserStatus
     $user = Auth::user();
 
     if ($user !== null) {
-        $isMedic = $user->hasRole(['medico', 'auxiliar', 'secretario']);
+        /* $isMedic = $user->hasRole(['medico', 'auxiliar', 'secretario']);
 
         if ($isMedic) {
             $userId = User::getMyUserPrincipal();
@@ -80,7 +80,7 @@ class CheckUserStatus
             if ($user->status == 0) {
                 Session::put('typeError', 2);
             }
-        }
+        } */
     }
 
     return $next($request);

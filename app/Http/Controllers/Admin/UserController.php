@@ -8,6 +8,7 @@ use App\Models\Access;
 use App\Models\Clinica;
 use App\Models\ClinicaUser;
 use App\Models\FormularioConfiguration;
+use App\Models\LogSystem;
 use App\Models\Solicitud;
 use App\Models\User;
 use App\Models\VinculacionSolicitud;
@@ -151,5 +152,59 @@ class UserController extends Controller
     {
         VinculacionSolicitud::deleteVinculacion($id);
         $user  = User::find($id)->delete();
+    }
+
+    public function showActivationForm($user_id)
+    {
+        $user = User::findOrFail($user_id);
+        session(['userIdActivate' => $user_id]);
+        return view('administracion.user.activation', compact('user'));
+    }
+
+    public function activateUser(Request $request, $user_id)
+    {
+        $user = User::findOrFail($user_id);
+        
+        // Handle INE front upload
+        if ($request->hasFile('ine_front')) {
+            $file = $request->file('ine_front');
+            $filename = 'ine_frontal_' . $user_id . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('ine'), $filename);
+            $user->ine_front = $filename;
+        }
+
+        // Handle INE back upload
+        if ($request->hasFile('ine_back')) {
+            $file = $request->file('ine_back');
+            $filename = 'ine_reverso_' . $user_id . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('ine'), $filename);
+            $user->ine_back = $filename;
+        }
+
+        // Update cedula validation status
+        $user->is_cedula_valid = $request->input('is_cedula_valid');
+        $user->save();
+        
+        //guardar log de quien activo la cédula
+        if (Auth::user()->hasRole('administrador')) {
+            $userAdminId = Auth::user()->id;
+            $userNameAdmin = Auth::user()->name;
+            $action = $user->is_cedula_valid == 1 ? 'valido la cédula' : 'rechazo la cédula';
+            LogSystem::createLog($userAdminId, 'Validación de cédula', 'Usuario administrador '.$userNameAdmin.' '.$action.' del usuario ID-'.$user_id);
+        }
+
+        return redirect("/admin/usuarios")
+                 ->with('success', 'Usuario actualizado exitosamente');
+    }
+
+    public function deleteIneImage($type)
+    {
+        $fieldDelete = $type == 'front' ? 'ine_front' : 'ine_back';
+        $userIdFromSession = session('userIdActivate');
+        $user = User::findOrFail($userIdFromSession);
+        unlink(public_path('ine/' . $user->$fieldDelete));
+        $user->$fieldDelete = null;
+        $user->save();
+        return response()->json(['success' => true]);
     }
 }

@@ -15,7 +15,6 @@ class VinculacionSolicitud extends Model
         'user_id',
         'idusrregistra',
         'idRel',
-        'solicitud_origin_id',
     ];
 
     public static function vincularPaquete($solicitudId)

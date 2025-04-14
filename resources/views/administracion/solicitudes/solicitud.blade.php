@@ -157,19 +157,19 @@
                                 <th>SOLICITUD</th>
                                 <th>NOMBRE</th>
                                 <th>PRECIO</th>
-                                @if ($solicitud->source_id == 1)
+                                @if ($solicitud->source_id == 0)
                                     <th>ELEMENTOS</th>
                                 @endif
                             </tr>
                             <tr>
-                                @if ($solicitud->source_id == 1)
+                                @if ($solicitud->source_id == 0)
                                     <td>PAQUETE</td>
                                     @else   
                                     <td>EXTRA</td>
                                 @endif
                                 <td>{{ $solicitud != null ? $solicitud->package_nombre : null }}</td>
                                 <td>${{ format_price($solicitud->precio) }}</td>
-                                @if ($solicitud->source_id == 1)
+                                @if ($solicitud->source_id == 0)
                                     <td>
                                         @foreach($solicitud->package->items as $item)
                                         <span class="badge bg-info">{{ $item->catalogPrice->nombre }} ({{ $item->max }})</span>

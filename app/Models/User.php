@@ -41,7 +41,7 @@ class User extends Authenticatable
         'idclinica',
         'idoctora',
         'status',
-        'is_cedula_active',
+        'is_cedula_active', //borrar
         'usuario_alta',
         'vcodigodocto',
         'creador_id',
@@ -54,7 +54,9 @@ class User extends Authenticatable
         'ruta_foto',
         'sexo',
         'alergias',
-        'curp'
+        'curp',
+        'ine_front',
+        'ine_back'
     ];
 
     /**
@@ -459,9 +461,8 @@ class User extends Authenticatable
         if ($user_id == null) {
             $data['creador_id'] = Auth::user()->id;
             $user = User::create($data);
-            
-            
             $user->assignRole($rol);
+            //VinculacionSolicitud::saveVinculacion($user->id, 'totalUsuariosSistema', $solicitud->id); 
         } else {
             $user = User::find($user_id);
             $user->fill($data);
@@ -696,5 +697,22 @@ class User extends Authenticatable
     public function isLinkedToPatient($pacienteId)
     {
         return $this->vinculos()->where('paciente_id', $pacienteId)->exists();
+    }
+
+    public function getVinculacionUser($userId)
+    {
+        $solicitud = null;
+        $vinculacion = VinculacionSolicitud::where('idRel', $userId)
+                        ->first();
+        if ($vinculacion) {
+            $solicitud = Solicitud::select('solicitudes.*', 'packages.nombre as package_nombre', 'packages.precio as package_precio', 'packages.isValidateCedula')
+                ->leftJoin('packages', function($join) {
+                    $join->on('packages.id', '=', 'solicitudes.solicitud_origin_id')
+                         ->where('solicitudes.source_id', '=', 1);
+                })
+                ->where('solicitudes.id', $vinculacion->solicitudId)
+                ->first();
+        }
+        return $solicitud;
     }
 }

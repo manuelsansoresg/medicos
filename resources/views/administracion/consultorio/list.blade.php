@@ -15,6 +15,8 @@
     </div>
 @stop
 
+@inject('Solicitud', 'App\Models\Solicitud')
+@inject('User', 'App\Models\User')
 
 @section('content')
 
@@ -28,7 +30,17 @@
                     <a href="/admin/consultorio/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
                 @endrole
                 @if ($getUsedStatusPackages['totalConsultorioExtra']['isLimit']  == false)
+                    {{-- Cuando se quiera asignar un consultorio verificar que este validado el usuario --}}
+                    @php
+                        $solicitud = $Solicitud::getMyPackage();
+                        $user = $User::find(Auth::user()->id);
+                    @endphp
+                    @if ($solicitud != null && $solicitud->isValidateCedula != 1)
                     <a href="/admin/consultorio/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                    @endif
+                    @if ( $solicitud != null && $solicitud->isValidateCedula == 1 && $user->is_cedula_valid)
+                    <a href="/admin/consultorio/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                    @endif
                 @endif
             </div>
             <div class="col-12">

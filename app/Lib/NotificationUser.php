@@ -65,4 +65,5 @@ class NotificationUser
         Mail::to($user->email)->send(new ActivateSystemEmail($data));
     }
     
+    
 }

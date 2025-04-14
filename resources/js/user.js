@@ -158,3 +158,38 @@ $("#frm-vincular-usuario").submit(function (e) {
 });
 
 
+window.previewImage = function(input, previewId) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('#' + previewId).html(`
+                <img src="${e.target.result}" class="img-thumbnail" style="max-height: 200px;">
+                <button type="button" class="btn btn-danger btn-sm mt-2" onclick="deleteImage('${input.id}')">
+                    <i class="fas fa-trash"></i> Eliminar
+                </button>
+            `);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+window.deleteImage = function(type, user_id) {
+    Swal.fire({
+        title: '¿Deseas borrar el elemento?',
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: 'SÍ',
+        denyButtonText: `NO`,
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            axios
+            .delete("/admin/usuarios/ine/"+type+'/delete')
+            .then(function (response) {
+                window.location.reload();
+            })
+            .catch(error => { 
+            });
+        } 
+      })
+}

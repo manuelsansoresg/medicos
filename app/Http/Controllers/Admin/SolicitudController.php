@@ -9,12 +9,14 @@ use App\Models\Clinica;
 use App\Models\ClinicaUser;
 use App\Models\Comment;
 use App\Models\Consultorio;
+use App\Models\LogSystem;
 use App\Models\Solicitud;
 use App\Models\SolicitudPaciente;
 use App\Models\SolicitudUsuario;
 use App\Models\User;
 use App\Models\VinculacionSolicitud;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class SolicitudController extends Controller
@@ -70,7 +72,13 @@ class SolicitudController extends Controller
     {
         $query = null;
         $catalogPrices = CatalogPrice::all();
-        return view('administracion.solicitudes.frm', compact('query', 'catalogPrices'));
+        
+        if (Auth::user()->hasRole('administrador')) {
+            $users = User::whereHas('roles', function ($q) {
+                $q->whereIn('name', ['medico', 'auxiliar', 'secretario']);
+            })->get();
+        }   
+        return view('administracion.solicitudes.frm', compact('query', 'catalogPrices', 'users'));
     }
 
     /**
@@ -129,17 +137,21 @@ class SolicitudController extends Controller
     public function show($id)
     {
         
-        $solicitud = Solicitud::select('solicitudes.*', 'users.name as name', 'users.vapellido as vapellido', 
-                        'users.segundo_apellido as segundo_apellido', 'users.email', 'ttelefono')
-                        ->join('users', 'users.id', 'solicitudes.user_id')
-                        ->where('solicitudes.id',$id)
-                        ->when('solicitudes.source_id', function($query) {
-                            return $query->where('source_id', 1)
-                                    ->join('packages', 'packages.id', '=', 'solicitudes.solicitud_origin_id')
-                                    ->addSelect('packages.nombre as package_nombre', 'precio')
-                                    ->with(['package.items.catalogPrice']);
-                        })
-                        ->first();
+        $solicitudSourceId = Solicitud::select('solicitudes.*', 'users.name as name', 'users.vapellido as vapellido', 
+                    'users.segundo_apellido as segundo_apellido', 'users.email', 'ttelefono')
+                    ->join('users', 'users.id', 'solicitudes.user_id')
+                    ->where('solicitudes.id', $id)->first();
+        if ($solicitudSourceId != null && $solicitudSourceId->source_id == 0) {
+            $solicitud = Solicitud::select('solicitudes.*', 'users.name as name', 'users.vapellido as vapellido', 
+                    'users.segundo_apellido as segundo_apellido', 'users.email', 'ttelefono')
+            ->join('users', 'users.id', 'solicitudes.user_id')
+            ->where('solicitudes.id', $id)
+            ->join('packages', 'packages.id', '=', 'solicitudes.solicitud_origin_id')
+                ->addSelect('packages.nombre as package_nombre', 'precio')
+                ->with(['package.items.catalogPrice'])->first();
+        } else {
+            $solicitud = $solicitudSourceId;
+        }
         $comments = Comment::where([
             'type' => 2,
             'idRel' => $id,
@@ -222,6 +234,18 @@ class SolicitudController extends Controller
             $dataSolicitud = array(
                 'estatus' => $estatus,
             );
+            $getSolicitud = Solicitud::find($solicitudId);
+            $userNameAdmin = Auth::user()->name;
+
+            if ($getSolicitud != null) {
+                if ($getSolicitud->solicitud_origin_id == 1) { //paquete uso del sistema
+                    $title = 'Activación de paquete';
+                }
+                
+                if ($getSolicitud->solicitud_origin_id == 2) { //Usuario
+                    $title = 'Activación de usuario';
+                }
+            }
             if ($estatus == 1) { // paquete uso del sistema
                 $dataSolicitud['fecha_vencimiento'] = $fechaVencimiento;
                 $dataSolicitud['precio_total'] = $request->precio_total;
@@ -231,13 +255,17 @@ class SolicitudController extends Controller
                     $notification =  new NotificationUser();
                     $notification->activatesSystem($solicitudId);
                 }
-                $getSolicitud = Solicitud::find($solicitudId);
+                
                 $userId = $getSolicitud != null ? $getSolicitud->user_id : null;
+
                 if ($userId != null) {
                     VinculacionSolicitud::saveVinculacion($userId, 'totalUsuariosSistema', $getSolicitud->id); 
                     User::where('id', $userId)->update(['status' => 1]);
                 }
                 //VinculacionSolicitud::vincularPaquete($solicitudId);
+                LogSystem::createLog(Auth::user()->id, $title, 'Usuario administrador '.$userNameAdmin.' activo la solicitud ID-'.$solicitudId);
+            } else {
+                LogSystem::createLog(Auth::user()->id, $title, 'Usuario administrador '.$userNameAdmin.' rechazo la solicitud ID-'.$solicitudId);
             }
             
             Solicitud::where('id', $solicitudId)->update($dataSolicitud);

@@ -31,6 +31,15 @@
                     @endif
                     
                 </div>
+                <div class="col-12 mt-3">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                </div>
+
                 <div class="col-12">
                     <table class="table mt-3">
                         <thead>
@@ -38,6 +47,8 @@
                                 <th>NOMBRE</th>
                                 <th>CORREO</th>
                                 <th>CONSULTORIO ASIGNADO</th>
+                                <th>ACTIVAR USUARIO</th>
+                                <th>ESTATUS ACTIVACIÓN</th>
                                 <th>ACCIONES</th>
                             </tr>
                         </thead>
@@ -56,6 +67,24 @@
                                             <span class="text-warning">NO</span>
                                         @endif
                                     </td>
+                                    <td>
+                                        @php
+                                            $vinculacion = $Muser::getVinculacionUser($user->id);
+                                            
+                                        @endphp
+                                        @if ($vinculacion && $vinculacion->isValidateCedula)
+                                            <span class="text-primary">SÍ</span>
+                                        @else
+                                            <span class="text-warning">NO</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($vinculacion && $vinculacion->isValidateCedula)
+                                        <span class="{{ $vinculacion->isValidateCedula == 1 ? 'text-primary' : 'text-warning' }}">{{ $vinculacion->isValidateCedula == 1 ? 'SÍ' : 'NO' }}</span>
+                                        @else
+                                            <span class="text-success">N/A</span>
+                                        @endif
+                                    </td>
                                     <td class="col-3">
                                         {{-- solo puede editar admin, medico, auxiliar --}}
                                         @php
@@ -65,6 +94,10 @@
                                             $limitUser = $Muser::limitAllUsers($access, $user->id);
                                         @endphp
                                         @if ($getRoleName == 'administrador'|| $getRoleName == 'medico' || $getRoleName == 'auxiliar')
+                                        @if ($vinculacion && $vinculacion->isValidateCedula)
+                                            <a href="/admin/usuarios/activar/{{ $user->id }}" class="btn btn-success"><i class="fas fa-check"></i></a>
+                                       
+                                        @endif
                                         <a href="/admin/consulta-asignado/{{ $user->id }}" class="btn btn-warning text-white"><i class="fas fa-building"></i></a>
                                            @if ($limitUser == false || $getRoleName == 'administrador')
                                             <a href="/admin/usuarios/{{ $user->id }}/edit" class="btn btn-primary"><i

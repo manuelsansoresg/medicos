@@ -101,17 +101,20 @@
                         <div class="flex-grow-0">
                             <div class="d-flex align-items-center">
                                 <h5 class="mb-0 me-2">{{ Auth::user()->name }}</h5>
-                                <span>  </span> <span class="badge {{ $user->is_cedula_active ? 'bg-success' : 'bg-danger' }}">{{ $user->is_cedula_active ? 'Estatus: Activo' : 'Estatus: Inactivo' }}</span>
+                                <span>  </span> <span class="badge {{ $user->is_cedula_valid ? 'bg-success' : 'bg-danger' }}">{{ $user->is_cedula_valid ? 'Estatus: Activo' : 'Estatus: Inactivo' }}</span>
                             </div>
-                            <div class="text-muted small mt-1">
-                              <a href="/admin/solicitudes/{{ $user->id }}" class="text-decoration-none">
-                                  <i class="fas fa-user-check"></i>
-                                  <span>Solicitar activación</span>
-                              </a>
-                            </div>
-                            <div class="text-muted small">
+                            @if ($user->is_cedula_valid == false)
+                                
+                                <div class="text-muted small mt-1">
+                                <a href="/admin/solicitudes/{{ $user->id }}" class="text-decoration-none">
+                                    <i class="fas fa-user-check"></i>
+                                    <span>Solicitar activación</span>
+                                </a>
+                                </div>
+                            @endif
+                           {{--  <div class="text-muted small">
                                 {{ $getPackage != null ? $getPackage->nombre : 'No tienes paquete' }}</div>
-                        </div>
+                            </div> --}}
                       @else
                         <div class="flex-grow-0">
                             <div class="d-flex align-items-center">

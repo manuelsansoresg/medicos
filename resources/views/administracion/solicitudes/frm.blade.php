@@ -18,6 +18,9 @@
                                 <label for="inputNombre" class="form-label">*SOLICITUD</label>
                                 <select name="data[solicitud_origin_id]" id="solicitud_origin_id" class="form-control" required onchange="setSolicitud(this)">
                                     <option value="">Selecciona una opción</option>
+                                    @hasrole(['administrador'])
+                                        <option value="0">Paquete</option>
+                                    @endrole
                                     @foreach ($catalogPrices as $catalogPrice)
                                         <option value="{{ $catalogPrice->id }}">{{  $catalogPrice->nombre }}</option>
                                     @endforeach
@@ -27,9 +30,21 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputApellido" class="form-label">*CANTIDAD</label>
-                                <input type="number" class="form-control" name="data[cantidad]" id="cantidad" min="1" max="null" value="{{ $query != null ? $query->cantidad : null }}" required>
+                                <input type="number" class="form-control" name="data[cantidad]" id="cantidad" min="1" max="50"  value="{{ $query != null ? $query->cantidad : null }}" required>
                             </div>
                         </div>
+                        @hasrole(['administrador'])
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="inputApellido" class="form-label">*USUARIO</label>
+                                    <select name="data[usuario_principal]" id="usuario_principal" class="form-control select2multiple">
+                                        @foreach ($users as $users)
+                                            <option value="{{ $users->id }}" {{ $query != null && $users->id == $query->user_id ? 'selected' : null }}>{{ $users->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        @endrole
                         <div id="content-solicitud-pacientes" style="display: none">
                             <h5 class="color-secondary mt-3">Seleccione un paciente</h5>
                             <livewire:paciente-livewire :limit="50" :isList="true" :isShowDownload="false" :isOriginSolicitud="true" />

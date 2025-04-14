@@ -23,7 +23,7 @@ class Solicitud extends Model
         'fecha_activacion',
         'paciente_id',
         'precio_total',
-        'source_id', //1- paquete 0- extra
+        'source_id', //1- paquete 2- usuario 3- consultorio 4- paciente 5- clinica
         'payment_type',
         'observaciones',
         'fecha_pago'
@@ -149,30 +149,56 @@ class Solicitud extends Model
     public static function getMyPackage()
     {
         $userId       = User::getMyUserPrincipal();
-        $getSolicitud =  Solicitud::where('user_id', $userId)->where('source_id', 1)->orderBy('id', 'DESC')->first();
+        $getSolicitud =  Solicitud::where('user_id', $userId)->where('source_id', 0)->orderBy('id', 'DESC')->first();
         $packages = $getSolicitud != null ? Package::find($getSolicitud->solicitud_origin_id) : null;
         return $packages;
     }
 
     public static function getStatusPackages()
     {
-        $userId       = User::getMyUserPrincipal();
-        $getSolicitudes = Solicitud::selectRaw("
-                        SUM(CASE WHEN source_id = 1 THEN cantidad ELSE 0 END) as totalPaquete,
-                        SUM(CASE WHEN source_id = 2 THEN cantidad ELSE 0 END) + 
-                        SUM(CASE WHEN source_id = 1 THEN cantidad * 2 ELSE 0 END) as totalUsuariosSistema,
-                        SUM(CASE WHEN source_id = 3 THEN cantidad ELSE 0 END) + 
-                        SUM(CASE WHEN source_id = 1 THEN cantidad * 2 ELSE 0 END) as totalConsultorioExtra,
-                        SUM(CASE WHEN source_id = 4 THEN cantidad ELSE 0 END) as totalPacientes,
-                        SUM(CASE WHEN source_id = 5 THEN cantidad ELSE 0 END) + 
-                        SUM(CASE WHEN source_id = 1 THEN cantidad * 1 ELSE 0 END) as totalClinica
-                    ")
-                    ->where('user_id', $userId)
-                    ->where('estatus', 1)
-                    ->whereIn('source_id', [1,2,3,4,5])
-                    ->first();
-        //dd($getSolicitudes);
-        return $getSolicitudes;
+        $userId = User::getMyUserPrincipal();
+        $data = [];
+        
+        // Get all active solicitations for the user
+        $solicitudes = Solicitud::where('user_id', $userId)
+            ->where('estatus', 1) // Active status
+            ->get();
+
+        foreach ($solicitudes as $solicitud) {
+            if ($solicitud->source_id == 1) {
+                // It's a package, get items from ItemPackage
+                $package = Package::find($solicitud->solicitud_origin_id);
+                if ($package) {
+                    foreach ($package->items as $item) {
+                        $itemName = $item->catalogPrice->nombre;
+                        $max = $item->max;
+                        
+                        // If item already exists in data array, add to its max
+                        if (isset($data[$itemName])) {
+                            $data[$itemName] += array('max' => $max, 'solicitud_id' => $solicitud->id);
+                        } else {
+                            $data[$itemName] = array('max' => $max, 'solicitud_id' => $solicitud->id);
+                        }
+                    }
+                }
+            } else {
+                // It's an extra item, use solicitud's cantidad
+                $catalogPrice = CatalogPrice::find($solicitud->solicitud_origin_id);
+                if ($catalogPrice) {
+                    $itemName = $catalogPrice->nombre;
+                    $max = $solicitud->cantidad;
+                    
+                    // If item already exists in data array, add to its max
+                    if (isset($data[$itemName])) {
+                        $data[$itemName] += array('max' => $max, 'solicitud_id' => $solicitud->id);
+                    } else {
+                        $data[$itemName] = array('max' => $max, 'solicitud_id' => $solicitud->id);
+                    }
+                }
+            }
+        }
+
+        return $data;
     }
 
     public static function getUsedStatusPackages()
@@ -181,90 +207,57 @@ class Solicitud extends Model
         $userId = User::getMyUserPrincipal();
         $data = [];
         if ($packages != null) {
-            $getUser = User::selectRaw('COUNT(id) as total')->where('usuario_principal', Auth::user()->id)->first();
-            $getClinic = Clinica::selectRaw('COUNT(idclinica) as total')->where('idusrregistra', $userId)->first();
-            $getCon = Consultorio::selectRaw('COUNT(idconsultorios) as total')->where('idusrregistra', $userId)->first();
-            
-            $solicitudes = Solicitud::where('user_id', $userId)
-                ->where('estatus', 1)
-                ->whereIn('solicitud_origin_id', [1, 2, 3, 5])
-                ->orderBy('id', 'asc')
-                ->get();
 
+            $getUser = User::selectRaw('COUNT(id) as total')->where('usuario_principal', $userId)->orWhere('id', $userId)->first();
+            $getCon = Consultorio::selectRaw('COUNT(idconsultorios) as total')->where('idusrregistra', $userId)->first();
+            $getClinic = Clinica::selectRaw('COUNT(idclinica) as total')->where('idusrregistra', $userId)->first();
+            $getPacientes = VinculoPacienteUsuario::where('user_id', $userId)->count();
 
             $usuariosUsados = $getUser->total ?? 0;
             $consultoriosUsados = $getCon->total ?? 0;
             $clinicaUsada = $getClinic->total ?? 0;
-
+            $pacientesUsados = $getPacientes ?? 0;
+            
             $usuariosDisponibles = 0;
             $consultoriosDisponibles = 0;
             $clinicaDisponible = 0;
-
-            $usuariosRestantes = $usuariosUsados;
-            $consultoriosRestantes = $consultoriosUsados;
-            $clinicaRestante = $clinicaUsada;
+            $pacientesDisponibles = 0;
 
             $solicitudIdUsuarios = null;
             $solicitudIdConsultorios = null;
             $solicitudIdClinica = null;
+            $solicitudIdPacientes = null;
 
-            foreach ($solicitudes as $solicitud) {
-                switch ($solicitud->solicitud_origin_id) {
-                    case 1: // Paquete básico (2 usuarios, 2 consultorios, 1 clínica por cada cantidad)
-                        $creditosUsuarios = $solicitud->cantidad * 2;
-                        $creditosConsultorios = $solicitud->cantidad * 2;
-                        $creditosClinica = $solicitud->cantidad;
-
-                        if ($usuariosRestantes > 0) {
-                            $uso = min($usuariosRestantes, $creditosUsuarios);
-                            $usuariosRestantes -= $uso;
-                            $solicitudIdUsuarios = $solicitud->id;
-                        }
-                        if ($consultoriosRestantes > 0) {
-                            $uso = min($consultoriosRestantes, $creditosConsultorios);
-                            $consultoriosRestantes -= $uso;
-                            $solicitudIdConsultorios = $solicitud->id;
-                        }
-                        if ($clinicaRestante > 0) {
-                            $uso = min($clinicaRestante, $creditosClinica);
-                            $clinicaRestante -= $uso;
-                            $solicitudIdClinica = $solicitud->id;
-                        }
-
-                        $usuariosDisponibles += $creditosUsuarios;
-                        $consultoriosDisponibles += $creditosConsultorios;
-                        $clinicaDisponible += $creditosClinica;
-                        break;
-                    case 2: // Usuario extra
-                        $creditosUsuarios = $solicitud->cantidad;
-                        if ($usuariosRestantes > 0) {
-                            $uso = min($usuariosRestantes, $creditosUsuarios);
-                            $usuariosRestantes -= $uso;
-                            $solicitudIdUsuarios = $solicitud->id;
-                        }
-                        $usuariosDisponibles += $creditosUsuarios;
-                        break;
-                    case 3: // Consultorio extra
-                        $creditosConsultorios = $solicitud->cantidad;
-                        if ($consultoriosRestantes > 0) {
-                            $uso = min($consultoriosRestantes, $creditosConsultorios);
-                            $consultoriosRestantes -= $uso;
-                            $solicitudIdConsultorios = $solicitud->id;
-                        }
-                        $consultoriosDisponibles += $creditosConsultorios;
-                        break;
-                    case 5: // Clínica extra
-                        $creditosClinica = $solicitud->cantidad;
-                        if ($clinicaRestante > 0) {
-                            $uso = min($clinicaRestante, $creditosClinica);
-                            $clinicaRestante -= $uso;
-                            $solicitudIdClinica = $solicitud->id;
-                        }
-                        $clinicaDisponible += $creditosClinica;
-                        break;
+            //dd($packages);
+            foreach ($packages as $key => $disponible) {
+                if ($key == 'usuario extra') {
+                    $uso = min($usuariosUsados, $disponible['max']);
+                    $usuariosUsados = $uso;
+                    $usuariosDisponibles = $disponible['max'];
+                    $solicitudIdUsuarios = $disponible['solicitud_id'];
                 }
+                if ($key == 'consultorio extra') {
+                    $uso = min($consultoriosUsados, $disponible['max']);
+                    $consultoriosUsados = $uso;
+                    $consultoriosDisponibles = $disponible['max'];
+                    $solicitudIdConsultorios = $disponible['solicitud_id'];
+                }
+                if ($key == 'clinica') {
+                    $uso = min($clinicaUsada, $disponible['max']);
+                    $clinicaUsada = $uso;
+                    $clinicaDisponible = $disponible['max'];
+                    $solicitudIdClinica = $disponible['solicitud_id'];
+                }
+                if ($key == 'paciente') {
+                    $uso = min($pacientesUsados, $disponible['max']);
+                    $pacientesUsados = $uso;
+                    $pacientesDisponibles = $disponible['max'];
+                    $solicitudIdPacientes = $disponible['solicitud_id'];
+                }
+
             }
 
+            
             $data['totalUsuariosSistema'] = [
                 'lbl' => "{$usuariosDisponibles}/{$usuariosUsados}",
                 'isLimit' => $usuariosDisponibles == $usuariosUsados,
@@ -283,15 +276,14 @@ class Solicitud extends Model
                 'solicitudId' => $solicitudIdClinica
             ];
 
-            $userIds = User::getUsersByRoles(['paciente'])->pluck('id');
-            $totalPacient = SolicitudPaciente::whereIn('paciente_id', $userIds)->count();
+            
             $data['totalPacientes'] = [
-                'lbl' => "{$packages->totalPacientes}/{$totalPacient}",
-                'isLimit' => $packages->totalPacientes == $totalPacient,
-                'solicitudId' => null
+                'lbl' => "{$pacientesDisponibles}/{$pacientesUsados}",
+                'isLimit' => $pacientesDisponibles == $pacientesUsados,
+                'solicitudId' => $solicitudIdPacientes
             ];
         }
-        
+        //dd($data);
         return $data;
     }
 
@@ -365,13 +357,11 @@ class Solicitud extends Model
         // Validación solo si el usuario no es admin.
         if ($isMedico || $isAuxiliar) {
             $user_id = User::getMyUserPrincipal();
-
+            
             // Verificamos si el usuario ya tiene una solicitud de paquete básico pendiente.
             $getSolicitudPendiente = Solicitud::where('user_id', $user_id)
-                                            ->where('estatus', 0)
-                                            ->orWhere('estatus', 2)
+                                            ->whereIn('estatus', [0, 2])
                                             ->first();
-
             // Si ya hay una solicitud pendiente de activación
             if ($getSolicitudPendiente) {
                 $isExistAcceso = true;

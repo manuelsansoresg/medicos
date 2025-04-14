@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\FormularioConfigurationController;
 use App\Http\Controllers\Admin\FormularioController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ClipPaymentController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\File;
@@ -65,6 +66,10 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('usuarios', '\App\Http\Controllers\Admin\UserController')->middleware('auth');
     Route::get('usuarios/{pacientes}/permisos/get', [\App\Http\Controllers\Admin\UserController::class, 'permisosGet'])->middleware('auth');
     Route::post('/usuarios/vincular/store', [App\Http\Controllers\Admin\UserController::class, 'storeVincular'])->middleware('auth');
+
+    Route::get('/usuarios/activar/{user_id}', [UserController::class, 'showActivationForm'])->name('users.activation.form');
+    Route::post('/usuarios/activar/{user_id}', [UserController::class, 'activateUser'])->name('users.activation');
+    Route::delete('/usuarios/ine/{type}/delete', [UserController::class, 'deleteIneImage'])->name('users.ine.delete');
 
     Route::resource('catalogo', '\App\Http\Controllers\Admin\CatalogoController')->middleware('auth');
     Route::resource('paquete', '\App\Http\Controllers\Admin\PackageController')->middleware('auth');
