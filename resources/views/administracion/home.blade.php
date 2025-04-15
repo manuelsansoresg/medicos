@@ -200,20 +200,18 @@
                                         <div class="progress-bar bg-success" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                 </div>
-                                
-                                @if(count($getPackage->items) > 0)
-                                    @foreach($getPackage->items as $item)
-                                        <div class="package-feature d-flex justify-content-between align-items-center mb-2 p-2 border-bottom">
-                                            <div>
-                                                <i class="fas fa-check-circle text-success me-2"></i> 
-                                                <span>{{ $item->catalogPrice->nombre }}</span>
-                                            </div>
-                                            <span class="badge bg-info">
-                                                {{ $item->max ? $item->max : 'Ilimitado' }}
-                                            </span>
-                                        </div>
-                                    @endforeach
-                                @endif
+                                @foreach ($statusPackages as $statusPackage)
+                                <div class="package-feature d-flex justify-content-between align-items-center mb-2 p-2 border-bottom">
+                                    <div>
+                                        <i class="fas fa-check-circle text-success me-2"></i> 
+                                        <span>{{ $statusPackage['title'] }}</span>
+                                    </div>
+                                    <span class="badge bg-info">
+                                        {{ $statusPackage['lbl'] }}
+                                    </span>
+                                </div>
+                                @endforeach
+                               
                             </div>
                         </div>
                     </div>

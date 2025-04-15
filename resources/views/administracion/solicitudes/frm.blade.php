@@ -33,6 +33,7 @@
                                 <input type="number" class="form-control" name="data[cantidad]" id="cantidad" min="1" max="50"  value="{{ $query != null ? $query->cantidad : null }}" required>
                             </div>
                         </div>
+                        
                         @hasrole(['administrador'])
                             <div class="col-md-6">
                                 <div class="mb-3">

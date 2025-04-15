@@ -162,10 +162,11 @@ class Solicitud extends Model
         // Get all active solicitations for the user
         $solicitudes = Solicitud::where('user_id', $userId)
             ->where('estatus', 1) // Active status
+            ->orderBy('source_id', 'asc') // Paquetes primero, luego extras
             ->get();
 
         foreach ($solicitudes as $solicitud) {
-            if ($solicitud->source_id == 1) {
+            if ($solicitud->source_id == 0) {
                 // It's a package, get items from ItemPackage
                 $package = Package::find($solicitud->solicitud_origin_id);
                 if ($package) {
@@ -173,12 +174,19 @@ class Solicitud extends Model
                         $itemName = $item->catalogPrice->nombre;
                         $max = $item->max;
                         
-                        // If item already exists in data array, add to its max
-                        if (isset($data[$itemName])) {
-                            $data[$itemName] += array('max' => $max, 'solicitud_id' => $solicitud->id);
-                        } else {
-                            $data[$itemName] = array('max' => $max, 'solicitud_id' => $solicitud->id);
+                        if (!isset($data[$itemName])) {
+                            $data[$itemName] = [
+                                'max' => 0,
+                                'solicitudes' => []
+                            ];
                         }
+                        
+                        $data[$itemName]['max'] += $max;
+                        $data[$itemName]['solicitudes'][] = [
+                            'id' => $solicitud->id,
+                            'max' => $max,
+                            'is_package' => true
+                        ];
                     }
                 }
             } else {
@@ -188,22 +196,29 @@ class Solicitud extends Model
                     $itemName = $catalogPrice->nombre;
                     $max = $solicitud->cantidad;
                     
-                    // If item already exists in data array, add to its max
-                    if (isset($data[$itemName])) {
-                        $data[$itemName] += array('max' => $max, 'solicitud_id' => $solicitud->id);
-                    } else {
-                        $data[$itemName] = array('max' => $max, 'solicitud_id' => $solicitud->id);
+                    if (!isset($data[$itemName])) {
+                        $data[$itemName] = [
+                            'max' => 0,
+                            'solicitudes' => []
+                        ];
                     }
+                    
+                    $data[$itemName]['max'] += $max;
+                    $data[$itemName]['solicitudes'][] = [
+                        'id' => $solicitud->id,
+                        'max' => $max,
+                        'is_package' => false
+                    ];
                 }
             }
         }
-
         return $data;
     }
 
     public static function getUsedStatusPackages()
     {
         $packages = self::getStatusPackages();
+        
         $userId = User::getMyUserPrincipal();
         $data = [];
         if ($packages != null) {
@@ -228,62 +243,83 @@ class Solicitud extends Model
             $solicitudIdClinica = null;
             $solicitudIdPacientes = null;
 
-            //dd($packages);
             foreach ($packages as $key => $disponible) {
+                $currentUsage = 0;
+                $currentSolicitudId = null;
+                
+                // Determinar el tipo de recurso
                 if ($key == 'usuario extra') {
-                    $uso = min($usuariosUsados, $disponible['max']);
-                    $usuariosUsados = $uso;
-                    $usuariosDisponibles = $disponible['max'];
-                    $solicitudIdUsuarios = $disponible['solicitud_id'];
-                }
-                if ($key == 'consultorio extra') {
-                    $uso = min($consultoriosUsados, $disponible['max']);
-                    $consultoriosUsados = $uso;
-                    $consultoriosDisponibles = $disponible['max'];
-                    $solicitudIdConsultorios = $disponible['solicitud_id'];
-                }
-                if ($key == 'clinica') {
-                    $uso = min($clinicaUsada, $disponible['max']);
-                    $clinicaUsada = $uso;
-                    $clinicaDisponible = $disponible['max'];
-                    $solicitudIdClinica = $disponible['solicitud_id'];
-                }
-                if ($key == 'paciente') {
-                    $uso = min($pacientesUsados, $disponible['max']);
-                    $pacientesUsados = $uso;
-                    $pacientesDisponibles = $disponible['max'];
-                    $solicitudIdPacientes = $disponible['solicitud_id'];
+                    $currentUsage = $usuariosUsados;
+                } elseif ($key == 'consultorio extra') {
+                    $currentUsage = $consultoriosUsados;
+                } elseif ($key == 'clinica') {
+                    $currentUsage = $clinicaUsada;
+                } elseif ($key == 'paciente') {
+                    $currentUsage = $pacientesUsados;
                 }
 
+                // Calcular el solicitudId correcto
+                $remainingUsage = $currentUsage;
+                foreach ($disponible['solicitudes'] as $solicitud) {
+                    if ($remainingUsage <= 0) break;
+                    
+                    if ($remainingUsage <= $solicitud['max']) {
+                        $currentSolicitudId = $solicitud['id'];
+                        break;
+                    }
+                    
+                    $remainingUsage -= $solicitud['max'];
+                }
+
+                // Si no se encontró un solicitudId válido, usar el último disponible
+                if ($currentSolicitudId === null && !empty($disponible['solicitudes'])) {
+                    $currentSolicitudId = end($disponible['solicitudes'])['id'];
+                }
+
+                // Actualizar los valores según el tipo de recurso
+                if ($key == 'usuario extra') {
+                    $usuariosDisponibles = $disponible['max'];
+                    $solicitudIdUsuarios = $currentSolicitudId;
+                } elseif ($key == 'consultorio extra') {
+                    $consultoriosDisponibles = $disponible['max'];
+                    $solicitudIdConsultorios = $currentSolicitudId;
+                } elseif ($key == 'clinica') {
+                    $clinicaDisponible = $disponible['max'];
+                    $solicitudIdClinica = $currentSolicitudId;
+                } elseif ($key == 'paciente') {
+                    $pacientesDisponibles = $disponible['max'];
+                    $solicitudIdPacientes = $currentSolicitudId;
+                }
             }
 
-            
             $data['totalUsuariosSistema'] = [
+                'title' => 'Usuarios',
                 'lbl' => "{$usuariosDisponibles}/{$usuariosUsados}",
                 'isLimit' => $usuariosDisponibles == $usuariosUsados,
                 'solicitudId' => $solicitudIdUsuarios
             ];
 
             $data['totalConsultorioExtra'] = [
+                'title' => 'Consultorios',
                 'lbl' => "{$consultoriosDisponibles}/{$consultoriosUsados}",
                 'isLimit' => $consultoriosDisponibles == $consultoriosUsados,
                 'solicitudId' => $solicitudIdConsultorios
             ];
 
             $data['totalClinica'] = [
+                'title' => 'Clinica',
                 'lbl' => "{$clinicaDisponible}/{$clinicaUsada}",
                 'isLimit' => $clinicaDisponible == $clinicaUsada,
                 'solicitudId' => $solicitudIdClinica
             ];
 
-            
             $data['totalPacientes'] = [
+                'title' => 'Pacientes',
                 'lbl' => "{$pacientesDisponibles}/{$pacientesUsados}",
                 'isLimit' => $pacientesDisponibles == $pacientesUsados,
                 'solicitudId' => $solicitudIdPacientes
             ];
         }
-        //dd($data);
         return $data;
     }
 
@@ -373,7 +409,7 @@ class Solicitud extends Model
                                             ->where('estatus', 1)
                                             ->first();
 
-                if ($getSolicitudBasico != null && $data['solicitud_origin_id'] == 1) {
+                if ($getSolicitudBasico != null && $data['solicitud_origin_id'] == 0) {
                     $isExistAcceso = true;
                     $errorMessage = 'Solo puedes solicitar 1 paquete básico activo.';
                 } elseif ($getSolicitudBasico == null && $data['solicitud_origin_id'] != 1) {
@@ -415,6 +451,11 @@ class Solicitud extends Model
     public function package()
     {
         return $this->belongsTo(Package::class, 'solicitud_origin_id');
+    }
+
+    public function catalogPrice()
+    {
+        return $this->belongsTo(CatalogPrice::class, 'solicitud_origin_id');
     }
     
 }

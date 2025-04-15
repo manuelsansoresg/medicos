@@ -10,6 +10,7 @@ use App\Models\ClinicaUser;
 use App\Models\Comment;
 use App\Models\Consultorio;
 use App\Models\LogSystem;
+use App\Models\Setting;
 use App\Models\Solicitud;
 use App\Models\SolicitudPaciente;
 use App\Models\SolicitudUsuario;
@@ -72,6 +73,7 @@ class SolicitudController extends Controller
     {
         $query = null;
         $catalogPrices = CatalogPrice::all();
+        $users = null;
         
         if (Auth::user()->hasRole('administrador')) {
             $users = User::whereHas('roles', function ($q) {
@@ -136,11 +138,12 @@ class SolicitudController extends Controller
      */
     public function show($id)
     {
-        
+        $settings = Setting::where('id', 1)->first();
         $solicitudSourceId = Solicitud::select('solicitudes.*', 'users.name as name', 'users.vapellido as vapellido', 
                     'users.segundo_apellido as segundo_apellido', 'users.email', 'ttelefono')
                     ->join('users', 'users.id', 'solicitudes.user_id')
                     ->where('solicitudes.id', $id)->first();
+
         if ($solicitudSourceId != null && $solicitudSourceId->source_id == 0) {
             $solicitud = Solicitud::select('solicitudes.*', 'users.name as name', 'users.vapellido as vapellido', 
                     'users.segundo_apellido as segundo_apellido', 'users.email', 'ttelefono')
@@ -150,7 +153,11 @@ class SolicitudController extends Controller
                 ->addSelect('packages.nombre as package_nombre', 'precio')
                 ->with(['package.items.catalogPrice'])->first();
         } else {
-            $solicitud = $solicitudSourceId;
+            $solicitud = Solicitud::select('solicitudes.*', 'users.name as name', 'users.vapellido as vapellido', 
+            'users.segundo_apellido as segundo_apellido', 'users.email', 'ttelefono', 'catalog_prices.nombre as package_nombre', 'catalog_prices.precio as precio')
+            ->join('users', 'users.id', 'solicitudes.user_id')
+            ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.solicitud_origin_id')
+            ->where('solicitudes.id', $id)->first();
         }
         $comments = Comment::where([
             'type' => 2,
@@ -171,7 +178,7 @@ class SolicitudController extends Controller
                             ->get();
         //$getVinculacion = VinculacionSolicitud::getMyVinculacion($id);
         $fecha_vencimiento = $solicitud->fecha_vencimiento != '' ? $solicitud->fecha_vencimiento : date('Y-m-d', strtotime('+1 year'));
-        return view('administracion.solicitudes.solicitud', compact('solicitud', 'usuarioVincular',  'consultorioVincular', 'id', 'clinicasVincular', 'comments', 'fecha_vencimiento', 'my_clinics',  'pacientes', 'clinicas' ));
+        return view('administracion.solicitudes.solicitud', compact('solicitud', 'usuarioVincular',  'consultorioVincular', 'id', 'clinicasVincular', 'comments', 'fecha_vencimiento', 'my_clinics',  'pacientes', 'clinicas', 'settings'));
     }
 
     public function adjuntarComprobante(Request $request)
@@ -238,11 +245,11 @@ class SolicitudController extends Controller
             $userNameAdmin = Auth::user()->name;
 
             if ($getSolicitud != null) {
-                if ($getSolicitud->solicitud_origin_id == 1) { //paquete uso del sistema
+                if ($getSolicitud->solicitud_origin_id == 0) { //paquete uso del sistema
                     $title = 'Activación de paquete';
                 }
                 
-                if ($getSolicitud->solicitud_origin_id == 2) { //Usuario
+                if ($getSolicitud->solicitud_origin_id == 1) { //Usuario
                     $title = 'Activación de usuario';
                 }
             }

@@ -72,9 +72,11 @@ class HomeController extends Controller
         $getPorcentajeSistema = User::getPorcentajeSistema();
         $getUsedStatusPackages = Solicitud::getUsedStatusPackages();
         $getPackage = Solicitud::getMyPackage();
+        $statusPackages = Solicitud::getUsedStatusPackages();
+        //dd($statusPackage);
         /* $notification = new NotificationUser();
         $notification->requestRegistration(37, 49); */
-        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'getUsedStatusPackages', 'statusPacient', 'earrings', 'consultas', 'getPorcentajeSistema', 'getPackage'));
+        return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'statusPackages', 'getUsedStatusPackages', 'statusPacient', 'earrings', 'consultas', 'getPorcentajeSistema', 'getPackage'));
     }
 
     public function registroMedico()

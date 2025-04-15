@@ -24,14 +24,9 @@
                             @php
                                 $pathComprobante = env('PATH_COMPROBANTE');
                             @endphp
-                            <label for="inputNombre" class="form-label"> <b>TIPO DE PAGO</b> {{ $solicitud->payment_type == 'transferencia' || $solicitud->payment_type == 'deposito' ? $solicitud->payment_type : 'Tarjeta de Crédito' }}   </label>
+                            <label for="inputNombre" class="form-label"> <b>TIPO DE PAGO</b> {{ $solicitud->payment_type == 'transferencia' || $solicitud->payment_type == 'deposito' ? $solicitud->payment_type : 'tarjeta de crédito' }}   </label>
                             
-                            @if ($solicitud->payment_type == 'transferencia' || $solicitud->payment_type == 'deposito')
-                                
-                            @endif
-                            @if ($solicitud->payment_type == 'tarjeta')
-                                
-                            @endif
+                            
                             @if ($solicitud->payment_type == 'transferencia' || $solicitud->payment_type == 'deposito')
                                 <div class="mb-3 mt-3">
                                     <label for="inputNombre" class="form-label fw-bold">COMPROBANTE</label>
@@ -187,140 +182,229 @@
     </div>
            
     @endrole
-        <div class="card-body">
-            <div class="col-12 mt-3">
-                @hasrole(['medico'])
-                <p class="h6 color-secondary mt-5">SUBIR COMPROBANTE DE LA TRANSFERENCIA</p>
-                <form method="post" action="/admin/solicitudes/{{ $id }}/adjuntarComprobante" enctype="multipart/form-data">
-                    @csrf
-                    @php
-                        $pathComprobante = env('PATH_COMPROBANTE')
-                    @endphp
-                    <div class="mb-3 mt-3">
-                        <label for="inputNombre" class="form-label">COMPROBANTE</label>
-                        @if ($solicitud->comprobante == null)
-                            <input type="file" name="comprobante" class="form-control">
-                            @else
-                            <div class="col-12">
-                                <img class="previewComrobante" src="{{ asset($pathComprobante).'/'.$solicitud->comprobante }}" alt="">
-                                <div class="col-12 mt-3">
-                                    <a href="{{ asset($pathComprobante).'/'.$solicitud->comprobante }}" target="_blank" class="btn btn-primary"><i class="fas fa-eye"></i></a>
-                                    <a href="/admin/solicitudes/{{ $solicitud->id }}/imagen/delete" class="btn btn-danger"><i class="fas fa-trash"></i></a>
-                                </div>
-                            </div>
-                        @endif
+    @hasrole(['medico'])
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-invoice"></i> Gestión de Solicitud #{{ $solicitud->id }}
+                        </h5>
                     </div>
-                    @endrole
-                    @hasrole(['administrador'])
-                        {{-- @if ($solicitud->solicitud_origin_id == 1)
-                            <div class="mb-3 mt-3">
-                            
-                                <label for="inputNombre" class="form-label">ASIGNAR CLINICA</label>
-                                <select name="clinica" id="" class="form-control select2multiple"   data-search="on" multiple="multiple">
-                                    @foreach ($clinicas as $clinica)
-                                        <option value="{{ $clinica->idclinica }}" 
-                                         @foreach ($my_clinics as $my_clinic)
-                                           {{ $my_clinic->clinica_id == $clinica->idclinica ? 'selected' : null}}
-                                         @endforeach
-                                         >{{ $clinica->tnombre }}</option>
-                                    @endforeach
-                                 </select>
-
-                            </div>
-                        @endif --}}
-                       {{--  <div class="mb-3 mt-3">
-                        
-                            <label for="inputNombre" class="form-label">FECHA DE VENCIMIENTO</label>
-                            <input type="date" class="form-control" name="fecha_vencimiento" value="{{ $fecha_vencimiento }}">
-                        </div>
-                        <div class="mb-3 mt-3">
-                            <label for="inputNombre" class="form-label">ACTIVAR</label>
-                            <select name="estatus" id="estatus" class="form-control">
-                                <option value="">Seleccione una opción</option>
-                                <option value="1" {{ $solicitud->estatus == 1 ? 'selected' : null}}>SÍ</option>
-                                <option value="0" {{ $solicitud->estatus == 0 ? 'selected' : null}}>NO</option>
-                                <option value="2" {{ $solicitud->estatus == 2 ? 'selected' : null}}>EN REVISIÓN</option>
-                            </select>
-                        </div> --}}
-                        
-                    @endrole
-
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    @if (session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    
-                    <div class="col-md-12 text-end">
-                        <div class="mb-3">
-                            <input type="hidden" name="solicitudId" id="solicitudId" value="{{ $id }}">
-                            <a class="btn btn-secondary" onclick="comentar(null)">Comentar</a>
-                            @hasrole(['medico', 'auxiliar'])
-                                <button class="btn btn-primary">Adjuntar</button>
-                            @endrole
-                           
-                        </div>
-                    </div>
-                </form>
-                
-                <div class="col-12 ">
-                    <h5 class="text-secondary mb-4 ">COMENTARIOS</h5>
-                    @foreach ($comments as $comment)
-                    @php
-                        $respuestas = $MComments::where([
-                            'type' => 3,
-                            'respuesta_id' => $comment->id,
-                        ])->get();
-                    @endphp
-                    <div class="card my-3 shadow-sm">
-                        <div class="card-body">
-                            <!-- Pregunta Principal -->
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-primary font-weight-bold">{{ $comment->user }}</span>
-                                <span class="text-muted small">{{ $comment->created_at }}</span>
-                            </div>
-                            <p class="mb-3">{{ $comment->comment }}</p>
-                            <div class="col-12 text-end">
-                                <button class="btn btn-outline-secondary btn-sm" onclick="comentar({{ $comment->id }})">Responder</button>
-                            </div>
-                        </div>
-                
-                        <!-- Respuestas -->
-                        @if(!empty($respuestas))
-                            <div class="bg-light p-3">
-                                @foreach ($respuestas as $respuesta)
-                                <div class="card my-2 border-0">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <span class="text-secondary font-weight-bold">{{ $respuesta->user }}</span>
-                                            <span class="text-muted small">{{ $respuesta->created_at }}</span>
-                                        </div>
-                                        <p class="mb-0">{{ $respuesta->comment }}</p>
+                    <div class="card-body">
+                        <form method="post" action="/admin/solicitudes/{{ $solicitud->id }}/adjuntarComprobante" id="frm-solicitud-validacion" enctype="multipart/form-data">
+                            @csrf
+                            @php
+                                $pathComprobante = env('PATH_COMPROBANTE');
+                            @endphp
+                            <label for="inputNombre" class="form-label"> <b>TIPO DE PAGO</b>    </label>
+                            <form method="post" action="/admin/solicitudes/{{ $id }}/adjuntarComprobante" enctype="multipart/form-data">
+                                @csrf
+                                @php
+                                    $pathComprobante = env('PATH_COMPROBANTE')
+                                @endphp
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="inputApellido" class="form-label">*TIPO DE PAGO</label>
+                                        @if ($settings != null && $settings->is_payment_card == 1)
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="tipo_pago" id="tipo_pago1" onclick="setPaymentMethod(1)" value="tarjeta de crédito" {{ $solicitud != null && $solicitud->payment_type == 1 ? 'checked' : null}}>
+                                                <label class="form-check-label" for="tipo_pago1">
+                                                TARJETA
+                                                </label>
+                                            </div>
+                                        @endif
+                                        @if ($settings != null && $settings->is_payment_transfer == 1)
+                                            <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="tipo_pago" id="tipo_pago2" onclick="setPaymentMethod(2)" value="transferencia" {{ $solicitud != null && $solicitud->payment_type == 0 ? 'checked' : null}}>
+                                            <label class="form-check-label" for="tipo_pago2">
+                                                TRANSFERENCIA
+                                            </label>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
-                    @endforeach
-                </div>
-                
-            </div>
 
+                                <div id="cardPaymentContent" class="payment-content" style="display: none;">
+                                    <div id="checkout"></div>
+                                    
+                                    <p id="cardTokenId"></p>
+                                </div>
+                                <!-- Contenido para transferencia -->
+                                <div id="transferPaymentContent" class="payment-content" style="display: none;">
+                                    <div class="mb-3 mt-3">
+                                        <label for="inputNombre" class="form-label">COMPROBANTE</label>
+                                        @if ($solicitud->comprobante == null)
+                                            <input type="file" name="comprobante" class="form-control" id="comprobante" required>
+                                            @else
+                                            <div class="col-12">
+                                                <img class="previewComrobante" src="{{ asset($pathComprobante).'/'.$solicitud->comprobante }}" alt="">
+                                                <div class="col-12 mt-3">
+                                                    <a href="{{ asset($pathComprobante).'/'.$solicitud->comprobante }}" target="_blank" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+                                                    <a href="/admin/solicitudes/{{ $solicitud->id }}/imagen/delete" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                    
+                                
+                                @endrole
+                                
+                    
+                                @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+                    
+                                @if (session('success'))
+                                    <div class="alert alert-success">
+                                        {{ session('success') }}
+                                    </div>
+                                @endif
+                    
+                                
+                                <div class="col-md-12 text-end">
+                                    <div class="mb-3">
+                                        <input type="hidden" name="solicitudId" id="solicitudId" value="{{ $id }}">
+                                        <a class="btn btn-secondary" onclick="comentar(null)">Comentar</a>
+                                        @hasrole(['medico', 'auxiliar'])
+                                            <button type="button" class="btn btn-success" id="complete-payment" style="display: none;">
+                                                 Aceptar
+                                            </button>
+                                            <button id="submit" class="btn btn-success" style="display: none;">  Aceptar</button>
+                                        @endrole
+                                        
+                                    </div>
+                                </div>
+                            </form>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-invoice"></i> Datos de la solicitud
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <h5>Datos del comprador</h5>
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td width="30%"><strong>NOMBRE</strong></td>
+                                    <td>{{ $solicitud->name }} {{ $solicitud->vapellido }} {{ $solicitud->segundo_apellido }} </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td><strong>CORREO</strong></td>
+                                    <td>{{ $solicitud->email }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TELÉFONO</strong></td>
+                                    <td>{{ $solicitud->ttelefono }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+    
+                <div class="card shadow-sm mt-2">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-file-invoice"></i> Datos del paquete
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr>
+                                <th>SOLICITUD</th>
+                                <th>NOMBRE</th>
+                                <th>PRECIO</th>
+                                @if ($solicitud->source_id == 0)
+                                    <th>ELEMENTOS</th>
+                                @endif
+                            </tr>
+                            <tr>
+                                @if ($solicitud->source_id == 0)
+                                    <td>PAQUETE</td>
+                                    @else   
+                                    <td>EXTRA</td>
+                                @endif
+                                <td>{{ $solicitud != null ? $solicitud->package_nombre : null }}</td>
+                                <td>${{ format_price($solicitud->precio) }}</td>
+                                @if ($solicitud->source_id == 0)
+                                    <td>
+                                        @foreach($solicitud->package->items as $item)
+                                        <span class="badge bg-info">{{ $item->catalogPrice->nombre }} ({{ $item->max }})</span>
+                                        @endforeach
+                                    </td>
+                                @endif
+                            </tr>
+                        </table>
+    
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+        
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-12 ">
+                <h5 class="text-secondary mb-4 ">COMENTARIOS</h5>
+                @foreach ($comments as $comment)
+                @php
+                    $respuestas = $MComments::where([
+                        'type' => 3,
+                        'respuesta_id' => $comment->id,
+                    ])->get();
+                @endphp
+                <div class="card my-3 shadow-sm">
+                    <div class="card-body">
+                        <!-- Pregunta Principal -->
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-primary font-weight-bold">{{ $comment->user }}</span>
+                            <span class="text-muted small">{{ $comment->created_at }}</span>
+                        </div>
+                        <p class="mb-3">{{ $comment->comment }}</p>
+                        <div class="col-12 text-end">
+                            <button class="btn btn-outline-secondary btn-sm" onclick="comentar({{ $comment->id }})">Responder</button>
+                        </div>
+                    </div>
+            
+                    <!-- Respuestas -->
+                    @if(!empty($respuestas))
+                        <div class="bg-light p-3">
+                            @foreach ($respuestas as $respuesta)
+                            <div class="card my-2 border-0">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-secondary font-weight-bold">{{ $respuesta->user }}</span>
+                                        <span class="text-muted small">{{ $respuesta->created_at }}</span>
+                                    </div>
+                                    <p class="mb-0">{{ $respuesta->comment }}</p>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>        
+        
+                
+
 <div class="modal fade" id="commentSolicitudModal" tabindex="-1" aria-labelledby="commentSolicitudModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">

@@ -236,3 +236,19 @@ window.comentar = function(commentId)
     }
     $('#commentSolicitudModal').modal('show');
 }
+
+window.setPaymentMethod = function(method) {
+    if (method == 1) {
+        $('#payment-content').show();
+        $('#submit').hide();
+        $('#transferPaymentContent').hide();
+        $('#complete-payment').show();
+        $('#comprobante').removeAttr('required'); // quitar required
+    } else {
+        $('#payment-content').hide();
+        $('#submit').show();
+        $('#transferPaymentContent').show();
+        $('#complete-payment').hide();
+        $('#comprobante').attr('required', 'required'); // poner required
+    }
+}
