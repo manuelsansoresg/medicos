@@ -40,7 +40,7 @@
     <div class="success-container">
         <div class="success-card">
             <i class="fas fa-check-circle success-icon"></i>
-            <h2 class="mb-4">¡Pago Registrado con Éxito!</h2>
+            <h2 class="mb-4">¡Comprobante adjuntado correctamente!</h2>
             <p class="lead mb-4">
                 Hemos recibido su comprobante de pago correctamente. Nuestro equipo verificará la información y activará su cuenta en las próximas 24 horas.
             </p>

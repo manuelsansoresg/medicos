@@ -193,23 +193,34 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <form method="post" action="/admin/solicitudes/{{ $solicitud->id }}/adjuntarComprobante" id="frm-solicitud-validacion" enctype="multipart/form-data">
-                            @csrf
-                            @php
-                                $pathComprobante = env('PATH_COMPROBANTE');
-                            @endphp
-                            <label for="inputNombre" class="form-label"> <b>TIPO DE PAGO</b>    </label>
-                            <form method="post" action="/admin/solicitudes/{{ $id }}/adjuntarComprobante" enctype="multipart/form-data">
+                        @if ($solicitud->estatus == 2)
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                <strong>¡Atención!</strong>
+                                <p>La solicitud se encuentra en estado de revisión.
+                                    <br>
+                                    Le avisaremos por correo.
+                                    <br>
+                                    Puede ver el estatus en la página principal de su cuenta o en esta seccion.
+                                </p>
+                            </div>
+                            <div class="col-12 text-end">
+                                <a class="btn btn-secondary" onclick="comentar(null)">Comentar</a>
+                            </div>
+                        @endif
+                        @if ($solicitud->estatus == 0)
+                            <form method="post" action="/admin/solicitudes/{{ $solicitud->id }}/adjuntarComprobante" id="frm-solicitud-validacion" enctype="multipart/form-data">
                                 @csrf
                                 @php
-                                    $pathComprobante = env('PATH_COMPROBANTE')
+                                    $pathComprobante = env('PATH_COMPROBANTE');
                                 @endphp
+                                <label for="inputNombre" class="form-label"> <b>SELECCIONA UN TIPO DE PAGO</b>    </label>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="inputApellido" class="form-label">*TIPO DE PAGO</label>
                                         @if ($settings != null && $settings->is_payment_card == 1)
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="tipo_pago" id="tipo_pago1" onclick="setPaymentMethod(1)" value="tarjeta de crédito" {{ $solicitud != null && $solicitud->payment_type == 1 ? 'checked' : null}}>
+                                                <input class="form-check-input" type="radio" name="tipo_pago" id="tipo_pago1" onclick="setPaymentMethod(1)" value="tarjeta de crédito" >
                                                 <label class="form-check-label" for="tipo_pago1">
                                                 TARJETA
                                                 </label>
@@ -217,7 +228,7 @@
                                         @endif
                                         @if ($settings != null && $settings->is_payment_transfer == 1)
                                             <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="tipo_pago" id="tipo_pago2" onclick="setPaymentMethod(2)" value="transferencia" {{ $solicitud != null && $solicitud->payment_type == 0 ? 'checked' : null}}>
+                                            <input class="form-check-input" type="radio" name="tipo_pago" id="tipo_pago2" onclick="setPaymentMethod(2)" value="transferencia">
                                             <label class="form-check-label" for="tipo_pago2">
                                                 TRANSFERENCIA
                                             </label>
@@ -243,16 +254,13 @@
                                                 <div class="col-12 mt-3">
                                                     <a href="{{ asset($pathComprobante).'/'.$solicitud->comprobante }}" target="_blank" class="btn btn-primary"><i class="fas fa-eye"></i></a>
                                                     <a href="/admin/solicitudes/{{ $solicitud->id }}/imagen/delete" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                                                    
                                                 </div>
                                             </div>
                                         @endif
                                     </div>
                                 </div>
-                    
                                 
-                                @endrole
-                                
-                    
                                 @if ($errors->any())
                                     <div class="alert alert-danger">
                                         <ul>
@@ -262,29 +270,34 @@
                                         </ul>
                                     </div>
                                 @endif
-                    
+                
                                 @if (session('success'))
                                     <div class="alert alert-success">
                                         {{ session('success') }}
                                     </div>
                                 @endif
-                    
+                
                                 
                                 <div class="col-md-12 text-end">
                                     <div class="mb-3">
-                                        <input type="hidden" name="solicitudId" id="solicitudId" value="{{ $id }}">
+                                        <input type="hidden" name="solicitudId" id="solicitudId" value="{{ $solicitud->id }}">
                                         <a class="btn btn-secondary" onclick="comentar(null)">Comentar</a>
                                         @hasrole(['medico', 'auxiliar'])
                                             <button type="button" class="btn btn-success" id="complete-payment" style="display: none;">
-                                                 Aceptar
+                                                Guardar
                                             </button>
-                                            <button id="submit" class="btn btn-success" style="display: none;">  Aceptar</button>
+                                            <button id="submit" class="btn btn-success" style="display: none;">  Guardar </button>
+                                            <button type="button" onclick="saveAndNotifySolicitud()" class="btn btn-primary">
+                                                <i class="fas fa-save me-1"></i>Guardar y notificar
+                                            </button>
                                         @endrole
                                         
                                     </div>
+                                    <input type="hidden" name="isNotify" id="isNotify" value="0">
+                                    <input type="hidden" name="precio_total" value="{{ $total }}">
                                 </div>
                             </form>
-                        </form>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -523,4 +536,5 @@
     </div>
   </div>
 {{-- /modal clinica --}}
+@endrole
 @endsection

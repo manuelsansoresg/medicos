@@ -32,7 +32,30 @@ $("#frm-solicitud").submit(function (e) {
 window.saveAndNotifySolicitud = function()
 {
     $('#isNotify').val(1);
-    $('#frm-solicitud-validacion').submit();
+    console.log('submitting form...');
+    
+    const form = document.getElementById('frm-solicitud-validacion');
+    const formData = new FormData(form);
+    
+    axios.post(form.action, formData)
+        .then(function(response) {
+            console.log('Form submitted successfully');
+            Swal.fire({
+                title: '¡Comprobante adjuntado correctamente!',
+                html: 'Activaremos su cuenta en 24 horas tras verificar la información. <br>Le avisaremos por correo. <br>Puede ver el estatus en la página principal de su cuenta.',
+                icon: "success"
+            }).then((result) => {
+                // Acción después de cerrar el alerta
+                window.location = '/home';
+            });
+        })
+        .catch(function(error) {
+            console.error('Error submitting form:', error);
+            if (error.response) {
+                // Handle validation errors or other server responses
+                console.error('Server response:', error.response.data);
+            }
+        });
 }
 
 window.setSolicitud = function(getSolicitud)

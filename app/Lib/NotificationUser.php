@@ -34,6 +34,7 @@ class NotificationUser
         
     }
     
+    //este correo se envia cuando el usuario adjunta el comprobante de pago para avisarle que se verificara el pago
     public function verifyPaymentReceipt($solicitudId)
     {
         $solicitud = Solicitud::find($solicitudId);

@@ -210,7 +210,8 @@ class SolicitudController extends Controller
                 $rutaDestino = public_path('comprobante');
 
                 $dataSolicitud = array(
-                    'comprobante' => $nombreArchivo
+                    'comprobante' => $nombreArchivo,
+                    'estatus' => 2 //en revision
                 );
                 if ($estatus != null) {
                     $dataSolicitud['estatus'] = $estatus;
@@ -227,7 +228,11 @@ class SolicitudController extends Controller
                 $archivo->move($rutaDestino, $nombreArchivo);
                 Solicitud::where('id', $solicitudId)->update($dataSolicitud);
 
-                
+                //notificar si el usuario es doctor 
+                if (Auth::user()->hasRole('medico')) {
+                    $notification = new NotificationUser();
+                    $notification->requestRegistration(Auth::user()->id, $solicitudId, 'transfer');
+                }
                 
                 return redirect('/admin/solicitudes/'.$solicitudId);
             }

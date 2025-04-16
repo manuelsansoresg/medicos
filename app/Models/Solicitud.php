@@ -7,6 +7,7 @@ use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class Solicitud extends Model
@@ -38,7 +39,7 @@ class Solicitud extends Model
         $isAdmin = Auth::user()->hasRole('administrador');
 
         if ($isAdmin) {
-            $solicitud =  Solicitud::select(
+            $solicitud = Solicitud::select(
                 'solicitudes.id', 
                 'solicitudes.cantidad', 
                 'solicitudes.estatus', 
@@ -49,29 +50,67 @@ class Solicitud extends Model
                 'solicitudes.source_id',
                 'users.name', 
                 'users.vapellido',
-                'fecha_vencimiento',
-                'packages.nombre as package_nombre',
-                'packages.precio as package_precio',
-                'users_origin.name as user_origin_name',
-                )
-                ->leftJoin('packages', function ($join) {
-                    $join->on('packages.id', '=', 'solicitudes.solicitud_origin_id')
-                         ->where('solicitudes.source_id', '=', 1);
-                })
-                ->leftJoin('users as users_origin', function ($join) {
-                    $join->on('users_origin.id', '=', 'solicitudes.solicitud_origin_id')
-                         ->where('solicitudes.source_id', '=', 2);
-                })
-                ->join('users', 'users.id', 'solicitudes.user_id')
-                ->whereIn('estatus', [0,1,2, 4])
-                ;
+                'solicitudes.fecha_vencimiento',
+                DB::raw('CASE 
+                    WHEN solicitudes.source_id = 0 THEN catalog_prices.nombre 
+                    WHEN solicitudes.source_id = 1 THEN packages.nombre 
+                    ELSE NULL 
+                END as nombre_solicitud'),
+                DB::raw('CASE 
+                    WHEN solicitudes.source_id = 0 THEN catalog_prices.precio 
+                    WHEN solicitudes.source_id = 1 THEN packages.precio 
+                    ELSE NULL 
+                END as package_precio'),
+                'users_origin.name as user_origin_name'
+            )
+            ->leftJoin('catalog_prices', function ($join) {
+                $join->on('catalog_prices.id', '=', 'solicitudes.solicitud_origin_id')
+                     ->where('solicitudes.source_id', '=', 0);
+            })
+            ->leftJoin('packages', function ($join) {
+                $join->on('packages.id', '=', 'solicitudes.solicitud_origin_id')
+                     ->where('solicitudes.source_id', '=', 1);
+            })
+            ->leftJoin('users as users_origin', function ($join) {
+                $join->on('users_origin.id', '=', 'solicitudes.solicitud_origin_id')
+                     ->where('solicitudes.source_id', '=', 2);
+            })
+            ->join('users', 'users.id', '=', 'solicitudes.user_id')
+            ->whereIn('solicitudes.estatus', [0, 1, 2, 3]);
+            
+            // Si necesitas añadir el filtro por user_id como en la consulta original:
+            // ->where('solicitudes.user_id', $user_id)
         } else {
-            $solicitud =  Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'solicitudes.created_at', 'name', 'vapellido', 'fecha_vencimiento', 'solicitud_origin_id', 'user_id'
-                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.solicitud_origin_id')
-                ->join('users', 'users.id', 'solicitudes.user_id')
-                ->where('user_id', $user_id)
-                ->whereIn('estatus', [0,1,2, 4]);
+            $solicitud = Solicitud::select(
+                'solicitudes.id',
+                DB::raw('CASE 
+                    WHEN solicitudes.source_id = 0 THEN packages.nombre 
+                    ELSE catalog_prices.nombre 
+                END as nombre_solicitud'),
+                DB::raw('CASE 
+                    WHEN solicitudes.source_id = 0 THEN packages.precio 
+                    ELSE catalog_prices.precio 
+                END as precio'),
+                'solicitudes.cantidad',
+                'solicitudes.estatus',
+                'solicitudes.created_at',
+                'users.name',
+                'users.vapellido',
+                'solicitudes.fecha_vencimiento',
+                'solicitudes.solicitud_origin_id',
+                'solicitudes.user_id'
+            )
+            ->leftJoin('catalog_prices', function($join) {
+                $join->on('catalog_prices.id', '=', 'solicitudes.solicitud_origin_id')
+                    ->where('solicitudes.source_id', '!=', 0);
+            })
+            ->leftJoin('packages', function($join) {
+                $join->on('packages.id', '=', 'solicitudes.solicitud_origin_id')
+                    ->where('solicitudes.source_id', '=', 0);
+            })
+            ->join('users', 'users.id', '=', 'solicitudes.user_id')
+            ->where('solicitudes.user_id', $user_id)
+            ->whereIn('solicitudes.estatus', [0, 1, 2, 3]);
         }
 
         if ($solicitud_origin_id != '') {

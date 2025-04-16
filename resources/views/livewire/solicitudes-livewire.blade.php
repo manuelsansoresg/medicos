@@ -59,7 +59,7 @@
                         }
                     @endphp
                    <tr>
-                    <td>{{ $solicitud->package_nombre }}</td>
+                    <td>{{ $solicitud->nombre_solicitud }}</td>
                     @hasrole(['administrador'])
                     <td> {{ $solicitud->name }} {{ $solicitud->apellido }}  </td>
                     @endrole
@@ -91,13 +91,13 @@
                                 ACTIVO
                                 @break
                             @case(2)
-                                CADUCADO
-                                @break
-                            @case(0)
                                 EN REVISION
                                 @break
+                            @case(3)
+                                CADUCADO
+                                @break
                             @default
-                            NO ACTIVO
+                            NUEVO
                         @endswitch
                     </td>
                     <td>
