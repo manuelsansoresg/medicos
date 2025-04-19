@@ -11,8 +11,8 @@ class Payment extends Model
 
     protected $fillable = [
         'card_token_id',
+        'solicitud_id',
         'user_id',
-        'paquete_id',
         'status',
         'amount',
         'currency',

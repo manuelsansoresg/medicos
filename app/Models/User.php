@@ -128,7 +128,7 @@ class User extends Authenticatable
         if (Auth::user()->hasRole('administrador') || $user->usuario_principal == '') {
             return Auth::user()->id;
         }
-        return $user->usuario_principal;
+        return $user->usuario_principal != null ? $user->usuario_principal : Auth::user()->id;
     }
 
     public static function getMyExpedients($expedients)

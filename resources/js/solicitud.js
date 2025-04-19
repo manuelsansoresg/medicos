@@ -29,20 +29,21 @@ $("#frm-solicitud").submit(function (e) {
 
 
 
-window.saveAndNotifySolicitud = function()
+window.saveAndNotifySolicitud = function(type)
 {
     $('#isNotify').val(1);
     console.log('submitting form...');
-    
+    $('#spinner').show();
     const form = document.getElementById('frm-solicitud-validacion');
     const formData = new FormData(form);
     
     axios.post(form.action, formData)
         .then(function(response) {
-            console.log('Form submitted successfully');
+            let title = type == 0 ? '¡Comprobante adjuntado correctamente!' : '¡Datos guardados correctamente!';
+            let description = type == 0 ? 'Activaremos su cuenta en 24 horas tras verificar la información. <br>Le avisaremos por correo. <br>Puede ver el estatus en la página principal de su cuenta.' : '';
             Swal.fire({
-                title: '¡Comprobante adjuntado correctamente!',
-                html: 'Activaremos su cuenta en 24 horas tras verificar la información. <br>Le avisaremos por correo. <br>Puede ver el estatus en la página principal de su cuenta.',
+                title: title,
+                html: description,
                 icon: "success"
             }).then((result) => {
                 // Acción después de cerrar el alerta
@@ -62,14 +63,15 @@ window.setSolicitud = function(getSolicitud)
 {
     let solicitud = getSolicitud.value;
     let cantidadInput = document.getElementById("cantidad");
-    $('#content-solicitud-pacientes').hide();
+    //TODO: borrar $('#content-solicitud-pacientes').hide();
     // Establece el valor máximo del input en función de la solicitud
     if (solicitud == 0) {
         cantidadInput.setAttribute("max", "1");
     } 
-    if(solicitud == 4) {
+    //TODO: borrar
+   /*  if(solicitud == 4) {
         $('#content-solicitud-pacientes').show();
-    }
+    } */
     if(solicitud != 1) {
         cantidadInput.removeAttribute("max"); // Quita el atributo max si no es 1
     }
@@ -247,6 +249,18 @@ $("#frm-solicitud-comentario").submit(function (e) {
         .catch(e => { });
 });
 
+$("#frm-solicitud-validacion").submit(function (e) {
+    e.preventDefault();
+    $('#spinner').show();
+    
+    // Aquí puedes agregar un pequeño retraso si quieres que el spinner sea visible
+    setTimeout(function() {
+        // Esto envía el formulario de forma programática
+        e.target.submit();
+        // Alternativamente: $(e.target)[0].submit();
+    }, 200); // 500ms de retraso para que se vea el spinner
+});
+
 window.comentar = function(commentId)
 
 {
@@ -274,4 +288,121 @@ window.setPaymentMethod = function(method) {
         $('#complete-payment').hide();
         $('#comprobante').attr('required', 'required'); // poner required
     }
+}
+
+/* pago por clip */
+
+if (document.getElementById('is_payment_card').value == 1) {
+    /* pago por clip */
+   
+    document.addEventListener('DOMContentLoaded', function () {
+        try {
+            const API_KEY = "test_0ec19121-9fdc-4c07-907b-a1b23707e747";
+
+            // Verificar que ClipSDK está disponible
+            if (typeof ClipSDK === 'undefined') {
+                console.warn("ClipSDK no disponible");
+                return;
+            }
+
+            // Inicializar SDK y crear elemento tarjeta
+            const clip = new ClipSDK(API_KEY);
+            console.log('clip');
+            console.log(clip);
+            // Continuar solo si clip se inicializó correctamente
+            if (clip && clip.element) {
+                const card = clip.element.create("Card", {
+                    theme: "light",
+                    locale: "es",
+                });
+
+                // Montar tarjeta si el elemento existe
+                const checkoutElement = document.getElementById("checkout");
+                if (checkoutElement) {
+                    card.mount("checkout");
+                    // Maneja el evento de envío del formulario
+                    // Maneja el evento de envío del formulario
+                    document.querySelector("#payment-form").addEventListener("submit", async (event) => {
+                        event.preventDefault();
+                        try {
+
+                            // Obtén el token de la tarjeta
+                            const cardToken = await card.cardToken();
+
+                            // Guarda el Card Token ID de la tarjeta en una constante
+                            const cardTokenID = cardToken.id;
+                            console.log("Card Token ID:", cardTokenID);
+                            registerPaymentCardSolicitud(cardTokenID);
+
+                        } catch (error) {
+
+                            // Maneja errores durante la tokenización de la tarjeta
+                            switch (error.code) {
+                                case "CL2200":
+                                case "CL2290":
+                                    alert("Error: " + error.message);
+                                    throw error;
+                                    break;
+                                case "AI1300":
+                                    console.log("Error: ", error.message);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            // Capturar cualquier error pero permitir que el resto del código siga funcionando
+            console.warn("Error con ClipSDK:", error.message || "Error desconocido");
+        }
+
+        window.registerPaymentCardSolicitud = function(cardTokenID)
+        {
+            let solicitud_id = $('#solicitud_id').val();
+            return axios.post('/admin/payment/card/save', {
+                solicitud_id: solicitud_id,
+                card_token_id: cardTokenID
+            })
+                .then(function (response) {
+                    console.log('Payment registered successfully:', response.data);
+                    Swal.fire({
+                        title: '¡Registro Exitoso!',
+                        html: 'El pago se ha procesado correctamente.',
+                        icon: "success"
+                    }).then((result) => {
+                        // Acción después de cerrar el alerta
+                        window.location = '/home';
+                    });
+                })
+                .catch(function (error) {
+                    console.error('Error registering payment:', error);
+                    $('#errorPaymentModal').modal('show');
+                    throw error;
+                });
+        }
+    });
+
+    $('#frm-payment').submit(async function (e) {
+        e.preventDefault();
+      
+
+        const form = document.getElementById("frm-payment");
+        const data = new FormData(form);
+        axios
+            .post("/admin/payment/transfer/save", data)
+            .then(function (response) {
+                Swal.fire({
+                    title: 'Verificación del comprobante de pago',
+                    html: 'Nuestro equipo está revisando el comprobante de pago para proceder con la activación. En breve, recibirá un correo con la confirmación.',
+                    icon: "success"
+                }).then((result) => {
+                    // Acción después de cerrar el alerta
+                    window.location = '/home';
+                });
+
+            })
+            .catch(e => { });
+    });
 }

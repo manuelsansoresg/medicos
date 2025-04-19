@@ -81,6 +81,10 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('solicitudes/{userId}/{solicitudId}/cedula/validate', [\App\Http\Controllers\Admin\SolicitudController::class, 'validateCedula'])->middleware('auth');
     Route::get('solicitudes/{solicitudId}/estatus/1/', [\App\Http\Controllers\Admin\SolicitudController::class, 'estatusSolicitudEspera'])->middleware('auth');
 
+    /* pagos en solicitus tarjeta o transferencia */
+    Route::post('payment/card/save', [\App\Http\Controllers\Admin\SolicitudController::class, 'paymentCardStore'])->middleware('auth');
+    Route::post('payment/transfer/save', [\App\Http\Controllers\Admin\SolicitudController::class, 'paymentTransferStore'])->middleware('auth');
+
     Route::post('solicitudes/{solicitudId}/adjuntarComprobante', [\App\Http\Controllers\Admin\SolicitudController::class, 'adjuntarComprobante'])->middleware('auth')->name('SolicitudAdjuntarComprobante');
     Route::get('solicitudes/{solicitudId}/imagen/delete', [\App\Http\Controllers\Admin\SolicitudController::class, 'deleteImg'])->middleware('auth')->name('SolicitudDeleteImg');
 

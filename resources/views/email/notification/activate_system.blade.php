@@ -22,36 +22,15 @@
                             <td style="padding: 30px 30px 20px">
                                 <p style="margin-bottom: 10px;"><strong>Hola {{ $nombre }}</strong>,</p>
                                 <p style="margin-bottom: 10px;">
-                                    <b> Estatus:</b> Activación del sistema
-                                   {{--  @if ($solicitud->nombre === 'Paquete básico')
-                                    @endif
-                                    
-                                    @if ($solicitud->nombre === 'Usuario extra')
-                                        <b> Estatus:</b> Usuario extra activado
-                                    @endif
-                                    @if ($solicitud->nombre === 'consultorio extra')
-                                        <b> Estatus:</b> Consultorio extra activado
-                                    @endif
-                                    
-                                    @if ($solicitud->nombre === 'Paciente')
-                                        <b> Estatus:</b> Consultorio extra activado
-                                    @endif --}}
-                                    
+                                    <b> Estatus:</b> {{ $solicitud->source_id == 0 ? 'Activación del sistema' : 'Activación' }}
                                  </p>
                                  <p style="margin-bottom: 10px;">
-                                 Su acceso al sistema ha sido activado <a href="{{ env('APP_URL') }}" class="btn-primary"> Acceder </a>
-                                  {{--   @if ($solicitud->nombre === 'Paquete básico')
-                                        Su acceso al sistema ha sido activado <a href="{{ env('APP_URL') }}" class="btn-primary"> Acceder </a>
+                                    @if ($solicitud->source_id == 0)
+                                        Su paquete {{ $solicitud->nombre_solicitud }}  ha sido activado  <a href="{{ env('APP_URL') }}" class="btn-primary"> Acceder </a>
+                                    @else
+                                        La solicitud {{ $solicitud->nombre_solicitud }} extra ha sido activada 
                                     @endif
-                                    @if ($solicitud->nombre === 'Usuario extra')
-                                        Se ha activado la compra de {{ $solicitud->cantidad  }} usuario(s) extra
-                                    @endif
-                                    @if ($solicitud->nombre === 'consultorio extra')
-                                        Se ha activado la compra de {{ $solicitud->cantidad  }} consultorio(s) extra
-                                    @endif
-                                    @if ($solicitud->nombre === 'Paciente')
-                                        Se ha activado la compra de {{ $solicitud->cantidad  }} paciente(s) extra
-                                    @endif --}}
+                                 
                                  </p>
                             </td>
                         </tr>

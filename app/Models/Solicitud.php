@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Lib\NotificationUser;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,9 +15,9 @@ class Solicitud extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'solicitud_origin_id', //puede ser un paquete o algo extra como un usuario , clinica, consultorio
+        'solicitud_origin_id', //*puede ser un paquete o algo extra como un usuario , clinica, consultorio
         'comprobante',
-        'estatus', //TODO: verificar 0- pendiente 1- activo 2- caducado 3- cancelado
+        'estatus', //* 0-pendiente 1- activo 2- revision 3- caducado 4-renovado
         'estatus_validacion_cedula',
         'cantidad',
         'user_id',
@@ -24,13 +25,29 @@ class Solicitud extends Model
         'fecha_activacion',
         'paciente_id',
         'precio_total',
-        'source_id', //1- paquete 2- usuario 3- consultorio 4- paciente 5- clinica
+        'source_id', //* 0-paquete 1- cualquier relacion diferente a paquete usuario, clinica, consultorio, paciente
         'payment_type',
         'observaciones',
         'fecha_pago'
     ];
 
     protected $table = 'solicitudes';
+
+    static $titleSolicitud = [
+        0 => 'paquete',
+        1 => 'usuario',
+        2 => 'clinica',
+        3 => 'consultorio',
+        4 => 'paciente'
+    ];
+
+    static $statusSolicitud = [
+        0 => 'pendiente',
+        1 => 'activo',
+        2 => 'revision',
+        3 => 'caducado',
+        4 => 'renovado'
+    ];
 
     public static function getAll($paginate = null, $search = null, $solicitud_origin_id = null)
     {
@@ -40,40 +57,31 @@ class Solicitud extends Model
 
         if ($isAdmin) {
             $solicitud = Solicitud::select(
-                'solicitudes.id', 
-                'solicitudes.cantidad', 
-                'solicitudes.estatus', 
-                'solicitudes.created_at', 
-                'solicitudes.updated_at', 
-                'solicitudes.solicitud_origin_id',
-                'solicitudes.user_id',
-                'solicitudes.source_id',
-                'users.name', 
-                'users.vapellido',
-                'solicitudes.fecha_vencimiento',
+                'solicitudes.id',
                 DB::raw('CASE 
-                    WHEN solicitudes.source_id = 0 THEN catalog_prices.nombre 
-                    WHEN solicitudes.source_id = 1 THEN packages.nombre 
-                    ELSE NULL 
+                    WHEN solicitudes.source_id = 0 THEN packages.nombre 
+                    ELSE catalog_prices.nombre 
                 END as nombre_solicitud'),
                 DB::raw('CASE 
-                    WHEN solicitudes.source_id = 0 THEN catalog_prices.precio 
-                    WHEN solicitudes.source_id = 1 THEN packages.precio 
-                    ELSE NULL 
-                END as package_precio'),
-                'users_origin.name as user_origin_name'
+                    WHEN solicitudes.source_id = 0 THEN packages.precio 
+                    ELSE catalog_prices.precio 
+                END as precio'),
+                'solicitudes.cantidad',
+                'solicitudes.estatus',
+                'solicitudes.created_at',
+                'users.name',
+                'users.vapellido',
+                'solicitudes.fecha_vencimiento',
+                'solicitudes.solicitud_origin_id',
+                'solicitudes.user_id'
             )
-            ->leftJoin('catalog_prices', function ($join) {
+            ->leftJoin('catalog_prices', function($join) {
                 $join->on('catalog_prices.id', '=', 'solicitudes.solicitud_origin_id')
-                     ->where('solicitudes.source_id', '=', 0);
+                    ->where('solicitudes.source_id', '!=', 0);
             })
-            ->leftJoin('packages', function ($join) {
+            ->leftJoin('packages', function($join) {
                 $join->on('packages.id', '=', 'solicitudes.solicitud_origin_id')
-                     ->where('solicitudes.source_id', '=', 1);
-            })
-            ->leftJoin('users as users_origin', function ($join) {
-                $join->on('users_origin.id', '=', 'solicitudes.solicitud_origin_id')
-                     ->where('solicitudes.source_id', '=', 2);
+                    ->where('solicitudes.source_id', '=', 0);
             })
             ->join('users', 'users.id', '=', 'solicitudes.user_id')
             ->whereIn('solicitudes.estatus', [0, 1, 2, 3]);
@@ -435,7 +443,7 @@ class Solicitud extends Model
             
             // Verificamos si el usuario ya tiene una solicitud de paquete básico pendiente.
             $getSolicitudPendiente = Solicitud::where('user_id', $user_id)
-                                            ->whereIn('estatus', [0, 2])
+                                            ->whereIn('estatus', [0,3])
                                             ->first();
             // Si ya hay una solicitud pendiente de activación
             if ($getSolicitudPendiente) {
@@ -445,16 +453,12 @@ class Solicitud extends Model
                 // Verificamos si el usuario ya tiene un paquete básico activo.
                 $getSolicitudBasico = Solicitud::where('user_id', $user_id)
                                             ->where('solicitud_origin_id', 1)
-                                            ->where('estatus', 1)
+                                            ->where('estatus', 0)
                                             ->first();
 
                 if ($getSolicitudBasico != null && $data['solicitud_origin_id'] == 0) {
                     $isExistAcceso = true;
                     $errorMessage = 'Solo puedes solicitar 1 paquete básico activo.';
-                } elseif ($getSolicitudBasico == null && $data['solicitud_origin_id'] != 1) {
-                    // Si el usuario quiere solicitar un paquete que no es el básico, pero no tiene uno básico activo.
-                    $isExistAcceso = true;
-                    $errorMessage = 'Para solicitar este paquete debes tener un paquete básico activo.';
                 } else {
                     $isExistAcceso = false;
                 }
@@ -471,8 +475,9 @@ class Solicitud extends Model
             } else {
                 $solicitud = Solicitud::where('id', $solicitudId)->update($data);
             }
-             // vincular paciente con solicitud 
-            if ($solicitudId == 4) { 
+           
+             //TODO: b vincular paciente con solicitud 
+            /* if ($solicitudId == 4) { 
                 SolicitudPaciente::where('solicitud_id', $solicitud->id)->delete();
                 $pacientesIds = explode(',', $request->pacientes_ids);
                 foreach ($pacientesIds as $pacientesId) {
@@ -481,7 +486,7 @@ class Solicitud extends Model
                         'paciente_id' => $pacientesId
                     ]);
                 }
-            }
+            } */
         }
        
         return array('solicitud' => $solicitud, 'isReturnError' => $isExistAcceso, 'errorMessage' => $errorMessage);
@@ -496,5 +501,140 @@ class Solicitud extends Model
     {
         return $this->belongsTo(CatalogPrice::class, 'solicitud_origin_id');
     }
-    
+
+    public static function calculatePackageUsage($available, $used) 
+    {
+        if ($available <= 0) {
+            return 0;
+        }
+        
+        $percentage = ($used / $available) * 100;
+        
+        // Ensure percentage is between 0 and 100
+        return min(100, max(0, round($percentage)));
+    }
+
+    public static function getPackageUsageData($data) 
+    {
+        $usageData = [];
+        $totalPercentage = 0;
+        $itemCount = 0;
+        
+        foreach ($data as $key => $item) {
+            if (isset($item['lbl'])) {
+                list($available, $used) = explode('/', $item['lbl']);
+                $percentage = self::calculatePackageUsage((int)$available, (int)$used);
+                
+                $usageData[$key] = [
+                    'title' => $item['title'],
+                    'available' => (int)$available,
+                    'used' => (int)$used,
+                    'percentage' => $percentage,
+                    'isLimit' => $item['isLimit'] ?? false,
+                    'solicitudId' => $item['solicitudId'] ?? null
+                ];
+                
+                $totalPercentage += $percentage;
+                $itemCount++;
+            }
+        }
+        
+        // Calculate average percentage of all items
+        $usageData['total'] = [
+            'percentage' => $itemCount > 0 ? round($totalPercentage / $itemCount) : 0
+        ];
+        
+        return $usageData;
+    }
+
+    public static function paymentCardStore($request)
+    {
+        $solicitud = Solicitud::find($request->solicitud_id);
+        if($solicitud != null)
+        {
+            if($solicitud->source_id == 0)
+            {
+                $package = Package::find($solicitud->solicitud_origin_id);
+                $nombre = 'paquete '.$package->nombre;
+                $id = $package->id;
+            } else {
+                $item = CatalogPrice::find($solicitud->solicitud_origin_id);
+                $nombre = $item->nombre.' extra';
+                $id = $item->id;
+            }
+
+            $amount = $solicitud->precio_total;
+            $description = 'Pago de '.$nombre;
+            $userId = User::getMyUserPrincipal();
+            $validatedData = $request->validate([
+                'card_token_id' => 'required|string',
+                'paquete_id' => 'required|integer',
+                'description' => 'nullable|string',
+            ]);
+            //modificar solicitud de registro
+            Solicitud::where('id', $solicitud->id)->update([
+                'status' => 1, //activar la solicitud porque el pago es exitoso
+            ]);
+
+            $payment = Payment::create([
+                'card_token_id' => $validatedData['card_token_id'],
+                'user_id' => $userId,
+                'solicitud_id' => $solicitud->id,
+                'status' => 1,
+                'amount' => $amount,
+                'currency' => 'MXN',
+                'description' => $description,
+            ]);
+
+
+            $notification = new NotificationUser();
+            $notification->requestRegistration($userId, $solicitud->id);
+            
+            return response()->json($payment, 201);
+        }
+        
+    }
+
+    public static function paymentTransferStore($request)
+    {
+        $getSolicitud = Solicitud::find($request->solicitudId);
+        $userId = User::getMyUserPrincipal();
+
+        if ($request->hasFile('comprobante')) {
+            // Validar el archivo de comprobante
+            $validator = Validator::make($request->all(), [
+                'comprobante' => 'mimes:jpeg,png,jpg,pdf|max:1024' // Máximo 1MB
+            ]);
+
+            // Si la validación falla, redireccionar con errores
+            if ($validator->fails()) {
+                
+                return back()->withErrors($validator)->withInput();
+            }
+
+            // Procesar y guardar el archivo si la validación es exitosa
+            if ($request->file('comprobante')->isValid()) {
+                
+                $archivo = $request->file('comprobante');
+                $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
+                $rutaDestino = public_path('comprobante');
+
+                $dataSolicitud = array(
+                    'comprobante' => $nombreArchivo,
+                    'estatus' => 2 //en revision
+                );
+                $archivo->move($rutaDestino, $nombreArchivo);
+                //modificar solicitud de registro
+                Solicitud::where('id', $getSolicitud->id)->update($dataSolicitud);
+                $notification = new NotificationUser();
+                $notification->verifyPaymentReceipt($getSolicitud->id);
+            }
+        
+        }
+        
+        
+        
+
+    }
+
 }

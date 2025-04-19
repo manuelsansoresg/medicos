@@ -58,12 +58,13 @@
                                     <input type="date" class="form-control" name="fecha_vencimiento" value="{{ $fecha_vencimiento }}">
                                 </div>
                                 <div class="mb-3 mt-3">
-                                    <label for="inputNombre" class="form-label fw-bold">ACTIVAR</label>
+                                    <label for="inputNombre" class="form-label fw-bold">ESTATUS</label>
                                     <select name="estatus" id="estatus" class="form-select">
                                         <option value="">Seleccione una opción</option>
-                                        <option value="1" {{ $solicitud->estatus == 1 ? 'selected' : null }}>SÍ</option>
-                                        <option value="4" {{ $solicitud->estatus == 0 ? 'selected' : null }}>NO</option>
-                                        <option value="0" {{ $solicitud->estatus == 2 ? 'selected' : null }}>EN REVISIÓN</option>
+                                        <option value="1" {{ $solicitud->estatus == 1 ? 'selected' : null }}>ACTIVO</option>
+                                        <option value="0" {{ $solicitud->estatus == 0 ? 'selected' : null }}>PENDIENTE</option>
+                                        <option value="2" {{ $solicitud->estatus == 2 ? 'selected' : null }}>EN REVISIÓN</option>
+                                        <option value="3" {{ $solicitud->estatus == 2 ? 'selected' : null }}>CADUCADO</option>
                                     </select>
                                 </div>
                             @endrole
@@ -83,7 +84,7 @@
                                     <i class="fas fa-check-circle me-1"></i> {{ session('success') }}
                                 </div>
                             @endif
-                            
+                            <div class="col-12 text-center" id="spinner" style="display: none"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Espere un momento...</p></div>
                             <div class="col-md-12 text-end py-2">
                                 <div class="mb-3">
                                     <input type="hidden" name="solicitudId" id="solicitudId" value="{{ $solicitud->id }}">
@@ -91,19 +92,20 @@
                                         <a href="/admin/solicitudes/{{ $solicitud->id }}" class="btn btn-success">
                                             <i class="fas fa-arrow-left me-1"></i>Volver
                                         </a>
-                                        <button type="button" onclick="saveAndNotifySolicitud()" class="btn btn-primary">
-                                            <i class="fas fa-save me-1"></i>Guardar y notificar
-                                        </button>
+                                        
 
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-save me-1"></i>Guardar
                                         </button>
                                        
-                                        
+                                        <button type="button" onclick="saveAndNotifySolicitud(1)" class="btn btn-primary">
+                                            <i class="fas fa-save me-1"></i>Guardar y notificar
+                                        </button>
                                     @endrole
                                 </div>
                             </div>
                             <input type="hidden" name="isNotify" id="isNotify" value="0">
+                            <input type="hidden" name="isRedirect"  value="0">
                             <input type="hidden" name="precio_total" value="{{ $total }}">
                         </form>
                     </div>
@@ -209,7 +211,7 @@
                             </div>
                         @endif
                         @if ($solicitud->estatus == 0)
-                            <form method="post" action="/admin/solicitudes/{{ $solicitud->id }}/adjuntarComprobante" id="frm-solicitud-validacion" enctype="multipart/form-data">
+                            <form method="post" id="frm-payment" enctype="multipart/form-data">
                                 @csrf
                                 @php
                                     $pathComprobante = env('PATH_COMPROBANTE');
@@ -276,7 +278,8 @@
                                         {{ session('success') }}
                                     </div>
                                 @endif
-                
+                                    
+                               
                                 
                                 <div class="col-md-12 text-end">
                                     <div class="mb-3">
@@ -287,14 +290,14 @@
                                                 Guardar
                                             </button>
                                             <button id="submit" class="btn btn-success" style="display: none;">  Guardar </button>
-                                            <button type="button" onclick="saveAndNotifySolicitud()" class="btn btn-primary">
-                                                <i class="fas fa-save me-1"></i>Guardar y notificar
-                                            </button>
+                                            
                                         @endrole
                                         
                                     </div>
-                                    <input type="hidden" name="isNotify" id="isNotify" value="0">
+                                    <input type="hidden" name="isNotify" id="isNotify" value="1">
+                                    <input type="hidden" name="isRedirect"  value="0">
                                     <input type="hidden" name="precio_total" value="{{ $total }}">
+                                    <input type="hidden" id="solicitud_id" value="{{ $solicitud->id }}">
                                 </div>
                             </form>
                         @endif
@@ -506,7 +509,7 @@
     </div>
   </div>
 {{-- /modal clinica --}}
-
+<input type="hidden" id="is_payment_card" value="{{ $settings->is_payment_card }}">
 {{-- modal usuario --}}
 <div class="modal fade" id="modalUsuario" tabindex="-1" aria-labelledby="modalUsuarioLabel" aria-hidden="true">
     <div class="modal-dialog">

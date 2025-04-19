@@ -1,7 +1,8 @@
 <div class="row mt-3">
     @inject('MSolicitud', 'App\Models\Solicitud')
     <div class="col-12">
-        
+       
+
         <div class="row mt-3 pb-5">
             <div class="col-12">
                 <div class="col-12 text-center">
@@ -97,7 +98,7 @@
                                 CADUCADO
                                 @break
                             @default
-                            NUEVO
+                            PENDIENTE
                         @endswitch
                     </td>
                     <td>

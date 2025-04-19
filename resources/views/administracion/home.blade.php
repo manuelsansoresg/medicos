@@ -1,10 +1,19 @@
 @extends('layouts.template')
 
+@inject('Msolicitud', 'App\Models\Solicitud')
+
 @section('content')
 <div class="container bg-white py-3">
     <!-- Usuario Status & Notificaciones -->
     <div class="row mb-4 mt-3">
-        
+        <div class="col-12">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            @endif
+        </div>
         <div class="col-12">
             <div class="border-0 h-100">
                 <div class="bg-white border-bottom-0">
@@ -194,22 +203,32 @@
                                 <div class="progress-wrapper mb-4">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                         <span class="text-muted small">Uso del paquete</span>
-                                        <span class="badge bg-success">70%</span>
+                                        @php
+                                            $usageData = $Msolicitud::getPackageUsageData($statusPackages);
+                                            $totalPercentage = $usageData['total']['percentage'];
+                                        @endphp
+                                        <span class="badge bg-success">{{ $totalPercentage }}%</span>
                                     </div>
                                     <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar bg-success" role="progressbar" 
+                                             style="width: {{ $totalPercentage }}%" 
+                                             aria-valuenow="{{ $totalPercentage }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100"></div>
                                     </div>
                                 </div>
-                                @foreach ($statusPackages as $statusPackage)
-                                <div class="package-feature d-flex justify-content-between align-items-center mb-2 p-2 border-bottom">
-                                    <div>
-                                        <i class="fas fa-check-circle text-success me-2"></i> 
-                                        <span>{{ $statusPackage['title'] }}</span>
+                                @foreach ($statusPackages as $key => $statusPackage)
+                                    @if($key !== 'total')
+                                    <div class="package-feature d-flex justify-content-between align-items-center mb-2 p-2 border-bottom">
+                                        <div>
+                                            <i class="fas fa-check-circle text-success me-2"></i> 
+                                            <span>{{ $statusPackage['title'] }}</span>
+                                        </div>
+                                        <span class="badge bg-info">
+                                            {{ $statusPackage['lbl'] }}
+                                        </span>
                                     </div>
-                                    <span class="badge bg-info">
-                                        {{ $statusPackage['lbl'] }}
-                                    </span>
-                                </div>
+                                    @endif
                                 @endforeach
                                
                             </div>

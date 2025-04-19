@@ -74,7 +74,7 @@ class PaymentController extends Controller
         //crear solicitud de registro
         $solicitud = Solicitud::create([
             'solicitud_origin_id' => $package->id,
-            'source_id' => 1,
+            'source_id' => 0,
             'estatus' => 1,
             'cantidad' => 1,
             'precio_total' => $amount,
@@ -86,7 +86,8 @@ class PaymentController extends Controller
         $payment = Payment::create([
             'card_token_id' => $validatedData['card_token_id'],
             'user_id' => $userId,
-            'paquete_id' => $validatedData['paquete_id'],
+            'source_id' => 0,
+            'solicitud_id' => $solicitud->id,
             'status' => 1,
             'amount' => $amount,
             'currency' => 'MXN',

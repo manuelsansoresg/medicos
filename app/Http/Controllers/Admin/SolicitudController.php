@@ -64,6 +64,18 @@ class SolicitudController extends Controller
         return view('espera');
     }
 
+    public static function paymentCardStore(Request $request)
+    {
+        $validate = Solicitud::paymentCardStore($request);
+        return response()->json($validate);
+    }
+
+    public static function paymentTransferStore(Request $request)
+    {
+        $validate = Solicitud::paymentTransferStore($request);
+        return response()->json($validate);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -183,7 +195,6 @@ class SolicitudController extends Controller
 
     public function adjuntarComprobante(Request $request)
     {
-        
         $solicitudId = $request->solicitudId;
         $estatus = isset($request->estatus) ? $request->estatus : null;
         
@@ -220,6 +231,7 @@ class SolicitudController extends Controller
                         $dataSolicitud['fecha_vencimiento'] = $fechaVencimiento;
                         $dataSolicitud['fecha_activacion'] = date('Y-m-d');
                         $dataSolicitud['precio_total'] = $request->precio_total;
+                        $dataSolicitud['status'] = 1; //activar la solicitud porque la verificacion es exitosa
                         
                     }
 
@@ -233,11 +245,10 @@ class SolicitudController extends Controller
                     $notification = new NotificationUser();
                     $notification->requestRegistration(Auth::user()->id, $solicitudId, 'transfer');
                 }
-                
                 return redirect('/admin/solicitudes/'.$solicitudId);
             }
-
             return back()->with('error', 'Hubo un problema al cargar el archivo.');
+            
         }
 
         // Si no hay archivo, solo se actualiza el estatus
@@ -250,14 +261,10 @@ class SolicitudController extends Controller
             $userNameAdmin = Auth::user()->name;
 
             if ($getSolicitud != null) {
-                if ($getSolicitud->solicitud_origin_id == 0) { //paquete uso del sistema
-                    $title = 'Activación de paquete';
-                }
-                
-                if ($getSolicitud->solicitud_origin_id == 1) { //Usuario
-                    $title = 'Activación de usuario';
-                }
+                $titleSolicitud = Solicitud::$titleSolicitud[$getSolicitud->solicitud_origin_id];
+                $statusSolicitud = Solicitud::$statusSolicitud[$estatus];
             }
+            //dd($getSolicitud->solicitud_origin_id);
             if ($estatus == 1) { // paquete uso del sistema
                 $dataSolicitud['fecha_vencimiento'] = $fechaVencimiento;
                 $dataSolicitud['precio_total'] = $request->precio_total;
@@ -274,19 +281,15 @@ class SolicitudController extends Controller
                     VinculacionSolicitud::saveVinculacion($userId, 'totalUsuariosSistema', $getSolicitud->id); 
                     User::where('id', $userId)->update(['status' => 1]);
                 }
-                //VinculacionSolicitud::vincularPaquete($solicitudId);
-                LogSystem::createLog(Auth::user()->id, $title, 'Usuario administrador '.$userNameAdmin.' activo la solicitud ID-'.$solicitudId);
-            } else {
-                LogSystem::createLog(Auth::user()->id, $title, 'Usuario administrador '.$userNameAdmin.' rechazo la solicitud ID-'.$solicitudId);
+                
             }
-            
+            LogSystem::createLog(Auth::user()->id, $titleSolicitud, 'Usuario administrador '.$userNameAdmin.' cambio el estatus a '.$statusSolicitud.' de la solicitud ID-'.$solicitudId);
             Solicitud::where('id', $solicitudId)->update($dataSolicitud);
             
         }
 
+        return redirect('/home')->with('success', 'Solicitud actualizada correctamente');
         
-
-        return redirect('/admin/solicitudes/'.$solicitudId);
     }
 
 

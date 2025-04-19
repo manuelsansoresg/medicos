@@ -8,6 +8,7 @@ use App\Mail\SolicitudUsuarioEmail;
 use App\Models\Setting;
 use App\Models\Solicitud;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class NotificationUser
@@ -51,10 +52,38 @@ class NotificationUser
     public function activatesSystem($solicitudId)
     {
         $solicitud = Solicitud::select(
-                            'solicitudes.user_id', 'catalog_prices.nombre', 'solicitudes.cantidad'
-                            )->where('solicitudes.id', $solicitudId)
-                        ->join('catalog_prices', 'catalog_prices.id', 'solicitudes.solicitud_origin_id')
-                        ->first();
+            'solicitudes.id',
+            DB::raw('CASE 
+                WHEN solicitudes.source_id = 0 THEN packages.nombre 
+                ELSE catalog_prices.nombre 
+            END as nombre_solicitud'),
+            DB::raw('CASE 
+                WHEN solicitudes.source_id = 0 THEN packages.precio 
+                ELSE catalog_prices.precio 
+            END as precio'),
+            'solicitudes.cantidad',
+            'solicitudes.estatus',
+            'solicitudes.created_at',
+            'users.name',
+            'users.vapellido',
+            'solicitudes.fecha_vencimiento',
+            'solicitudes.solicitud_origin_id',
+            'solicitudes.user_id',
+            'solicitudes.source_id'
+        )
+        ->leftJoin('catalog_prices', function($join) {
+            $join->on('catalog_prices.id', '=', 'solicitudes.solicitud_origin_id')
+                ->where('solicitudes.source_id', '!=', 0);
+        })
+        ->leftJoin('packages', function($join) {
+            $join->on('packages.id', '=', 'solicitudes.solicitud_origin_id')
+                ->where('solicitudes.source_id', '=', 0);
+        })
+        ->join('users', 'users.id', '=', 'solicitudes.user_id')
+        ->where('solicitudes.id', $solicitudId)
+        ->first();
+
+        
         $user = User::find($solicitud->user_id);
         $data = array(
             'nombre' => $user->name. ' '.$user->vapellido.' '.$user->segundo_apellido,
