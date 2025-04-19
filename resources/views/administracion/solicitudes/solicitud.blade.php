@@ -541,3 +541,7 @@
 {{-- /modal clinica --}}
 @endrole
 @endsection
+
+@section('js')
+<script src="https://sdk.clip.mx/js/clip-sdk.js"></script>
+@endsection

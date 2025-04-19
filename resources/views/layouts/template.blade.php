@@ -184,6 +184,7 @@
     @livewireScripts
 
     <script src="/js/app.js?version'.date('H-i-s')"></script>
+    @yield('js')
 
     <script>
         document.querySelector('.navbar-toggler').addEventListener('click', function() {
