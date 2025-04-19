@@ -275,13 +275,15 @@ window.comentar = function(commentId)
 }
 
 window.setPaymentMethod = function(method) {
-    if (method == 1) {
+    if (method == 1) { //card
+        $('#cardPaymentContent').show();
         $('#payment-content').show();
         $('#submit').hide();
         $('#transferPaymentContent').hide();
         $('#complete-payment').show();
         $('#comprobante').removeAttr('required'); // quitar required
     } else {
+        $('#cardPaymentContent').hide();
         $('#payment-content').hide();
         $('#submit').show();
         $('#transferPaymentContent').show();
