@@ -294,7 +294,7 @@ window.setPaymentMethod = function(method) {
 
 /* pago por clip */
 
-if (document.getElementById('is_payment_card').value == 1) {
+if (document.getElementById('is_payment_card')) {
     /* pago por clip */
    
     document.addEventListener('DOMContentLoaded', function () {
