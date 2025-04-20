@@ -73,7 +73,8 @@ class Solicitud extends Model
                 'users.vapellido',
                 'solicitudes.fecha_vencimiento',
                 'solicitudes.solicitud_origin_id',
-                'solicitudes.user_id'
+                'solicitudes.user_id',
+                'solicitudes.precio_total'
             )
             ->leftJoin('catalog_prices', function($join) {
                 $join->on('catalog_prices.id', '=', 'solicitudes.solicitud_origin_id')
@@ -106,7 +107,8 @@ class Solicitud extends Model
                 'users.vapellido',
                 'solicitudes.fecha_vencimiento',
                 'solicitudes.solicitud_origin_id',
-                'solicitudes.user_id'
+                'solicitudes.user_id',
+                'solicitudes.precio_total'
             )
             ->leftJoin('catalog_prices', function($join) {
                 $join->on('catalog_prices.id', '=', 'solicitudes.solicitud_origin_id')
@@ -426,8 +428,19 @@ class Solicitud extends Model
 
     public static function saveEdit($request)
     {
-        $data = $request->data;
-        $solicitudId = $request->solicitudId;
+        $data              = $request->data;
+        $solicitudId       = $request->solicitudId;
+        $solicitudOriginId = $data['solicitud_origin_id'];
+
+        //obtener el precio total de la solicitud'
+        if($solicitudOriginId == 0)
+        {
+            $package = Package::find($solicitudOriginId);
+            $data['precio_total'] = $package->precio * $data['cantidad'];
+        } else {
+            $item = CatalogPrice::find($solicitudOriginId);
+            $data['precio_total'] = $item->precio * $data['cantidad'];
+        }
 
         // Verificamos si el usuario tiene el rol de administrador, médico o auxiliar.
         $isAdmin = Auth::user()->hasRole('administrador');
@@ -573,6 +586,7 @@ class Solicitud extends Model
             Solicitud::where('id', $solicitud->id)->update([
                 'estatus' => 1, //activar la solicitud porque el pago es exitoso
             ]);
+            
             $payment = Payment::create([
                 'card_token_id' => $validatedData['card_token_id'],
                 'user_id' => $userId,

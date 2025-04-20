@@ -48,6 +48,7 @@
                     <th>CANTIDAD</th>
                     <th>VENCIMIENTO</th>
                     <th>ESTATUS</th>
+                    <th>PRECIO</th>
                     <th>ACCIONES</th>
                 </tr>
                @foreach ($solicitudes as $solicitud)
@@ -101,6 +102,7 @@
                             PENDIENTE
                         @endswitch
                     </td>
+                    <td>{{ $solicitud->precio_total }}</td>
                     <td>
                         <a href="/admin/solicitudes/{{ $solicitud->id }}"  class="color-primary"><i class="fas fa-eye"></i></a> 
                         @if ($isVencido === true && $solicitud->solicitud_origin_id != 3 && $solicitud->solicitud_origin_id != 2)
