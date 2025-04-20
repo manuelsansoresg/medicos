@@ -386,7 +386,7 @@ if (document.getElementById('is_payment_card')) {
         }
     });
 
-    $('#frm-payment').submit(async function (e) {
+    $('#complete-payment-transfer').click(async function (e) {
         e.preventDefault();
       
 
