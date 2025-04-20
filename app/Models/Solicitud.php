@@ -571,7 +571,7 @@ class Solicitud extends Model
             ]);
             //modificar solicitud de registro
             Solicitud::where('id', $solicitud->id)->update([
-                'status' => 1, //activar la solicitud porque el pago es exitoso
+                'estatus' => 1, //activar la solicitud porque el pago es exitoso
             ]);
 
             $payment = Payment::create([
