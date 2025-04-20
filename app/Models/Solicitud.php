@@ -568,8 +568,6 @@ class Solicitud extends Model
             $userId = User::getMyUserPrincipal();
             $validatedData = $request->validate([
                 'card_token_id' => 'required|string',
-                'paquete_id' => 'required|integer',
-                'description' => 'nullable|string',
             ]);
             //modificar solicitud de registro
             Solicitud::where('id', $solicitud->id)->update([
