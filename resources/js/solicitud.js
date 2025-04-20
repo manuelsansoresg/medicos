@@ -324,7 +324,7 @@ if (document.getElementById('is_payment_card')) {
                     card.mount("checkout");
                     // Maneja el evento de envío del formulario
                     // Maneja el evento de envío del formulario
-                    document.querySelector("#payment-form").addEventListener("submit", async (event) => {
+                    document.querySelector("#frm-payment").addEventListener("submit", async (event) => {
                         event.preventDefault();
                         try {
 
