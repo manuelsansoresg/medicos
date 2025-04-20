@@ -286,7 +286,7 @@
                                         <input type="hidden" name="solicitudId" id="solicitudId" value="{{ $solicitud->id }}">
                                         <a class="btn btn-secondary" onclick="comentar(null)">Comentar</a>
                                         @hasrole(['medico', 'auxiliar'])
-                                            <button type="button" class="btn btn-success" id="complete-payment" onclick="registerPaymentCardSolicitud()" style="display: none;">
+                                            <button type="button" class="btn btn-success" id="complete-payment"  style="display: none;">
                                                 Guardar
                                             </button>
                                             <button id="submit" class="btn btn-success" style="display: none;">  Guardar </button>
