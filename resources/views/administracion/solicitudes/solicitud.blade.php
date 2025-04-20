@@ -32,7 +32,7 @@
                                     <label for="inputNombre" class="form-label fw-bold">COMPROBANTE</label>
                                     @if ($solicitud->comprobante == null)
                                         <input type="file" name="comprobante" class="form-control">
-                                        <small class="text-muted">Adjunte el comprobante de la transferencia bancaria</small>
+                                        
                                     @else
                                         <div class="col-12">
                                             <div class="card p-2 border">
@@ -145,7 +145,7 @@
                 <div class="card shadow-sm mt-2">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
-                            <i class="fas fa-file-invoice"></i> Datos del paquete
+                            <i class="fas fa-file-invoice"></i> Datos de la solicitud
                         </h5>
                     </div>
                     <div class="card-body">
@@ -217,9 +217,10 @@
                                     $pathComprobante = env('PATH_COMPROBANTE');
                                 @endphp
                                 <label for="inputNombre" class="form-label"> <b>SELECCIONA UN TIPO DE PAGO</b>    </label>
+                                <p><small class="text-muted">Realice el pago de la solicitud por la cantidad de ${{ format_price($solicitud->precio) }}</small></p>
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label for="inputApellido" class="form-label">*TIPO DE PAGO</label>
+                                        <label for="inputApellido" class="form-label">*SELECCIONE UN TIPO DE PAGO</label>
                                         @if ($settings != null && $settings->is_payment_card == 1)
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="tipo_pago" id="tipo_pago1" onclick="setPaymentMethod(1)" value="tarjeta de crédito" >
@@ -248,6 +249,7 @@
                                 <div id="transferPaymentContent" class="payment-content" style="display: none;">
                                     <div class="mb-3 mt-3">
                                         <label for="inputNombre" class="form-label">COMPROBANTE</label>
+                                        <small class="text-muted">Adjunte el comprobante de la transferencia bancaria</small>
                                         @if ($solicitud->comprobante == null)
                                             <input type="file" name="comprobante" class="form-control" id="comprobante" required>
                                             @else
