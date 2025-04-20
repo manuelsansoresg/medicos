@@ -278,16 +278,16 @@ window.setPaymentMethod = function(method) {
     if (method == 1) { //card
         $('#cardPaymentContent').show();
         $('#payment-content').show();
-        $('#submit').hide();
+        $('#submit').show();
         $('#transferPaymentContent').hide();
-        $('#complete-payment').show();
+        $('#complete-payment-transfer').hide();
         $('#comprobante').removeAttr('required'); // quitar required
     } else {
         $('#cardPaymentContent').hide();
         $('#payment-content').hide();
-        $('#submit').show();
+        $('#submit').hide();
         $('#transferPaymentContent').show();
-        $('#complete-payment').hide();
+        $('#complete-payment-transfer').show();
         $('#comprobante').attr('required', 'required'); // poner required
     }
 }
