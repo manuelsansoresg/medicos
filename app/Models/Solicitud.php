@@ -573,7 +573,6 @@ class Solicitud extends Model
             Solicitud::where('id', $solicitud->id)->update([
                 'estatus' => 1, //activar la solicitud porque el pago es exitoso
             ]);
-            dd($solicitud); 
             $payment = Payment::create([
                 'card_token_id' => $validatedData['card_token_id'],
                 'user_id' => $userId,
