@@ -699,7 +699,7 @@ class User extends Authenticatable
         return $this->vinculos()->where('paciente_id', $pacienteId)->exists();
     }
 
-    public function getVinculacionUser($userId)
+    public static function getVinculacionUser($userId)
     {
         $solicitud = null;
         $vinculacion = VinculacionSolicitud::where('idRel', $userId)
