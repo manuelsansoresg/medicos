@@ -586,17 +586,17 @@ class Solicitud extends Model
             Solicitud::where('id', $solicitud->id)->update([
                 'estatus' => 1, //activar la solicitud porque el pago es exitoso
             ]);
-            
-            $payment = Payment::create([
-                'card_token_id' => $validatedData['card_token_id'],
-                'user_id' => $userId,
-                'solicitud_id' => $solicitud->id,
-                'status' => 1,
-                'amount' => $amount,
-                'currency' => 'MXN',
-                'description' => $description,
-            ]);
 
+            $dataPayment = array(
+                'card_token_id' => $validatedData['card_token_id'],
+                'solicitud_id' => $solicitud->id,
+                'user_id' => $userId,
+                'amount' => $amount,
+                'description' => $description,
+            );
+            $payment = Payment::savePayment($dataPayment);
+            
+           
 
             $notification = new NotificationUser();
             $notification->requestRegistration($userId, $solicitud->id);

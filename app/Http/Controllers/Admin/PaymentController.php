@@ -82,17 +82,15 @@ class PaymentController extends Controller
             'payment_type' => 'tarjeta de crédito',
             
         ]);
-
-        $payment = Payment::create([
+        
+        $dataPayment = array(
             'card_token_id' => $validatedData['card_token_id'],
-            'user_id' => $userId,
-            'source_id' => 0,
             'solicitud_id' => $solicitud->id,
-            'status' => 1,
+            'user_id' => $userId,
             'amount' => $amount,
-            'currency' => 'MXN',
             'description' => $description,
-        ]);
+        );
+        $payment = Payment::savePayment($dataPayment);
 
         $notification = new NotificationUser();
         $notification->requestRegistration($userId, $solicitud->id);

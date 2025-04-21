@@ -217,7 +217,7 @@
                                     $pathComprobante = env('PATH_COMPROBANTE');
                                 @endphp
                                 <label for="inputNombre" class="form-label"> <b>SELECCIONA UN TIPO DE PAGO</b>    </label>
-                                <p><small class="text-muted">Realice el pago de la solicitud por la cantidad de ${{ format_price($solicitud->precio) }}</small></p>
+                                <p><small class="text-muted">Realice el pago de la solicitud por la cantidad de ${{ format_price($total) }}</small></p>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="inputApellido" class="form-label">*SELECCIONE UN TIPO DE PAGO</label>
@@ -346,6 +346,7 @@
                             <tr>
                                 <th>SOLICITUD</th>
                                 <th>NOMBRE</th>
+                                <th>CANTIDAD</th>
                                 <th>PRECIO</th>
                                 @if ($solicitud->source_id == 0)
                                     <th>ELEMENTOS</th>
@@ -358,7 +359,8 @@
                                     <td>EXTRA</td>
                                 @endif
                                 <td>{{ $solicitud != null ? $solicitud->package_nombre : null }}</td>
-                                <td>${{ format_price($solicitud->precio) }}</td>
+                                <td>{{ $solicitud->cantidad }}</td>
+                                <td>${{ format_price($total) }}</td>
                                 @if ($solicitud->source_id == 0)
                                     <td>
                                         @foreach($solicitud->package->items as $item)
