@@ -26,8 +26,8 @@ class UserCita extends Model
     public static function saveEdit($request)
     {
         $data                   = $request->data;
-        $clinica                = Session::get('clinica');
-        $consultorio            = Session::get('consultorio');
+        $clinica                = $request->clinica;
+        $consultorio            = $request->consultorio;
         $data['id_consultorio'] = $consultorio == 0 ?  $data['id_consultorio'] : $consultorio ;
         $data['id_clinica']     = $clinica;
         $data['status']         = 1;

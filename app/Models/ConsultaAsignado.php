@@ -28,13 +28,10 @@ class ConsultaAsignado extends Model
     public static function getMyCon($userId)
     {
         \DB::enableQueryLog(); // Enable query log
-        $user       = User::find(Auth::user()->id);
-        /*
-        $is_admin   = Auth::user()->hasRole(['medico', 'auxiliar', 'secretario']); */
+
         $clinica     = Session::get('clinica');
         $consultorio = Session::get('consultorio');
         $query = ConsultaAsignado::select('iddoctor', 'idconsultorio')
-        ->where('idclinica', $clinica)
         ->where('iddoctor', $userId)
         ->groupBy('iddoctor', 'idconsultorio')
         ->get();
@@ -91,7 +88,7 @@ class ConsultaAsignado extends Model
         return $horarios;
     }
 
-    public static function getByDate($date, $doctor_id = null, $isGroup = true)
+    public static function getByDate($date, $doctor_id = null, $idconsultorio = null, $idclinica = null, $isGroup = true)
     {
         \DB::enableQueryLog(); // Enable query log
 
@@ -104,8 +101,8 @@ class ConsultaAsignado extends Model
         $dateTime      = new DateTime($date);
         $dayOfWeek     = $dateTime->format('w');
         $dayOfWeek     = $dayOfWeek == 0 ? 7  : $dayOfWeek;
-        $idclinica     = Session()->get('clinica');
-        $idconsultorio = Session()->get('consultorio');
+        $idclinica     = $idclinica;
+        $idconsultorio = $idconsultorio;
         $turnos = array(1=> 'mañana', 2=> 'tarde', 3 => 'noche');
         $isAdmin    = Auth::user()->hasRole('administrador');
 
@@ -241,7 +238,7 @@ class ConsultaAsignado extends Model
     {
         //$requestData    = $request->all();
         $dataRequest   = $request->data;
-        $idclinica     = Session()->get('clinica');
+        $idclinica     = $dataRequest['idclinica'];
         $idconsultorio = $dataRequest['idconsultorio'];
         $iddoctor      = $request->userId;
 

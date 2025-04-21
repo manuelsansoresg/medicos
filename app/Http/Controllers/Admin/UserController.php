@@ -7,6 +7,8 @@ use App\Http\Requests\UserUpdateRequest;
 use App\Models\Access;
 use App\Models\Clinica;
 use App\Models\ClinicaUser;
+use App\Models\Consultorio;
+use App\Models\ConsultorioUser;
 use App\Models\FormularioConfiguration;
 use App\Models\LogSystem;
 use App\Models\Solicitud;
@@ -44,10 +46,12 @@ class UserController extends Controller
         $user       = null;
         $clinicas   = Clinica::getAll();
         $my_clinics = ClinicaUser::where('user_id', $user_id)->get();
+        $consultorios = Consultorio::getAll();
+        $my_consultorios = ConsultorioUser::where('user_id', $user_id)->get();
         $puestos    = User::getRoles();
         $userAdmins = User::getUsersByNameRol('medico');
         
-        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics', 'puestos', 'userAdmins'));
+        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics', 'puestos', 'userAdmins', 'consultorios', 'my_consultorios'));
     }
 
     public function permisosGet($pacienteId)
@@ -127,7 +131,11 @@ class UserController extends Controller
         $my_clinics = ClinicaUser::where('user_id', $user_id)->get();
         $puestos    = User::getRoles();
         $userAdmins = User::getUsersByNameRol('medico');
-        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics', 'puestos', 'userAdmins'));
+
+        $consultorios = Consultorio::getAll();
+        $my_consultorios = ConsultorioUser::where('user_id', $user_id)->get();
+
+        return view('administracion.user.frm', compact('user', 'user_id', 'clinicas', 'my_clinics', 'puestos', 'userAdmins', 'consultorios', 'my_consultorios'));
     }
 
     /**

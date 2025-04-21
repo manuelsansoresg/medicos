@@ -187,7 +187,6 @@
             </div>
        </div>
        @endrole
-       
         <!-- Dashboard para médicos y auxiliares -->
         @hasrole(['medico','auxiliar'])
         <div class="row">

@@ -43,7 +43,26 @@
                                 <select name="data[idconsultorio]" id="offices"  onchange="changeOffice(this.value, {{ $myUser->id }})" class="form-control">
                                     <option value="">Seleccione una opción</option>
                                    @foreach ($offices as $office)
-                                       <option value="{{ $office->idconsultorios }}" {{ isset($idConsultorio) && $idConsultorio == $office->idconsultorios ? 'selected' : null  }}>{{ $office->vnumconsultorio }}</option>
+                                   @php
+                                       $consultorio = $office->consultorio;
+                                   @endphp
+                                       <option value="{{ $consultorio->idconsultorios }}" {{ isset($idConsultorio) && $idConsultorio == $consultorio->idconsultorios ? 'selected' : null  }}>{{ $consultorio->vnumconsultorio }}</option>
+                                   @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6" id="content-financial_product_id">
+                        <div class="form-group">
+                            <label class="form-label">CLINICA</label>
+                            <div class="form-control-wrap">
+                                <select name="data[idclinica]" id="clinica" class="form-control">
+                                    <option value="">Seleccione una opción</option>
+                                   @foreach ($clinicas as $clinica)
+                                   @php 
+                                       $clinica = $clinica->clinica;
+                                   @endphp
+                                       <option value="{{ $clinica->idclinica }}" {{ isset($idConsultorio) && $idConsultorio == $clinica->idclinica ? 'selected' : null  }}>{{ $clinica->tnombre }}</option>
                                    @endforeach
                                 </select>
                             </div>

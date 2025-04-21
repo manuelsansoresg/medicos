@@ -97,6 +97,23 @@
                                </div>
                            </div>
                        </div>
+                       
+                       <div class="col-md-6" id="content-financial_product_id">
+                           <div class="form-group">
+                               <label class="form-label">CONSULTORIOS</label>
+                               <div class="form-control-wrap">
+                                   <select name="consultorios[]" id="" class="form-control select2multiple" multiple="multiple"  data-search="on">
+                                      @foreach ($consultorios as $consultorio)
+                                          <option value="{{ $consultorio->idconsultorios }}" 
+                                           @foreach ($my_consultorios as $my_consultorio)
+                                             {{ $my_consultorio->consultorio_id == $consultorio->idconsultorios ? 'selected' : null}}
+                                           @endforeach
+                                           >{{ $consultorio->vnumconsultorio }}</option>
+                                      @endforeach
+                                   </select>
+                               </div>
+                           </div>
+                       </div>
        
                      
                        @endhasrole

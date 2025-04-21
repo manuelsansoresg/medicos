@@ -326,10 +326,10 @@ class Solicitud extends Model
                 }
 
                 // Actualizar los valores según el tipo de recurso
-                if ($key == 'usuario extra') {
+                if ($key == 'usuario') {
                     $usuariosDisponibles = $disponible['max'];
                     $solicitudIdUsuarios = $currentSolicitudId;
-                } elseif ($key == 'consultorio extra') {
+                } elseif ($key == 'consultorio') {
                     $consultoriosDisponibles = $disponible['max'];
                     $solicitudIdConsultorios = $currentSolicitudId;
                 } elseif ($key == 'clinica') {

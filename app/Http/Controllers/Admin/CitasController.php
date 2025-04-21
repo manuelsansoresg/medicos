@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Citas;
 use App\Models\Clinica;
+use App\Models\ClinicaUser;
 use App\Models\ConsultaAsignado;
 use App\Models\Consultasignado;
 use App\Models\Consultorio;
+use App\Models\ConsultorioUser;
 use App\Models\FechaEspeciales;
 use App\Models\Paciente;
 use App\Models\User;
@@ -39,24 +41,27 @@ class CitasController extends Controller
         if (Auth::user()->hasRole('auxiliar')) {
             $iddoctor = $user->id;
         }
-
+        
+        $userId            = User::getMyUserPrincipal();
         $clinicas          = Clinica::getAll();
-        $consultorios      = Consultorio::getAll();
+        $getConsultorios   = ConsultorioUser::where('user_id', $userId)->get();
+        $getClinicas       = ClinicaUser::where('user_id', $userId)->get();
         $fechasEspeciales  = FechaEspeciales::getByDate($fecha);
         $consultaAsignados = ConsultaAsignado::getByDate($fecha);
         $pacientes         = User::getUsersByRoles(['paciente']);
         $userAdmins        = User::getUsersByRol('medico');
+        
+        //$clinica            = Session::get('clinica');
+        //$consultorio        = Session::get('consultorio');
 
-        $clinica            = Session::get('clinica');
-        $consultorio        = Session::get('consultorio');
-        $isEmptyConsultorio = $consultorio == null ? false : true;
-        $getAsignedConsultories = Consultorio::getAsignedConsultories($clinica);
+        //$isEmptyConsultorio = $consultorio == null ? false : true;
+        //$getAsignedConsultories = Consultorio::getAsignedConsultories($clinica);
         $isChangeConsultorio = false;
-        if ($getAsignedConsultories != null && $isEmptyConsultorio == false) {
+        /* if ($getAsignedConsultories != null && $isEmptyConsultorio == false) {
             $isChangeConsultorio = true;
-        }
+        } */
         //dd($getAsignedConsultories);
-        return view('administracion.citas.list', compact('clinicas', 'getAsignedConsultories', 'iddoctor', 'isEmptyConsultorio', 'isChangeConsultorio', 'consultorios', 'is_medico', 'fechasEspeciales', 'consultaAsignados', 'fecha', 'pacientes', 'userAdmins'));
+        return view('administracion.citas.list', compact('clinicas', 'iddoctor', 'getClinicas',  'isChangeConsultorio', 'getConsultorios', 'is_medico', 'fechasEspeciales', 'consultaAsignados', 'fecha', 'pacientes', 'userAdmins'));
     }
 
     public function add(ConsultaAsignado $consultaAsignado, $hora, $fecha)
@@ -75,12 +80,12 @@ class CitasController extends Controller
         return view('administracion.citas.add', compact('momento', 'diasemana', 'horas', 'fe_inicio', 'idconsultorio', 'lidldoctores', 'id_cita', 'idia'));
     }
 
-    public function setCita($fecha, $iddoctor)
+    public function setCita($fecha, $iddoctor, $idconsultorio, $idclinica)
     {
         
         //Buscar si existe un dia sin actividad para el consultorio
-        $fechasEspeciales  = FechaEspeciales::getByDate($fecha);
-        $consultaAsignados = ConsultaAsignado::getByDate($fecha, $iddoctor);
+        $fechasEspeciales  = FechaEspeciales::getByDate($fecha, $idclinica, $idconsultorio);
+        $consultaAsignados = ConsultaAsignado::getByDate($fecha, $iddoctor, $idconsultorio, $idclinica);
         $isBusy = count($fechasEspeciales) === 0 ? false : true;
         $data = array(
             'fechasEspeciales' => $isBusy,

@@ -95,23 +95,27 @@ window.setCita = function () {
   
   let iddoctor  = $('#iddoctor').val();
   let valueDate = $('#InputFecha').val();
+  let setConsultorio = $('#idconsultorio').val();
+  let setClinica = $('#idclinica').val();
 
   $('#content-hoursCita').html('');
   
   
-  axios.get('/admin/citas/'+valueDate+'/'+iddoctor+'/set')
-    .then(function (response) {
-      let result = response.data;
-      let view = result.view;
-      let data = result.data;
-      
-      $('#content-hoursCita').show();
-      $('#content-hoursCita').html(view);
-    })
-    .catch(function (error) {
-      // Manejar errores si es necesario
-      console.error(error);
-    });
+  if (setConsultorio && setClinica) {
+    axios.get('/admin/citas/'+valueDate+'/'+iddoctor+'/'+setConsultorio+'/'+setClinica+'/set')
+      .then(function (response) {
+        let result = response.data;
+        let view = result.view;
+        let data = result.data;
+        
+        $('#content-hoursCita').show();
+        $('#content-hoursCita').html(view);
+      })
+      .catch(function (error) {
+        // Manejar errores si es necesario
+        console.error(error);
+      });
+  }
 }
 
 window.liberarCita = function(id)

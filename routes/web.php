@@ -38,7 +38,7 @@ Route::group(['prefix' => 'admin'], function () {
     
     Route::resource('citas', '\App\Http\Controllers\Admin\CitasController')->middleware('auth');
     Route::get('citas/{consultaAsignado}/{hora}/{fecha}/add', [App\Http\Controllers\Admin\CitasController::class, 'add'])->middleware('auth');
-    Route::get('citas/{fecha}/{iddoctor}/set', [App\Http\Controllers\Admin\CitasController::class, 'setCita'])->middleware('auth');
+    Route::get('citas/{fecha}/{iddoctor}/{idconsultorio}/{idclinica}/set', [App\Http\Controllers\Admin\CitasController::class, 'setCita'])->middleware('auth');
     Route::get('citas/{consultaAsignado}/list', [App\Http\Controllers\Admin\CitasController::class, 'viewCitaConsultaAsignado'])->middleware('auth');
 
 

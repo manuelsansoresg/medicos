@@ -15,4 +15,12 @@ class Notification extends Model
         'msg',
         'leido',
     ];
+
+    static $titles = array(
+        'solicitud' => 'Solicitud',
+        'vinculacion' => 'Vinculación',
+        'actividad' => 'Actividad',
+        'cita' => 'Cita',
+        'paciente' => 'Paciente',
+    );
 }

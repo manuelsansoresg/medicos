@@ -394,30 +394,27 @@ class User extends Authenticatable
         if ($isAdmin === true) {
             $users = User::getUsersByRoles($roles, $setUserId);
         } else {
-            if ($isDoctor === true) {
-                $roles = [ 'medico', 'auxiliar', 'secretario'];
-                $users = User::whereHas('roles', function ($q) use($roles) {
-                                    $q->whereIn('name', $roles);
-                                });
-                if ($status === 0) {
-                    $users->where('status', $status);
-                }
-                
-                $users->where(function($query) use ($usuario_principal) {
-                    $query->where('id', Auth::user()->id)
-                          ->orWhere('usuario_principal', $usuario_principal);
-                });
-                                
+            $roles = [ 'medico', 'auxiliar', 'secretario'];
+            $users = User::whereHas('roles', function ($q) use($roles) {
+                                $q->whereIn('name', $roles);
+                            });
+            if ($status === 0) {
+                $users->where('status', $status);
             }
-    
-            if ($isAuxiliar === true) {
+            
+            $users->where(function($query) use ($usuario_principal) {
+                $query->where('id', Auth::user()->id)
+                        ->orWhere('usuario_principal', $usuario_principal);
+            });
+
+            /* if ($isAuxiliar === true) {
                 $users =  User::where('id', Auth::user()->id);
                 if ($status === 0) {
                     $users->where('status', $status);
                 }
                 $users ->orWhere('creador_id', Auth::user()->id);
                             
-            }
+            } */
             if ($paginate === null) {
                 $users = $users->get();
             } else {
@@ -485,6 +482,7 @@ class User extends Authenticatable
         ]);
 
         ClinicaUser::saveEdit($user->id, $request);
+        ConsultorioUser::saveEdit($user->id, $request);
         if (!isset($data['usuario_principal'])) {
             if ($current_user->hasRole('administrador')) {
                 $usuario_principal = $user->id;

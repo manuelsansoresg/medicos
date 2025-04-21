@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ClinicaUser;
 use App\Models\ConsultaAsignado;
 use App\Models\Consultasignado;
 use App\Models\Consultorio;
+use App\Models\ConsultorioUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,12 +32,13 @@ class ConsultasignadoController extends Controller
      */
     public function create(User $user)
     {
-        $offices = Consultorio::getMyCon(); //consultorios
+        $offices = ConsultorioUser::where('user_id', User::getMyUserPrincipal())->get(); //consultorios
+        $clinicas = ClinicaUser::where('user_id', User::getMyUserPrincipal())->get(); //clinicas
         $myUser = User::find(Auth::user()->id);
         $lastConsultaAsignado = null;
         $clinica = Session::get('clinica');
         
-        return view('administracion.user.consultorioAsignado.frm', compact('offices', 'myUser', 'user', 'lastConsultaAsignado'));
+        return view('administracion.user.consultorioAsignado.frm', compact('offices', 'myUser', 'user', 'lastConsultaAsignado', 'clinicas'));
     }
 
     /**
@@ -72,10 +75,11 @@ class ConsultasignadoController extends Controller
     public function edit($id, $idConsultorio)
     {
         $user = User::find($id);
-        $offices = Consultorio::getMyCon(); //consultorios
+        $offices = ConsultorioUser::where('user_id', User::getMyUserPrincipal())->get(); //consultorios
+        $clinicas = ClinicaUser::where('user_id', User::getMyUserPrincipal())->get(); //clinicas
         $myUser = User::find(Auth::user()->id);
         $lastConsultaAsignado = ConsultaAsignado::where('iddoctor', $id)->orderBy('idconsultasignado', 'DESC')->first();
-        return view('administracion.user.consultorioAsignado.frm', compact('offices', 'myUser', 'user', 'idConsultorio', 'lastConsultaAsignado'));
+        return view('administracion.user.consultorioAsignado.frm', compact('offices', 'myUser', 'user', 'idConsultorio', 'lastConsultaAsignado', 'clinicas'));
     }
 
     /**
