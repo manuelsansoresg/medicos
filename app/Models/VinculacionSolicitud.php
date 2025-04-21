@@ -49,7 +49,7 @@ class VinculacionSolicitud extends Model
         return $getVinculacion;
     }
 
-    public static function saveVinculacion($idRel, $type, $solicitud_origin_id)
+    public static function saveVinculacion($idRel, $solicitud_origin_id)
     {
         $isMedico = Auth::user()->hasRole('medico');
         $isAuxiliar = Auth::user()->hasRole('auxiliar');

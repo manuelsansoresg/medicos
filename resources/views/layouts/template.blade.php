@@ -107,7 +107,7 @@
                             @if ($user->is_cedula_valid == false)
                                 
                                 <div class="text-muted small mt-1">
-                                <a href="/admin/solicitudes/{{ $user->id }}" class="text-decoration-none">
+                                <a href="/admin/usuarios/activar/{{ $user->id }}" class="text-decoration-none">
                                     <i class="fas fa-user-check"></i>
                                     <span>Solicitar activación</span>
                                 </a>

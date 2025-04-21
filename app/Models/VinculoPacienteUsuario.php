@@ -9,7 +9,7 @@ class VinculoPacienteUsuario extends Model
 {
     use HasFactory;
     protected $table = 'vinculo_paciente_usuarios';
-    protected $fillable = ['user_id', 'paciente_id'];
+    protected $fillable = ['user_id', 'paciente_id', 'is_link_by_curp'];
 
     public function user()
     {

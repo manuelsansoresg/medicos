@@ -84,6 +84,7 @@ class User extends Authenticatable
         $vinculo = new VinculoPacienteUsuario();
         $vinculo->user_id = $userId;
         $vinculo->paciente_id = $paciente_id;
+        $vinculo->is_link_by_curp = true;
         $vinculo->save();
     }
 
@@ -462,7 +463,9 @@ class User extends Authenticatable
             $data['creador_id'] = Auth::user()->id;
             $user = User::create($data);
             $user->assignRole($rol);
-            //VinculacionSolicitud::saveVinculacion($user->id, 'totalUsuariosSistema', $solicitud->id); 
+            $statusPackages = Solicitud::getUsedStatusPackages();
+            $solicitudId = $statusPackages['totalUsuariosSistema']['solicitudId'];
+            VinculacionSolicitud::saveVinculacion($user->id, $solicitudId); 
         } else {
             $user = User::find($user_id);
             $user->fill($data);
@@ -507,10 +510,7 @@ class User extends Authenticatable
             ]);
         }
     
-        VinculoPacienteUsuario::firstOrCreate([
-            'user_id' => $usuario_principal,
-            'paciente_id' => $user->id
-        ]);
+       
         return $user;
     }
 
@@ -680,6 +680,7 @@ class User extends Authenticatable
         $currentUserId = Auth::user()->id;
         return VinculoPacienteUsuario::where('user_id', $currentUserId)
             ->where('paciente_id', $userId)
+            ->where('is_link_by_curp', true)
             ->exists();
     }
 
@@ -708,7 +709,7 @@ class User extends Authenticatable
             $solicitud = Solicitud::select('solicitudes.*', 'packages.nombre as package_nombre', 'packages.precio as package_precio', 'packages.isValidateCedula')
                 ->leftJoin('packages', function($join) {
                     $join->on('packages.id', '=', 'solicitudes.solicitud_origin_id')
-                         ->where('solicitudes.source_id', '=', 1);
+                         ->where('solicitudes.source_id', '=', 0);
                 })
                 ->where('solicitudes.id', $vinculacion->solicitudId)
                 ->first();

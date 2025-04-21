@@ -25,10 +25,13 @@
                     <a href="/" class="btn btn-primary"><i class="fas fa-home"></i></a>
                     @hasrole(['administrador'])
                         <a href="/admin/usuarios/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                        @else
+                        @if ($getUsedStatusPackages['totalUsuariosSistema']['isLimit']  == false)
+                            <a href="/admin/usuarios/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                        @endif
                     @endrole
-                    @if ($getUsedStatusPackages['totalUsuariosSistema']['isLimit']  == false)
-                        <a href="/admin/usuarios/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
-                    @endif
+                    
+                    
                     
                 </div>
                 <div class="col-12 mt-3">
@@ -80,7 +83,7 @@
                                     </td>
                                     <td>
                                         @if ($vinculacion && $vinculacion->isValidateCedula)
-                                        <span class="{{ $vinculacion->isValidateCedula == 1 ? 'text-primary' : 'text-warning' }}">{{ $vinculacion->isValidateCedula == 1 ? 'SÍ' : 'NO' }}</span>
+                                        <span class="{{ $vinculacion->is_cedula_valid == 1 ? 'text-primary' : 'text-warning' }}">{{ $vinculacion->is_cedula_valid == 1 ? 'SÍ' : 'NO' }}</span>
                                         @else
                                             <span class="text-success">N/A</span>
                                         @endif

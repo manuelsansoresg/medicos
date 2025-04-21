@@ -25,6 +25,13 @@ class Payment extends Model
         $payment = new PayClipService();
         $getPayment = $payment->processPayment(100, $dataPayment['card_token_id'], 'manuelsansoresg@gmail.com', '9991575581');
         $status = $getPayment['status'] ==  'approved'? 1 : 0;
+        
+        if ($status == 1) {
+            $statusPackages = Solicitud::getUsedStatusPackages();
+            $solicitudId = $statusPackages['totalUsuariosSistema']['solicitudId'];
+            VinculacionSolicitud::saveVinculacion($dataPayment['user_id'], $solicitudId); 
+        }
+        
         $payment = Payment::create([
             'card_token_id' => $dataPayment['card_token_id'],
             'solicitud_id' => $dataPayment['solicitud_id'],

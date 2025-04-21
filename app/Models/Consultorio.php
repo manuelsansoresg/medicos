@@ -119,7 +119,9 @@ class Consultorio extends Model
         if ($consultorio_id == null) {
             $data['idusrregistra'] = $userId;
             $consultorio = Consultorio::create($data);
-            VinculacionSolicitud::saveVinculacion($consultorio->idconsultorios, 'totalConsultorioExtra', 2); 
+            $statusPackages = Solicitud::getUsedStatusPackages();
+            $solicitudId = $statusPackages['totalConsultorioExtra']['solicitudId'];
+            VinculacionSolicitud::saveVinculacion($consultorio->idconsultorios, $solicitudId); 
         } else {
             $consultorio = Consultorio::find($consultorio_id);
             $consultorio->update($data);

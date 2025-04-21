@@ -278,7 +278,10 @@ class SolicitudController extends Controller
                 $userId = $getSolicitud != null ? $getSolicitud->user_id : null;
 
                 if ($userId != null) {
-                    VinculacionSolicitud::saveVinculacion($userId, 'totalUsuariosSistema', $getSolicitud->id); 
+                    $statusPackages = Solicitud::getUsedStatusPackages();
+                    $solicitudId = $statusPackages['totalUsuariosSistema']['solicitudId'];
+                    VinculacionSolicitud::saveVinculacion($userId, $solicitudId); 
+                   
                     User::where('id', $userId)->update(['status' => 1]);
                 }
                 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Paciente;
+use App\Models\Solicitud;
 use App\Models\User;
 use App\Models\VinculoPacienteUsuario;
 use Illuminate\Http\Request;
@@ -19,7 +20,8 @@ class PacientesController extends Controller
     public function index()
     {
         $users = User::getUsersByRoles(['paciente']);
-        return view('administracion.paciente.list', compact('users'));
+        $statusPackages = Solicitud::getUsedStatusPackages();
+        return view('administracion.paciente.list', compact('users', 'statusPackages'));
     }
 
     public function search(Request $request)
@@ -61,6 +63,7 @@ class PacientesController extends Controller
         $user_id    = null;
         $user       = null;
         $userAdmins = User::getUsersByNameRol('medico');
+        
         return view('administracion.paciente.frm', compact('user', 'user_id', 'userAdmins'));
     }
 
@@ -97,7 +100,13 @@ class PacientesController extends Controller
         }
 
         
-        User::saveEdit($request);
+        $user = User::saveEdit($request);
+        $usuario_principal = User::getMyUserPrincipal();
+        VinculoPacienteUsuario::firstOrCreate([
+            'user_id' => $usuario_principal,
+            'paciente_id' => $user->id
+            
+        ]);
     }
 
     /**
