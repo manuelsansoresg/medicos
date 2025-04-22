@@ -290,7 +290,7 @@
                     
                     <div class="card-body p-0">
                         <div class="list-group list-group-flush">
-                            @if(Session::get('clinica') == null || Session::get('consultorio') == null)
+                            @if(Session::get('clinica') == null && Session::get('consultorio') == null)
                                 <div class="text-center py-4">
                                     <i class="fas fa-filter text-muted mb-2" style="font-size: 2rem;"></i>
                                     <p class="text-muted">Por favor seleccione una clínica o consultorio para ver las citas</p>

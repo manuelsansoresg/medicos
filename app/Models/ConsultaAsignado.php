@@ -205,21 +205,28 @@ class ConsultaAsignado extends Model
         $idconsultorio = Session()->get('consultorio');
         //dd($idclinica, $idconsultorio);
         $isAdmin     = Auth::user()->hasRole('administrador');
-
+        $userId = User::getMyUserPrincipal();
+        \DB::enableQueryLog();
         $consultaAsignado =  ConsultaAsignado::select('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio', 'user_citas.id')  // Elimina el segundo 'idconsultasignado'
                 ->join('consultorios', 'consultorios.idconsultorios', 'consultasignado.idconsultorio')
                 ->join('user_citas', 'user_citas.consulta_asignado_id', 'consultasignado.idconsultasignado')
                 ->where('ihorainicial', '>', 0) 
-                ->where('user_citas.fecha', $today)
-                ->where('consultasignado.idclinica', $idclinica);
+                ->where('user_citas.fecha', $today);
             
         if ($idconsultorio != 0) {
             if (!$isAdmin) {
                 $consultaAsignado->where('consultasignado.idconsultorio', $idconsultorio);
             }
         } elseif ($idconsultorio == 0) {
-            $getAsignedConsultories = Consultorio::getAsignedConsultories($idclinica, true);
+            $getAsignedConsultories = ConsultorioUser::where('user_id', $userId)->pluck('consultorio_id')->values()->toArray();
             $consultaAsignado->whereIn('consultasignado.idconsultorio', $getAsignedConsultories);
+        }
+
+        if ($idclinica != 0) {
+            $consultaAsignado->where('consultasignado.idclinica', $idclinica);
+        } else {
+            $getAsignedClinicas = ClinicaUser::where('user_id', $userId)->pluck('clinica_id')->values()->toArray();
+            $consultaAsignado->whereIn('consultasignado.idclinica', $getAsignedClinicas);
         }
     
         $consultaAsignado->groupBy('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio', 'user_citas.id');  // Elimina la columna duplicada en el select
@@ -232,7 +239,7 @@ class ConsultaAsignado extends Model
 
         // Devuelve los resultados sin paginación
         return $consultaAsignado->get();
-
+        dd(\DB::getQueryLog());
     }
 
     public static function saveEdit($request)

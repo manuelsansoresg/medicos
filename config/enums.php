@@ -29,14 +29,14 @@ return [
     
     'usuario_puesto_medico' => array(
         '' => 'Seleccione una opción',
-        'medico' => 'MEDICO',
-        'auxiliar' => 'AUXILIAR',
+        'auxiliar' => 'MEDICO AUXILIAR',
         'secretario' => 'SECRETARIO',
     ),
     
     'usuario_auxiliar' => array(
         '' => 'Seleccione una opción',
-        'auxiliar' => 'AUXILIAR',
+        'auxiliar' => 'MEDICO AUXILIAR',
+        'secretario' => 'SECRETARIO',
     ),
 
     'sexo' => array(

@@ -38,7 +38,6 @@ class FormularioController extends Controller
         );
         $pdf = Pdf::loadView('administracion.consulta.consulta', $data);
         $pdf->setPaper('A4');
-
         return $pdf->save('expedientes/'.$nameExpedient);
     }
 
