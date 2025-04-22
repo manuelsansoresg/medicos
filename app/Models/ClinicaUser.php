@@ -23,7 +23,7 @@ class ClinicaUser extends Model
             $my_clinics = ClinicaUser::select('clinica_id')->distinct()->get();
 
         } else {
-            $my_clinics = ClinicaUser::where('user_id', Auth::user()->id)->get();
+            $my_clinics = ClinicaUser::where('user_id', User::getMyUserPrincipal())->get();
         }
         return $my_clinics;
     }

@@ -65,10 +65,7 @@ class HomeController extends Controller
         $statusPacient = User::getPercentPacient();
         $earrings      = PendienteUsr::getByDay(5);
         $consultorio   = Session::get('consultorio');
-        $consultas     = null;
-        if ($consultorio != null) {
-            $consultas              = ConsultaAsignado::getByDay(5);
-        }
+        $consultas     = ConsultaAsignado::getByDay(5);
         $getPorcentajeSistema = User::getPorcentajeSistema();
         $getUsedStatusPackages = Solicitud::getUsedStatusPackages();
         $getPackage = Solicitud::getMyPackage();

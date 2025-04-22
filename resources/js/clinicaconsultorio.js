@@ -64,8 +64,8 @@ window.changeConsultorio = function (valorConsultorio) {
 window.aplicarConsultorio = function ()
 
 {
-    let consultorio = $('#setConsultorio').val();
-    let clinica = $('#setClinica').val();
+    let consultorio = $('#selectConsultory').val();
+    let clinica = $('#selectClinic').val();
 
     axios.post('/admin/clinica/consultorio/set', {consultorio:consultorio, clinica:clinica})
     .then(function(response) {

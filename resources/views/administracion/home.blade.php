@@ -290,28 +290,35 @@
                     
                     <div class="card-body p-0">
                         <div class="list-group list-group-flush">
-                            @if ($consultas != null)
-                                @foreach ($consultas as $consulta)
-                                <a href="/admin/consulta/{{ $consulta->id}}/{{ $consulta->idconsultasignado }}/registro" class="list-group-item list-group-item-action border-0 border-bottom py-3">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="d-flex align-items-center">
-                                            <div class="text-primary me-3">
-                                                <i class="fas fa-calendar-alt"></i>
-                                            </div>
-                                            <div>
-                                                <p class="mb-0">De {{ $consulta->ihorainicial }}:00 hrs. a {{ $consulta->ihorafinal }}:00 hrs.</p>
-                                                <small class="text-muted">Paciente: María González</small>
-                                            </div>
-                                        </div>
-                                        <span class="badge bg-success">Confirmada</span>
-                                    </div>
-                                </a>
-                                @endforeach
-                            @else
+                            @if(Session::get('clinica') == null || Session::get('consultorio') == null)
                                 <div class="text-center py-4">
-                                    <i class="fas fa-calendar-check text-muted mb-2" style="font-size: 2rem;"></i>
-                                    <p class="text-muted">No hay citas programadas para hoy</p>
+                                    <i class="fas fa-filter text-muted mb-2" style="font-size: 2rem;"></i>
+                                    <p class="text-muted">Por favor seleccione una clínica o consultorio para ver las citas</p>
                                 </div>
+                            @else
+                                @if ($consultas != null && count($consultas) > 0)
+                                    @foreach ($consultas as $consulta)
+                                    <a href="/admin/consulta/{{ $consulta->id}}/{{ $consulta->idconsultasignado }}/registro" class="list-group-item list-group-item-action border-0 border-bottom py-3">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <div class="text-primary me-3">
+                                                    <i class="fas fa-calendar-alt"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="mb-0">De {{ $consulta->ihorainicial }}:00 hrs. a {{ $consulta->ihorafinal }}:00 hrs.</p>
+                                                    <small class="text-muted">Paciente: María González</small>
+                                                </div>
+                                            </div>
+                                            <span class="badge bg-success">Confirmada</span>
+                                        </div>
+                                    </a>
+                                    @endforeach
+                                @else
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-calendar-check text-muted mb-2" style="font-size: 2rem;"></i>
+                                        <p class="text-muted">No hay citas programadas para hoy</p>
+                                    </div>
+                                @endif
                             @endif
                         </div>
                     </div>

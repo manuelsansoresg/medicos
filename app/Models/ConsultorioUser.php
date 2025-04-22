@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class ConsultorioUser extends Model
 {
@@ -14,6 +15,18 @@ class ConsultorioUser extends Model
     protected $fillable = [
         'user_id','consultorio_id'
     ];
+
+    public static function myConsultories()
+    {
+        $is_admin   = Auth::user()->hasRole(['administrador']);
+        if ($is_admin === true) {
+            $my_consultories = ConsultorioUser::select('consultorio_id')->distinct()->get();
+            
+        } else {
+            $my_consultories = ConsultorioUser::where('user_id', User::getMyUserPrincipal())->get();
+        }
+        return $my_consultories;
+    }
 
     public static function saveEdit($id, $request)
     {

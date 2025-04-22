@@ -203,6 +203,7 @@ class ConsultaAsignado extends Model
         $today = date('Y-m-d');
         $idclinica     = Session()->get('clinica');
         $idconsultorio = Session()->get('consultorio');
+        //dd($idclinica, $idconsultorio);
         $isAdmin     = Auth::user()->hasRole('administrador');
 
         $consultaAsignado =  ConsultaAsignado::select('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio', 'user_citas.id')  // Elimina el segundo 'idconsultasignado'
