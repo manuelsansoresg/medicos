@@ -40,7 +40,7 @@
                                     </div>
                                 </td>
                             @endif
-                            <td> {{ $paciente->name }} {{ $paciente->vapellido }} </td>
+                            <td> {{ $paciente->id }} -  {{ $paciente->name }} {{ $paciente->vapellido }} </td>
                             <td> {{ $paciente->codigo_paciente }}</td>
                             <td> 
                                 @php

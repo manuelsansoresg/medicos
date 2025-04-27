@@ -126,30 +126,25 @@
                 <td>
                     <b>{{ $field->field_name }} </b> </td> 
             </tr>
-                @if($field->field_type == 'text')
-                <tr>
-                    <td>{{ $field->value }}</td>
-                </tr>
-                @elseif($field->field_type == 'date')
-                <tr>
-                    <td>{{ $field->value }}</td>
-                    </tr>
-                @elseif($field->field_type == 'textarea')
-                <tr>
-                    <td>{{ $field->value }}</td>
-                    </tr>
-                @elseif($field->field_type == 'select')
-                @foreach(explode(',', $field->options) as $option)
-                @if ($field->value == $option)
-                <tr>
-                    <td>{{ $option }}</td>
-                    </tr>
-                @endif
-            
-        @endforeach
-            @elseif($field->field_type == 'image')
-               
-            @endif
+            <tr>
+                <td>
+                    @if($field->field_type == 'text' || $field->field_type == 'date' || $field->field_type == 'textarea')
+                        {{ $field->value }}
+                    @elseif($field->field_type == 'select')
+                        @foreach(explode(',', $field->options) as $option)
+                            @if ($field->value == $option)
+                                {{ $option }}
+                            @endif
+                        @endforeach
+                    @elseif($field->field_type == 'image')
+                        @if(filter_var($field->value, FILTER_VALIDATE_URL) !== false)
+                            <img src="{{ $field->value }}" alt="Imagen" style="max-width: 200px;">
+                        @else
+                            <p>No se ha proporcionado una imagen.</p>
+                        @endif
+                    @endif
+                </td>
+            </tr>
         </table>
         @endforeach
         {{-- @foreach($entry->fields as $entryField)

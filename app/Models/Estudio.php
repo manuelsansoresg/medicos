@@ -15,6 +15,7 @@ class Estudio extends Model
         'idusrregistra',
         'estudios',
         'diagnosticos',
+        'archivo',
     ];
 
     public static function saveEdit ($request)

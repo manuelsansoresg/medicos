@@ -23,6 +23,8 @@ class Consulta extends Model
         'indicaciones_generales',
     ];
 
+    
+
     public static function getLastPesoEstaturta($pacienteId)
     {
         $lastPeso =  Consulta::
@@ -49,7 +51,7 @@ class Consulta extends Model
     //pivote para realizar la consulta a travez de FormularioEntry
     public static function getByPaciente($pacienteId,  $search = null, $limit = null, $isPaginate = false)
     {
-        $query =  FormularioEntry::select('formulario_entries.id', 'formulario_entries.created_at', 'paciente_id')
+        $query =  FormularioEntry::select('formulario_entries.id', 'formulario_entries.created_at', 'paciente_id', 'formulario_entries.archivo')
                         ->join('users', 'users.id', 'formulario_entries.paciente_id')
                         ->where('paciente_id', $pacienteId);
         if ($search != '') {
@@ -78,5 +80,9 @@ class Consulta extends Model
             Consulta::where('id', $consulta_id)->update($data);
         }
        
+    }
+    public function paciente()
+    {
+        return $this->belongsTo(User::class, 'paciente_id');
     }
 }

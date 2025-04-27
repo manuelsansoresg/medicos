@@ -45,6 +45,10 @@ class EstudioController extends Controller
         $nameExpedient = $prefijo.$paciente->id.'-'.$paciente->name.' '.$paciente->vapellido.'.pdf';
         $userPermisions = User::find($paciente->usuario_principal);
 
+        Estudio::where('id', $estudio->id)->update([
+            'archivo' => $nameExpedient
+        ]);
+
         $data         = array(
             'estudio'    => $estudio,
             'medico'     => $medico,

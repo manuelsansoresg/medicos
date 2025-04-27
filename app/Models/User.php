@@ -56,7 +56,8 @@ class User extends Authenticatable
         'alergias',
         'curp',
         'ine_front',
-        'ine_back'
+        'ine_back',
+        'is_share_profile'
     ];
 
     /**
@@ -177,9 +178,72 @@ class User extends Authenticatable
                 })
                 ->get();
     }
+
+
+    public static function searchPacient($search, $limit = null)
+    {
+        $clinica     = Session::get('clinica');
+        $consultorio = Session::get('consultorio');
+
+        $roles = ['paciente'];
+        $isAdmin = Auth::user()->hasRole('administrador');
+        $users = User::
+            whereHas('roles', function ($q) use($roles) {
+            $q->whereIn('name', $roles);
+        });
+        if(!$isAdmin){
+            $vinculos = VinculoPacienteUsuario::where('user_id', User::getMyUserPrincipal())->get();  
+            $pacientes = [];
+            foreach ($vinculos as $vinculo) {
+                $pacientes[] = $vinculo->paciente_id;
+            }
+            $users->whereIn('id', $pacientes);
+        }
+
+        if ($search != '') {
+            $users->where(function($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                      ->orWhere('vapellido', 'like', '%' . $search . '%')
+                      ->orWhere('codigo_paciente', 'like', '%' . $search . '%');
+            });
+        }
+
+        $userIds = [];
+
+        // Recolectar IDs de clínica
+        if ($clinica != null) {
+            $clinicaUsers = ClinicaUser::where('clinica_id', $clinica)
+                ->pluck('user_id')
+                ->toArray();
+            $userIds = array_merge($userIds, $clinicaUsers);
+        }
+
+        // Recolectar IDs de consultorio
+        if ($consultorio != null) {
+            $consultorioUsers = ConsultorioUser::where('consultorio_id', $consultorio)
+                ->pluck('user_id')
+                ->toArray();
+            $userIds = array_merge($userIds, $consultorioUsers);
+        }
+
+        // Aplicar filtro si hay IDs recolectados
+        if (!empty($userIds)) {
+            // Eliminar duplicados y aplicar el filtro
+            $uniqueUserIds = array_unique($userIds);
+            $users->whereIn('id', $uniqueUserIds);
+        }
+
+        $limit = $limit === null ? 50 : $limit;
+        $users = $users->paginate($limit);
+        return $users;
+    }
+
     public static function getUsersByRoles($roles, $search = null, $limit = null, $isPaginate = false, $setUserId = null)
     {
         \DB::enableQueryLog(); // Enable query log
+
+        $clinica     = Session::get('clinica');
+        $consultorio = Session::get('consultorio');
 
         $isAdmin = Auth::user()->hasRole('administrador');
         $users = User::

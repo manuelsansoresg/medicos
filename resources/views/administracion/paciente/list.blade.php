@@ -22,12 +22,10 @@
 
                 <div class="col-12 text-end">
                     <a href="/" class="btn btn-primary"><i class="fas fa-home"></i></a>
-                    @hasrole(['administrador'])
+                    @hasrole(['administrador', 'medico'])
                     <a href="/admin/pacientes/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
                     @endrole
-                    @if ($statusPackages['totalPacientes']['isLimit']  == false)
-                        <a href="/admin/pacientes/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
-                    @endif
+                   
                     
                 </div>
                 <div class="col-12">
@@ -55,6 +53,7 @@
                                     </td>
                                     <td> {{ $user->email }} </td>
                                     <td class="col-3">
+                                        <a onclick="sharePacient({{ $user->id }})" class="btn btn-success"> <i class="fas fa-share-alt"></i> </a>
                                         @if ($isLinked)
                                         <a href="/admin/pacientes/{{ $user->id }}" class="btn btn-primary"><i
                                             class="fas fa-eye"></i></a>

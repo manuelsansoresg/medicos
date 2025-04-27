@@ -28,7 +28,11 @@ class FormularioController extends Controller
         $medico       = $getMedico == null ? $getUserMedic : $getMedico;
         $paciente     = User::find($entry->paciente_id);
 
-        $nameExpedient = $paciente->id.'-'.$paciente->name.' '.$paciente->vapellido.'.pdf';
+        $nameExpedient = $entry->id.'-'.$paciente->id.'-'.$paciente->name.' '.$paciente->vapellido.'.pdf';
+
+        FormularioEntry::where('id', $entry->id)->update([
+            'archivo' => $nameExpedient
+        ]);
         
         $data         = array(
             'entry' => $entry,
@@ -37,7 +41,6 @@ class FormularioController extends Controller
             'paciente' => $paciente
         );
         $pdf = Pdf::loadView('administracion.consulta.consulta', $data);
-        $pdf->setPaper('A4');
         return $pdf->save('expedientes/'.$nameExpedient);
     }
 

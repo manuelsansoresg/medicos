@@ -105,7 +105,6 @@ class PacientesController extends Controller
         VinculoPacienteUsuario::firstOrCreate([
             'user_id' => $usuario_principal,
             'paciente_id' => $user->id
-            
         ]);
     }
 

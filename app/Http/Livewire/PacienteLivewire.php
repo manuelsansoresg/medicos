@@ -31,7 +31,7 @@ class PacienteLivewire extends Component
         if ($this->search !== '' && $this->page > 1) {
             $this->resetPage();
         }
-        $pacientes = User::getUsersByRoles(['paciente'], $this->search, $this->limit, true);
+        $pacientes = User::searchPacient($this->search, $this->limit);
         return view('livewire.paciente-livewire', compact('pacientes'));
     }
 }

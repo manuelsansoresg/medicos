@@ -110,6 +110,14 @@ class CitasController extends Controller
         return view('administracion.citas.HoraCitaUser', compact('horarios', 'consultaAsignadoId', 'iddoctor', 'userAdmins'));
     }
 
+    public function consulta(ConsultaAsignado $consultaAsignado)
+    {
+        UserCita::where('consulta_asignado_id', $consultaAsignado->idconsultasignado)->update([
+            'status' => 2 //En consulta
+        ]);
+        return response()->json('ok');
+    }
+
     /**
      * Show the form for creating a new resource.
      *

@@ -1,74 +1,116 @@
+function initExpedientDownloadButton() {
+    let checkboxes = document.querySelectorAll('.selectExpedient');
+    let btnDownload = document.getElementById('btn-download-expedient');
+    let selectAll = document.getElementById('selectAll');
 
-if (document.getElementById('selectAll')) {
-    // Función para habilitar/deshabilitar el botón según la selección de los checkboxes
     function toggleDownloadButton() {
-        let checkboxes = document.querySelectorAll('.selectExpedient');
-        let btnDownload = document.getElementById('btn-download-expedient');
-        
-        // Verificar si al menos un checkbox está seleccionado
         let isAnySelected = Array.from(checkboxes).some(checkbox => checkbox.checked);
-        
-        // Si hay al menos uno seleccionado, quitamos la clase 'disabled', si no, la añadimos
-        if (isAnySelected) {
-            btnDownload.classList.remove('disabled');
-        } else {
-            btnDownload.classList.add('disabled');
+        if (btnDownload) {
+            btnDownload.style.display = isAnySelected ? 'inline-block' : 'none';
         }
     }
-    
-    // Escuchar el evento 'change' en el checkbox 'selectAll'
-    document.getElementById('selectAll').addEventListener('change', function() {
-        let checkboxes = document.querySelectorAll('.selectExpedient');
-        
-        // Marcar o desmarcar todos según el estado de selectAll
-        checkboxes.forEach(function(checkbox) {
-            checkbox.checked = document.getElementById('selectAll').checked;
+
+    if (selectAll) {
+        selectAll.addEventListener('change', function() {
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = selectAll.checked;
+            });
+            toggleDownloadButton();
         });
-    
-        // Llamar a la función para habilitar/deshabilitar el botón
-        toggleDownloadButton();
-    });
-    
-    // Escuchar el evento 'change' en cada checkbox individual
-    document.querySelectorAll('.selectExpedient').forEach(function(checkbox) {
+    }
+
+    checkboxes.forEach(function(checkbox) {
         checkbox.addEventListener('change', function() {
-            // Llamar a la función para habilitar/deshabilitar el botón
             toggleDownloadButton();
         });
     });
-    
-    
-    
-    
-    $("#frm-download-expedient").submit(function (e) {
-        e.preventDefault();
-        const form = document.getElementById("frm-download-expedient");
-        const data = new FormData(form);
-    
-        axios({
-            method: 'post',
-            url: '/admin/expedientes/select/download',
-            data: data,
-            responseType: 'blob', // Importante: indicamos que la respuesta es un blob (archivo binario)
-        })
-        .then(function (response) {
-            // Crear un enlace para forzar la descarga
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-    
-            // Establecer el nombre del archivo (puede ser el que envías desde Laravel)
-            link.setAttribute('download', 'expedientes.zip'); // Nombre del archivo a descargar
-    
-            // Añadir el enlace al cuerpo del documento y forzar el clic
-            document.body.appendChild(link);
-            link.click();
-    
-            // Eliminar el enlace después de descargar
-            document.body.removeChild(link);
-        })
-        .catch(function (error) {
-            console.error("Error al descargar el archivo", error);
+
+    // Inicializa el estado del botón al cargar
+    toggleDownloadButton();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initExpedientDownloadButton();
+    initCollapseIcons();
+    const btn = document.getElementById('btn-download-expedient');
+    if (btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            let selectedExpedients = Array.from(document.querySelectorAll('.selectExpedient:checked'))
+                .map(checkbox => checkbox.value);
+
+            if (selectedExpedients.length === 0) {
+                alert('Selecciona al menos un expediente.');
+                return;
+            }
+
+            axios.post('/admin/expedientes/descargar-archivos', {
+                expedients: selectedExpedients
+            }, {
+                responseType: 'blob'
+            })
+            .then(function (response) {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+
+                // Intenta obtener el nombre del archivo del header
+                let disposition = response.headers['content-disposition'];
+                let fileName = 'expedientes.zip';
+                if (disposition && disposition.indexOf('filename=') !== -1) {
+                    fileName = disposition.split('filename=')[1].replace(/['\"]/g, '');
+                }
+                link.setAttribute('download', fileName);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(function (error) {
+                alert('No se pudo descargar el archivo.');
+            });
+        });
+    }
+});
+
+if (window.Livewire) {
+    window.Livewire.hook('message.processed', function() {
+        initExpedientDownloadButton();
+        initCollapseIcons();
+    });
+}
+
+function initCollapseIcons() {
+    document.querySelectorAll('.toggle-collapse').forEach(function(btn) {
+        var targetSelector = btn.getAttribute('data-bs-target');
+        var target = document.querySelector(targetSelector);
+        var icon = btn.querySelector('i');
+        if (!target) return;
+
+        // Elimina listeners previos para evitar duplicados
+        target.removeEventListener('show.bs.collapse', target._showListener || (()=>{}));
+        target.removeEventListener('hide.bs.collapse', target._hideListener || (()=>{}));
+
+        // Define listeners
+        target._showListener = function () {
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-up');
+        };
+        target._hideListener = function () {
+            icon.classList.remove('fa-chevron-up');
+            icon.classList.add('fa-chevron-down');
+        };
+        target.addEventListener('show.bs.collapse', target._showListener);
+        target.addEventListener('hide.bs.collapse', target._hideListener);
+
+        // Forzar el toggle manualmente para evitar problemas de Livewire
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            var bsCollapse = bootstrap.Collapse.getOrCreateInstance(target);
+            if (target.classList.contains('show')) {
+                bsCollapse.hide();
+            } else {
+                bsCollapse.show();
+            }
         });
     });
 }

@@ -7,6 +7,10 @@ use App\Http\Controllers\ClipPaymentController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use App\Models\Estudio;
+use App\Models\UserCita;
+use App\Models\FormularioEntry;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +44,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('citas/{consultaAsignado}/{hora}/{fecha}/add', [App\Http\Controllers\Admin\CitasController::class, 'add'])->middleware('auth');
     Route::get('citas/{fecha}/{iddoctor}/{idconsultorio}/{idclinica}/set', [App\Http\Controllers\Admin\CitasController::class, 'setCita'])->middleware('auth');
     Route::get('citas/{consultaAsignado}/list', [App\Http\Controllers\Admin\CitasController::class, 'viewCitaConsultaAsignado'])->middleware('auth');
+    Route::get('citas/{consultaAsignado}/consulta', [App\Http\Controllers\Admin\CitasController::class, 'consulta'])->middleware('auth');
 
 
     Route::resource('pacientes', '\App\Http\Controllers\Admin\PacientesController')->middleware('auth');
@@ -113,6 +118,7 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::resource('expedientes', '\App\Http\Controllers\Admin\ExpedienteController')->middleware('auth');
     Route::post('expedientes/select/download', [App\Http\Controllers\Admin\ExpedienteController::class, 'downloadExpedient'])->middleware('auth');
+    Route::post('/admin/expedientes/descargar-archivos', [App\Http\Controllers\Admin\ExpedienteController::class, 'descargarArchivos']);
 
     Route::resource('estudio-imagenes', '\App\Http\Controllers\Admin\EstudioImagenesController')->middleware('auth');
     Route::get('estudio-imagenes/{estudioId}/{userCitaId}/{ConsultaAsignado}', [App\Http\Controllers\Admin\EstudioImagenesController::class, 'show'])->middleware('auth');
@@ -196,3 +202,5 @@ Route::get('/registro-exitoso-transfer', function () {
 Route::get('solicitud/{solicitudId}/comprobante/adjuntar', [HomeController::class, 'adjuntarComprobante'])->name('formularios.show');
 Route::post('solicitud/{solicitudId}/comprobante/adjuntar/store', [HomeController::class, 'storeComprobante'])->name('formulario-adjuntado.store');
 Route::get('solicitud/{solicitudId}/comprobante/exitoso', [HomeController::class, 'salidaComprobanteExitoso'])->name('solicitud.comprobante.exitoso');
+
+Route::post('/admin/expedientes/descargar-archivos', [App\Http\Controllers\Admin\ExpedienteController::class, 'descargarArchivos']);

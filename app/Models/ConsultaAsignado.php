@@ -207,10 +207,12 @@ class ConsultaAsignado extends Model
         $isAdmin     = Auth::user()->hasRole('administrador');
         $userId = User::getMyUserPrincipal();
         \DB::enableQueryLog();
-        $consultaAsignado =  ConsultaAsignado::select('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio', 'user_citas.id')  // Elimina el segundo 'idconsultasignado'
+        $consultaAsignado =  ConsultaAsignado::select('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio', 'user_citas.id', 'users.name as paciente_name', 'users.vapellido as paciente_vapellido', 'users.segundo_apellido as paciente_segundo_apellido', 'user_citas.status')  // Elimina el segundo 'idconsultasignado'
                 ->join('consultorios', 'consultorios.idconsultorios', 'consultasignado.idconsultorio')
                 ->join('user_citas', 'user_citas.consulta_asignado_id', 'consultasignado.idconsultasignado')
+                ->join('users', 'users.id', 'user_citas.paciente_id')
                 ->where('ihorainicial', '>', 0) 
+                ->where('user_citas.status', '!=', 3) //diferente a cancelada
                 ->where('user_citas.fecha', $today);
             
         if ($idconsultorio != 0) {

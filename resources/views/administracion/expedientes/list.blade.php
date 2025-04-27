@@ -16,11 +16,5 @@
 @stop
 
 @section('content')
-<div class="container bg-white py-2">
-    <div class="row mt-3 justify-content-center">
-        <div class="col-12 col-md-8">
-            <livewire:paciente-livewire :limit="50" :isList="true" />
-        </div>
-    </div>
-</div>
+<livewire:expedient-livewire :limit="50"  />
 @stop

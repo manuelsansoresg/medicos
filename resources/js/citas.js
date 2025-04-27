@@ -200,3 +200,24 @@ window.updateSelectedTab = function (selectedTab)
   Livewire.emit('updateSelectedTab', selectedTab);
 }
 
+window.iniciarConsulta = function(consultaId, consultaAsignadoId) {
+  Swal.fire({
+    title: '¿Deseas iniciar la consulta?',
+    text: 'Se redirigirá a la página de registro de consulta',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, iniciar',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      axios.get('/admin/citas/'+consultaAsignadoId+'/consulta')
+      .then(function (response) {
+        window.location.href = `/admin/consulta/${consultaId}/${consultaAsignadoId}/registro`;
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+    }
+  });
+}
+

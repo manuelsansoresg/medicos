@@ -97,3 +97,8 @@ window.deleteVinculo = function(user_id)
 
     
 }	
+
+window.permisosPaciente = function(user_id)
+{
+
+}

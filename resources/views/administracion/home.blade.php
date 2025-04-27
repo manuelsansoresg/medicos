@@ -290,15 +290,12 @@
                     
                     <div class="card-body p-0">
                         <div class="list-group list-group-flush">
-                            @if(Session::get('clinica') == null && Session::get('consultorio') == null)
-                                <div class="text-center py-4">
-                                    <i class="fas fa-filter text-muted mb-2" style="font-size: 2rem;"></i>
-                                    <p class="text-muted">Por favor seleccione una clínica o consultorio para ver las citas</p>
-                                </div>
-                            @else
-                                @if ($consultas != null && count($consultas) > 0)
+                            @if ($consultas != null && count($consultas) > 0)
                                     @foreach ($consultas as $consulta)
-                                    <a href="/admin/consulta/{{ $consulta->id}}/{{ $consulta->idconsultasignado }}/registro" class="list-group-item list-group-item-action border-0 border-bottom py-3">
+                                    @php
+                                        $paciente = $consulta->paciente;
+                                    @endphp
+                                    <div class="list-group-item border-0 border-bottom py-3">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div class="d-flex align-items-center">
                                                 <div class="text-primary me-3">
@@ -306,12 +303,20 @@
                                                 </div>
                                                 <div>
                                                     <p class="mb-0">De {{ $consulta->ihorainicial }}:00 hrs. a {{ $consulta->ihorafinal }}:00 hrs.</p>
-                                                    <small class="text-muted">Paciente: María González</small>
+                                                    <small class="text-muted">Paciente:  {{ $consulta->paciente_name }} {{ $consulta->paciente_vapellido }} {{ $consulta->paciente_segundo_apellido }} </small>
                                                 </div>
                                             </div>
-                                            <span class="badge bg-success">Confirmada</span>
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge bg-success me-2">{{ $consulta->status == 1 ? 'En espera' : 'En consulta' }}</span>
+                                                <a href="#" onclick="iniciarConsulta({{ $consulta->id }}, {{ $consulta->idconsultasignado }})" class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="tooltip" title="Iniciar consulta">
+                                                    <i class="fas fa-stethoscope"></i>
+                                                </a>
+                                                <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Liberar cita">
+                                                    <i class="fas fa-times-circle"></i>
+                                                </a>
+                                            </div>
                                         </div>
-                                    </a>
+                                    </div>
                                     @endforeach
                                 @else
                                     <div class="text-center py-4">
@@ -319,7 +324,6 @@
                                         <p class="text-muted">No hay citas programadas para hoy</p>
                                     </div>
                                 @endif
-                            @endif
                         </div>
                     </div>
                 </div>

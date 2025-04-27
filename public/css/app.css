@@ -64,3 +64,29 @@ thead > tr > th {
   display: block;
   margin: 0 auto;
 }
+
+/* expedientes */
+.card-body {
+  padding: 1rem;
+}
+
+.table-sm td, .table-sm th {
+  padding: 0.3rem;
+}
+
+.consulta-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.field-item {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.field-item strong {
+  min-width: 120px;
+}
+
+/* expedientes */

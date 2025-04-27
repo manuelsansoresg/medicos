@@ -19,7 +19,7 @@ class UserCita extends Model
         'motivo',
         'id_consultorio',
         'id_clinica',
-        'status',
+        'status', // 1: Confirmada, 2: En consulta, 3: Cancelada
         'consulta_asignado_id',
     ];
 
@@ -71,5 +71,10 @@ class UserCita extends Model
             
         }
         return $userCita;
+    }
+
+    public function paciente()
+    {
+        return $this->belongsTo(User::class, 'paciente_id');
     }
 }

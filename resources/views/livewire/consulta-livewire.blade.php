@@ -1,4 +1,3 @@
-
 <div>
     @inject('formularioEntryField', 'App\Models\FormularioEntryField')
     @inject('Mconsulta', 'App\Models\Consulta')
@@ -45,7 +44,7 @@
                     </td>
                     <td>
                         {{-- <a  href="/admin/consulta/{{ $consulta->id }}/consulta/generate/pdf" target="_blank" class="btn btn-secondary pointer"><i class="far fa-folder-open"></i></a> --}}
-                        <a  href="{{ $consultaPdf }}" target="_blank" class="btn btn-secondary pointer"><i class="fas fa-print"></i></a>
+                        <a  href="{{ asset('expedientes/'.$consulta->archivo) }}" target="_blank" class="btn btn-secondary pointer"><i class="fas fa-print"></i></a>
                         @if (!$isExpedient)
                             
                             <a  onclick="editarConsulta({{ $consulta->id }})" class="btn btn-primary pointer"><i class="fas fa-edit"></i></a>

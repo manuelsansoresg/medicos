@@ -267,21 +267,26 @@ class Solicitud extends Model
     public static function getUsedStatusPackages()
     {
         $packages = self::getStatusPackages();
+        $userId   = User::getMyUserPrincipal();
+        $data     = [];
         
-        $userId = User::getMyUserPrincipal();
-        $data = [];
         if ($packages != null) {
 
             $getUser = User::selectRaw('COUNT(id) as total')->where('usuario_principal', $userId)->orWhere('id', $userId)->first();
             $getCon = Consultorio::selectRaw('COUNT(idconsultorios) as total')->where('idusrregistra', $userId)->first();
             $getClinic = Clinica::selectRaw('COUNT(idclinica) as total')->where('idusrregistra', $userId)->first();
-            $getPacientes = VinculoPacienteUsuario::where('user_id', $userId)->count();
+            $getPacientes = User::where('usuario_principal', $userId)
+                            ->where('is_share_profile', true)
+                ->whereHas('roles', function($query) {
+                    $query->where('name', 'paciente');
+                })
+                ->count();
 
             $usuariosUsados = $getUser->total ?? 0;
             $consultoriosUsados = $getCon->total ?? 0;
             $clinicaUsada = $getClinic->total ?? 0;
             $pacientesUsados = $getPacientes ?? 0;
-            
+        
             $usuariosDisponibles = 0;
             $consultoriosDisponibles = 0;
             $clinicaDisponible = 0;

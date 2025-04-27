@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Consulta;
+use App\Models\Estudio;
+use App\Models\FormularioEntry;
 use App\Models\User;
+use App\Models\UserCita;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -72,6 +75,64 @@ class ExpedienteController extends Controller
             return response()->json(['error' => 'No se pudo crear el archivo ZIP'], 500);
         }
 
+    }
+
+    public function descargarArchivos(Request $request)
+    {
+        $pacienteIds = $request->expedients;
+        if (!$pacienteIds || !is_array($pacienteIds)) {
+            return response()->json(['error' => 'No hay expedientes seleccionados.'], 400);
+        }
+
+        $zip = new \ZipArchive();
+        $user = auth()->user();
+        $fecha = \Carbon\Carbon::now()->format('Ymd_His');
+        // Crear el ZIP en la carpeta public/expedientes
+        $zipDir = public_path('expedientes');
+        if (!file_exists($zipDir)) {
+            mkdir($zipDir, 0777, true);
+        }
+        $zipFileName = 'expedientes-' . $user->name . '-' . $fecha . '.zip';
+        $zipFilePath = $zipDir . DIRECTORY_SEPARATOR . $zipFileName;
+
+        if ($zip->open($zipFilePath, \ZipArchive::CREATE) !== TRUE) {
+            return response()->json(['error' => 'No se pudo crear el archivo ZIP.'], 500);
+        }
+
+        foreach ($pacienteIds as $paciente_id) {
+            $paciente =User::find($paciente_id);
+            if (!$paciente) continue;
+
+            // 1. Consultas: UserCita y FormularioEntry
+            $citas = UserCita::where('paciente_id', $paciente_id)->get();
+            foreach ($citas as $cita) {
+                $formularios = FormularioEntry::where('user_cita_id', $cita->id)->get();
+                foreach ($formularios as $formulario) {
+                    $archivoPath = public_path('expedientes/' . basename($formulario->archivo));
+                    if ($formulario->archivo && file_exists($archivoPath)) {
+                        $zip->addFile($archivoPath, 'consultas/' . basename($formulario->archivo));
+                    }
+                }
+            }
+
+            // 2. Estudios: Estudio
+            $estudios = Estudio::where('paciente_id', $paciente_id)->get();
+            
+            foreach ($estudios as $estudio) {
+                $archivoPath = public_path('estudios/' . basename($estudio->archivo));
+                if ($estudio->archivo && file_exists($archivoPath)) {
+                    $zip->addFile($archivoPath, 'estudios/' . basename($estudio->archivo));
+                }
+            }
+        }
+
+        $zip->close();
+
+        if (file_exists($zipFilePath)) {
+            return response()->download($zipFilePath)->deleteFileAfterSend(true);
+        } else {
+            return response()->json(['error' => 'No se encontraron archivos para descargar.'], 404);
+        }
     }
 
     /**
