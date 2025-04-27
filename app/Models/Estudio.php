@@ -39,13 +39,17 @@ class Estudio extends Model
         return $nameExpedient;
     }
 
-    public static function getByPaciente($pacienteId,  $search = null, $limit = null, $isPaginate = false)
+    public static function getByPaciente($pacienteId,  $search = null, $limit = null, $isPaginate = false, $fecha_inicio = null, $fecha_final = null)
     {
         $query =  Estudio::
                         where('paciente_id', $pacienteId);
         if ($search != '') {
             $query->where('estudios', 'like', '%' . $search . '%');
             $query->orWhere('diagnosticos', 'like', '%' . $search . '%');
+        }
+
+        if ($fecha_inicio && $fecha_final) {
+            $query->whereBetween('created_at', [$fecha_inicio, $fecha_final]);
         }
 
         $limit = $limit === null ? 50 : $limit;

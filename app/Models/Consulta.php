@@ -49,7 +49,7 @@ class Consulta extends Model
     }
 
     //pivote para realizar la consulta a travez de FormularioEntry
-    public static function getByPaciente($pacienteId,  $search = null, $limit = null, $isPaginate = false)
+    public static function getByPaciente($pacienteId,  $search = null, $limit = null, $isPaginate = false, $fecha_inicio = null, $fecha_final = null)
     {
         $query =  FormularioEntry::select('formulario_entries.id', 'formulario_entries.created_at', 'paciente_id', 'formulario_entries.archivo')
                         ->join('users', 'users.id', 'formulario_entries.paciente_id')
@@ -57,6 +57,10 @@ class Consulta extends Model
         if ($search != '') {
             $query->where('motivo', 'like', '%' . $search . '%');
             $query->orWhere('fecha', 'like', '%' . $search . '%');
+        }
+
+        if ($fecha_inicio && $fecha_final) {
+            $query->whereBetween('formulario_entries.created_at', [$fecha_inicio, $fecha_final]);
         }
 
         $limit = $limit === null ? 50 : $limit;

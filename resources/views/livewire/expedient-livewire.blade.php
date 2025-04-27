@@ -80,6 +80,11 @@
                                     <td>ACCIONES</td>
                                 </tr>
                                 @foreach ($pacientes as $paciente)
+                                    @php
+                                        $consultas = App\Models\Consulta::getByPaciente($paciente->id, null, null, false, $fecha_inicio, $fecha_final);
+                                        $estudios = App\Models\Estudio::getByPaciente($paciente->id, null, null, false, $fecha_inicio, $fecha_final);
+                                    @endphp
+                                    @if($consultas->count() > 0 || $estudios->count() > 0)
                                     <tr>
                                         <td>
                                             <div class="form-check">
@@ -109,9 +114,6 @@
                                                         <!-- Consultas -->
                                                         <div class="col-md-6">
                                                             <h5 class="mb-3">Consultas</h5>
-                                                            @php
-                                                                $consultas = App\Models\Consulta::getByPaciente($paciente->id);
-                                                            @endphp
                                                             @if($consultas->count() > 0)
                                                                 <div class="table-responsive">
                                                                     <table class="table table-sm">
@@ -157,16 +159,13 @@
                                                                     </table>
                                                                 </div>
                                                             @else
-                                                                <p class="text-muted">No hay consultas registradas</p>
+                                                                <p class="text-muted">No hay consultas registradas en el rango de fechas seleccionado</p>
                                                             @endif
                                                         </div>
     
                                                         <!-- Estudios -->
                                                         <div class="col-md-6">
                                                             <h5 class="mb-3">Estudios</h5>
-                                                            @php
-                                                                $estudios = App\Models\Estudio::getByPaciente($paciente->id);
-                                                            @endphp
                                                             @if($estudios->count() > 0)
                                                                 <div class="table-responsive">
                                                                     <table class="table table-sm">
@@ -189,7 +188,7 @@
                                                                     </table>
                                                                 </div>
                                                             @else
-                                                                <p class="text-muted">No hay estudios registrados</p>
+                                                                <p class="text-muted">No hay estudios registrados en el rango de fechas seleccionado</p>
                                                             @endif
                                                         </div>
                                                     </div>
@@ -197,6 +196,7 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    @endif
                                 @endforeach
                             </table>
                         </div>
