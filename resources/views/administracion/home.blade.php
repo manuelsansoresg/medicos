@@ -2,6 +2,10 @@
 
 @inject('Msolicitud', 'App\Models\Solicitud')
 
+@section('filterByHome')
+    @include('CinicaYConsultorio')
+@endsection
+
 @section('content')
 <div class="container bg-white py-3">
     <!-- Usuario Status & Notificaciones -->

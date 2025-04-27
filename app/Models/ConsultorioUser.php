@@ -16,6 +16,19 @@ class ConsultorioUser extends Model
         'user_id','consultorio_id'
     ];
 
+    public static function getAll()
+    {
+        $userId            = User::getMyUserPrincipal();
+        $is_admin   = Auth::user()->hasRole(['administrador']);
+        $consultorios = ConsultorioUser::where('user_id', $userId);
+        if ($is_admin === true) {
+            $consultorios = ConsultorioUser::select('consultorio_id', 'user_id')->distinct()->get();
+        } else {
+            $consultorios = ConsultorioUser::where('user_id', $userId)->get();
+        }
+        return $consultorios;
+    }
+
     public static function myConsultories()
     {
         $is_admin   = Auth::user()->hasRole(['administrador']);

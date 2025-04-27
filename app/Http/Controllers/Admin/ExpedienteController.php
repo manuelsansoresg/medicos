@@ -79,7 +79,13 @@ class ExpedienteController extends Controller
 
     public function descargarArchivos(Request $request)
     {
-        //TODO: Verificar si el usuario tiene permisos para descargar los archivos
+        $user = auth()->user();
+
+        $permissionConsultaEstudios     = $user->hasPermissionTo('Descargar consulta') == 1 ? 1: 0 ; // 1 = solo consulta  0 = solo estudios
+        $permisionDownloadAll   = $user->hasPermissionTo('Descargar todos')    == 1 ? 1: 0 ; // 1= si 0 = no
+        $permissionDownloadAny     = $user->hasPermissionTo('Descargar ninguno') == 1 ? 1: 0 ; // 1= si 0 = no
+        $permisionDownloadStudyImages = $user->hasPermissionTo('Descargar estudios con imagenes')    == 1 ? 1 : 0 ;
+
         $pacienteIds = $request->expedients;
         if (!$pacienteIds || !is_array($pacienteIds)) {
             return response()->json(['error' => 'No hay expedientes seleccionados.'], 400);
@@ -105,24 +111,33 @@ class ExpedienteController extends Controller
             if (!$paciente) continue;
 
             // 1. Consultas: UserCita y FormularioEntry
-            $citas = UserCita::where('paciente_id', $paciente_id)->get();
-            foreach ($citas as $cita) {
-                $formularios = FormularioEntry::where('user_cita_id', $cita->id)->get();
-                foreach ($formularios as $formulario) {
-                    $archivoPath = public_path('expedientes/' . basename($formulario->archivo));
-                    if ($formulario->archivo && file_exists($archivoPath)) {
-                        $zip->addFile($archivoPath, 'consultas/' . basename($formulario->archivo));
+            if ($permissionConsultaEstudios == 1 || $permisionDownloadAll == 1) {
+                $citas = UserCita::where('paciente_id', $paciente_id)->get();
+                foreach ($citas as $cita) {
+                    $formularios = FormularioEntry::where('user_cita_id', $cita->id)->get();
+                    foreach ($formularios as $formulario) {
+                        $archivoPath = public_path('expedientes/' . basename($formulario->archivo));
+                        if ($formulario->archivo && file_exists($archivoPath)) {
+                            $zip->addFile($archivoPath, 'consultas/' . basename($formulario->archivo));
+                        }
                     }
                 }
             }
 
             // 2. Estudios: Estudio
-            $estudios = Estudio::where('paciente_id', $paciente_id)->get();
-            
-            foreach ($estudios as $estudio) {
-                $archivoPath = public_path('estudios/' . basename($estudio->archivo));
-                if ($estudio->archivo && file_exists($archivoPath)) {
-                    $zip->addFile($archivoPath, 'estudios/' . basename($estudio->archivo));
+            if ($permissionConsultaEstudios == 0 || $permisionDownloadAll == 1) {
+                $estudios = Estudio::where('paciente_id', $paciente_id)->get();
+                
+                foreach ($estudios as $estudio) {
+                    $archivoPath = public_path('estudios/' . basename($estudio->archivo));
+                    if ($estudio->archivo && file_exists($archivoPath)) {
+                        //validar permisos si el pdf sera con o sin imagenes
+                        if ($permisionDownloadStudyImages == 1) {
+                            $zip->addFile($archivoPath, 'estudios/' . basename($estudio->archivo));
+                        } else {
+                            $zip->addFile($archivoPath, 'estudios/s_i-' . basename($estudio->archivo));
+                        }
+                    }
                 }
             }
         }

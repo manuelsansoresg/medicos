@@ -313,8 +313,7 @@ class User extends Authenticatable
         $clinica     = Session::get('clinica');
         $consultorio = Session::get('consultorio');
         
-        return User::select('users.id', 'users.name', DB::raw('MIN(consultasignado.iddoctor) as iddoctor'), DB::raw('MIN(consultasignado.idconsultorio) as idconsultorio'))
-                ->join('consultasignado', 'consultasignado.iddoctor', '=', 'users.id')
+        return User::select('users.id', 'users.name')
                 ->whereHas('roles', function ($q) use ($rol) {
                     $q->where('name', $rol);
                 })

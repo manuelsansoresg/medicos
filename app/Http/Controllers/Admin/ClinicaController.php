@@ -138,4 +138,23 @@ class ClinicaController extends Controller
         VinculacionSolicitud::deleteVinculacion($id);
         Clinica::find($id)->delete();
     }
+
+    public function mount($limit)
+    {
+        $this->limit = $limit;
+        $this->my_clinics = ClinicaUser::myClinics();
+        $this->my_consultories = ConsultorioUser::myConsultories();
+        $this->clinica = session('clinica', '');
+        $this->consultorio = session('consultorio', '');
+    }
+
+    public function updatedClinica($value)
+    {
+        session(['clinica' => $value]);
+    }
+
+    public function updatedConsultorio($value)
+    {
+        session(['consultorio' => $value]);
+    }
 }

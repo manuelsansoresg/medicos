@@ -16,5 +16,6 @@
 @stop
 
 @section('content')
+{{-- <livewire:paciente-livewire :limit="50" :isList="true" /> --}}
 <livewire:expedient-livewire :limit="50"  />
 @stop

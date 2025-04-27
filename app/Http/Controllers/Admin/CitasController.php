@@ -44,13 +44,12 @@ class CitasController extends Controller
         
         $userId            = User::getMyUserPrincipal();
         $clinicas          = Clinica::getAll();
-        $getConsultorios   = ConsultorioUser::where('user_id', $userId)->get();
+        $getConsultorios   = ConsultorioUser::getAll();
         $getClinicas       = ClinicaUser::where('user_id', $userId)->get();
         $fechasEspeciales  = FechaEspeciales::getByDate($fecha);
         $consultaAsignados = ConsultaAsignado::getByDate($fecha);
         $pacientes         = User::getUsersByRoles(['paciente']);
         $userAdmins        = User::getUsersByRol('medico');
-        
         //$clinica            = Session::get('clinica');
         //$consultorio        = Session::get('consultorio');
 

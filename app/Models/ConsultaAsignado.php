@@ -203,17 +203,27 @@ class ConsultaAsignado extends Model
         $today = date('Y-m-d');
         $idclinica     = Session()->get('clinica');
         $idconsultorio = Session()->get('consultorio');
-        //dd($idclinica, $idconsultorio);
         $isAdmin     = Auth::user()->hasRole('administrador');
         $userId = User::getMyUserPrincipal();
         \DB::enableQueryLog();
-        $consultaAsignado =  ConsultaAsignado::select('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio', 'user_citas.id', 'users.name as paciente_name', 'users.vapellido as paciente_vapellido', 'users.segundo_apellido as paciente_segundo_apellido', 'user_citas.status')  // Elimina el segundo 'idconsultasignado'
-                ->join('consultorios', 'consultorios.idconsultorios', 'consultasignado.idconsultorio')
-                ->join('user_citas', 'user_citas.consulta_asignado_id', 'consultasignado.idconsultasignado')
-                ->join('users', 'users.id', 'user_citas.paciente_id')
-                ->where('ihorainicial', '>', 0) 
-                ->where('user_citas.status', '!=', 3) //diferente a cancelada
-                ->where('user_citas.fecha', $today);
+        
+        $consultaAsignado = ConsultaAsignado::select(
+            'idconsultasignado', 
+            'iturno', 
+            'ihorainicial', 
+            'vnumconsultorio', 
+            'user_citas.id', 
+            'users.name as paciente_name', 
+            'users.vapellido as paciente_vapellido', 
+            'users.segundo_apellido as paciente_segundo_apellido', 
+            'user_citas.status'
+        )
+        ->join('consultorios', 'consultorios.idconsultorios', 'consultasignado.idconsultorio')
+        ->join('user_citas', 'user_citas.consulta_asignado_id', 'consultasignado.idconsultasignado')
+        ->join('users', 'users.id', 'user_citas.paciente_id')
+        ->where('ihorainicial', '>', 0) 
+        ->where('user_citas.status', '!=', 3) //diferente a cancelada
+        ->where('user_citas.fecha', $today);
             
         if ($idconsultorio != 0) {
             if (!$isAdmin) {
@@ -231,17 +241,23 @@ class ConsultaAsignado extends Model
             $consultaAsignado->whereIn('consultasignado.idclinica', $getAsignedClinicas);
         }
     
-        $consultaAsignado->groupBy('idconsultasignado', 'iturno', 'ihorainicial', 'vnumconsultorio', 'user_citas.id');  // Elimina la columna duplicada en el select
+        $consultaAsignado->groupBy(
+            'idconsultasignado', 
+            'iturno', 
+            'ihorainicial', 
+            'vnumconsultorio', 
+            'user_citas.id',
+            'users.name',
+            'users.vapellido',
+            'users.segundo_apellido',
+            'user_citas.status'
+        );
         
-        // Si se ha pasado un valor para la paginación
         if ($paginate != null) {
-            // Devuelve los resultados paginados
             return $consultaAsignado->paginate($paginate);
         }
 
-        // Devuelve los resultados sin paginación
         return $consultaAsignado->get();
-        dd(\DB::getQueryLog());
     }
 
     public static function saveEdit($request)

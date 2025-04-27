@@ -2,13 +2,59 @@
     <div class="row">
         <div class="col-12">
             <form id="frm-download-expedient">
-                <div class="row justify-content-end">
-                    <div class="col-12 col-md-6 ms-auto">
-                        <div class="input-group mb-3 float-end">
-                            <input type="text" class="form-control" placeholder="Buscar por nombre o código" wire:model="search">
-                            <button class="btn btn-outline-secondary" type="button">
-                                <i class="fas fa-search"></i>
-                            </button>
+                <div class="row align-items-end">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="setClinica" class="form-label">*CLINICAS</label>
+                            <select name="clinica" id="selectClinic" class="form-control" wire:model="clinica">
+                                <option value="">Seleccione una opción</option>
+                                @foreach ($my_clinics as $my_clinic)
+                                    @php
+                                        $clinica = $my_clinic->clinica;
+                                    @endphp
+                                    <option value="{{ $clinica->idclinica }}">
+                                        {{ $clinica->tnombre }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="setConsultorio" class="form-label">*CONSULTORIOS</label>
+                            <select name="consultorio" id="selectConsultory" class="form-control" wire:model="consultorio">
+                                <option value="">Seleccione una opción</option>
+                                @foreach ($my_consultories as $my_consultory)
+                                    @php
+                                        $consultory = $my_consultory->consultorio;
+                                    @endphp
+                                    <option value="{{ $consultory->idconsultorios }}">
+                                        {{ $consultory->vnumconsultorio }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="setConsultorio" class="form-label">FECHA INICIO</label>
+                            <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" wire:model="fecha_inicio">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="setConsultorio" class="form-label">FECHA FINAL</label>
+                            <input type="date" name="fecha_final" id="fecha_final" class="form-control" wire:model="fecha_final">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Buscar por nombre o código" wire:model="search">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
