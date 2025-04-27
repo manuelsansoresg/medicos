@@ -79,6 +79,7 @@ class ExpedienteController extends Controller
 
     public function descargarArchivos(Request $request)
     {
+        //TODO: Verificar si el usuario tiene permisos para descargar los archivos
         $pacienteIds = $request->expedients;
         if (!$pacienteIds || !is_array($pacienteIds)) {
             return response()->json(['error' => 'No hay expedientes seleccionados.'], 400);
