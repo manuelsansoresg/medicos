@@ -146,23 +146,77 @@ class Solicitud extends Model
         $user_id = User::getMyUserPrincipal();
         $isAdmin = Auth::user()->hasRole('administrador');
 
-        if ($isAdmin) {
+        if (!$isAdmin) {
             $solicitud =  Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'precio_total' , 'solicitudes.created_at', 'name', 'vapellido', 'fecha_vencimiento', 'porcentaje_ganancia', 'solicitud_origin_id', 'user_id', 'estatus', 'fecha_activacion'
-                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.solicitud_origin_id')
-                ->join('users', 'users.id', 'solicitudes.user_id')
-                ->whereBetween('fecha_activacion', [$fechaInicio, $fechaFinal]) // Filtrar por rango de fechas
-                ->whereIn('estatus', [1,3])
-                ;
+                'solicitudes.id', 
+                DB::raw('CASE 
+                    WHEN solicitudes.source_id = 0 THEN packages.nombre 
+                    ELSE catalog_prices.nombre 
+                END as nombre'),
+                DB::raw('CASE 
+                    WHEN solicitudes.source_id = 0 THEN packages.precio 
+                    ELSE catalog_prices.precio 
+                END as precio'),
+                'cantidad', 
+                'solicitudes.estatus', 
+                'precio_total', 
+                'solicitudes.created_at', 
+                'name', 
+                'vapellido', 
+                'fecha_vencimiento', 
+                'porcentaje_ganancia', 
+                'solicitud_origin_id', 
+                'user_id', 
+                'estatus', 
+                'fecha_activacion'
+                )
+                ->leftJoin('catalog_prices', function($join) {
+                    $join->on('catalog_prices.id', '=', 'solicitudes.solicitud_origin_id')
+                        ->where('solicitudes.source_id', '!=', 0);
+                })
+                ->leftJoin('packages', function($join) {
+                    $join->on('packages.id', '=', 'solicitudes.solicitud_origin_id')
+                        ->where('solicitudes.source_id', '=', 0);
+                })
+                ->join('users', 'users.id', '=', 'solicitudes.user_id')
+                ->where('user_id', $user_id)
+                ->whereBetween('fecha_activacion', [$fechaInicio, $fechaFinal])
+                ->where('estatus', '!=', 3);
         } else {
             $solicitud =  Solicitud::select(
-                'solicitudes.id', 'catalog_prices.nombre', 'catalog_prices.precio', 'cantidad', 'solicitudes.estatus', 'precio_total' , 'solicitudes.created_at', 'name', 'vapellido', 'fecha_vencimiento', 'porcentaje_ganancia', 'solicitud_origin_id', 'user_id', 'estatus', 'fecha_activacion'
-                )->join('catalog_prices', 'catalog_prices.id', 'solicitudes.solicitud_origin_id')
-                ->join('users', 'users.id', 'solicitudes.user_id')
-                ->where('user_id', $user_id)
-                ->whereBetween('fecha_activacion', [$fechaInicio, $fechaFinal]) // Filtrar por rango de fechas
-                ->where('estatus', '!=', 0)
-                ->where('solicitud_origin_id', 4);
+                'solicitudes.id', 
+                DB::raw('CASE 
+                    WHEN solicitudes.source_id = 0 THEN packages.nombre 
+                    ELSE catalog_prices.nombre 
+                END as nombre'),
+                DB::raw('CASE 
+                    WHEN solicitudes.source_id = 0 THEN packages.precio 
+                    ELSE catalog_prices.precio 
+                END as precio'),
+                'cantidad', 
+                'solicitudes.estatus', 
+                'precio_total', 
+                'solicitudes.created_at', 
+                'name', 
+                'vapellido', 
+                'fecha_vencimiento', 
+                'porcentaje_ganancia', 
+                'solicitud_origin_id', 
+                'user_id', 
+                'estatus', 
+                'fecha_activacion'
+                )
+                ->leftJoin('catalog_prices', function($join) {
+                    $join->on('catalog_prices.id', '=', 'solicitudes.solicitud_origin_id')
+                        ->where('solicitudes.source_id', '!=', 0);
+                })
+                ->leftJoin('packages', function($join) {
+                    $join->on('packages.id', '=', 'solicitudes.solicitud_origin_id')
+                        ->where('solicitudes.source_id', '=', 0);
+                })
+                ->join('users', 'users.id', '=', 'solicitudes.user_id')
+                ->whereBetween('fecha_activacion', [$fechaInicio, $fechaFinal])
+                ->whereIn('estatus', [1,4]);
         }
 
         if ($search != '') {

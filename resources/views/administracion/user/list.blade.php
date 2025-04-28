@@ -83,7 +83,7 @@
                                     </td>
                                     <td>
                                         @if ($vinculacion && $vinculacion->isValidateCedula)
-                                        <span class="{{ $vinculacion->is_cedula_valid == 1 ? 'text-primary' : 'text-warning' }}">{{ $vinculacion->is_cedula_valid == 1 ? 'SÍ' : 'NO' }}</span>
+                                        <span class="{{ $vinculacion->is_cedula_valid == 1 ? 'text-primary' : 'text-warning' }}">{{ $user->is_cedula_valid == 1 ? 'SÍ' : 'NO' }}</span>
                                         @else
                                             <span class="text-success">N/A</span>
                                         @endif

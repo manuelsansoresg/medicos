@@ -105,7 +105,7 @@
                         <div class="flex-grow-0">
                             <div class="d-flex align-items-center">
                                 <h5 class="mb-0 me-2">{{ Auth::user()->name }}</h5>
-                                <span>  </span> <span class="badge {{ $user->is_cedula_valid ? 'bg-success' : 'bg-danger' }}">{{ $user->is_cedula_valid ? 'Estatus: Activo' : 'Estatus: Inactivo' }}</span>
+                                <span>  </span> <span class="badge {{ $user->is_cedula_valid ? 'bg-success' : 'bg-danger' }}">{{ $user->is_cedula_valid == 1 ? 'Estatus: Activo' : 'Estatus: Inactivo' }}</span>
                             </div>
                             @if ($user->is_cedula_valid == false)
                                 

@@ -106,8 +106,11 @@ class ExpedienteController extends Controller
             return response()->json(['error' => 'No se pudo crear el archivo ZIP.'], 500);
         }
 
+        $filesAdded = 0; // Contador para los archivos agregados al ZIP
+        $errors = []; // Array para almacenar errores
+
         foreach ($pacienteIds as $paciente_id) {
-            $paciente =User::find($paciente_id);
+            $paciente = User::find($paciente_id);
             if (!$paciente) continue;
 
             // 1. Consultas: UserCita y FormularioEntry
@@ -116,9 +119,15 @@ class ExpedienteController extends Controller
                 foreach ($citas as $cita) {
                     $formularios = FormularioEntry::where('user_cita_id', $cita->id)->get();
                     foreach ($formularios as $formulario) {
-                        $archivoPath = public_path('expedientes/' . basename($formulario->archivo));
-                        if ($formulario->archivo && file_exists($archivoPath)) {
-                            $zip->addFile($archivoPath, 'consultas/' . basename($formulario->archivo));
+                        if ($formulario->archivo) {
+                            $archivoPath = public_path('expedientes/' . basename($formulario->archivo));
+                            if (file_exists($archivoPath)) {
+                                if ($zip->addFile($archivoPath, 'consultas/' . basename($formulario->archivo))) {
+                                    $filesAdded++;
+                                } else {
+                                    $errors[] = "No se pudo agregar el archivo: " . basename($formulario->archivo);
+                                }
+                            }
                         }
                     }
                 }
@@ -129,13 +138,18 @@ class ExpedienteController extends Controller
                 $estudios = Estudio::where('paciente_id', $paciente_id)->get();
                 
                 foreach ($estudios as $estudio) {
-                    $archivoPath = public_path('estudios/' . basename($estudio->archivo));
-                    if ($estudio->archivo && file_exists($archivoPath)) {
-                        //validar permisos si el pdf sera con o sin imagenes
-                        if ($permisionDownloadStudyImages == 1) {
-                            $zip->addFile($archivoPath, 'estudios/' . basename($estudio->archivo));
-                        } else {
-                            $zip->addFile($archivoPath, 'estudios/s_i-' . basename($estudio->archivo));
+                    if ($estudio->archivo) {
+                        $archivoPath = public_path('estudios/' . basename($estudio->archivo));
+                        if (file_exists($archivoPath)) {
+                            $targetPath = $permisionDownloadStudyImages == 1 
+                                ? 'estudios/' . basename($estudio->archivo)
+                                : 'estudios/s_i-' . basename($estudio->archivo);
+                            
+                            if ($zip->addFile($archivoPath, $targetPath)) {
+                                $filesAdded++;
+                            } else {
+                                $errors[] = "No se pudo agregar el archivo: " . basename($estudio->archivo);
+                            }
                         }
                     }
                 }
@@ -144,10 +158,19 @@ class ExpedienteController extends Controller
 
         $zip->close();
 
-        if (file_exists($zipFilePath)) {
+        if ($filesAdded > 0) {
+            if (!empty($errors)) {
+                return response()->json([
+                    'warning' => 'Algunos archivos no pudieron ser agregados al ZIP.',
+                    'errors' => $errors
+                ], 200);
+            }
             return response()->download($zipFilePath)->deleteFileAfterSend(true);
         } else {
-            return response()->json(['error' => 'No se encontraron archivos para descargar.'], 404);
+            if (file_exists($zipFilePath)) {
+                unlink($zipFilePath);
+            }
+            return response()->json(['error' => 'No se encontraron archivos válidos para descargar.'], 404);
         }
     }
 
