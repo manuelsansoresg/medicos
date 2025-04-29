@@ -36,30 +36,41 @@
 
                 <div class="form-group">
                     <label for="InputDoctor">DOCTOR</label>
-                    <select name="data[iddoctor]" id="iddoctor" class="form-control select2multiple" >
+                    <select name="data[iddoctor]" id="iddoctor" class="form-control select2multiple" onchange="getClinicaConsultorio(this)" >
+                        <option value="">Seleccione un doctor</option>
                         @foreach ($userAdmins as $userAdmin)
                             <option value="{{ $userAdmin->id }}">{{ $userAdmin->name }}</option>
                         @endforeach
                     </select>
                     <small id="doctorHelp" class="form-text text-muted">Doctor que se le asignara la consulta.</small>
                 </div> 
+                <input type="hidden" id="get-clinica-consultorio" value="true">
                 @else
+                <input type="hidden" id="get-clinica-consultorio" value="false">
                 <input type="hidden" name="data[iddoctor]" id="iddoctor" value="{{ $iddoctor }}">
                 @endrole
                 @php
                     $consultorio = Session::get('consultorio');
                     
                 @endphp
+                @hasrole('administrador')
+                    <div class="form-group mb-3">
+                        <label for="inputApellido" class="form-label">CONSULTORIOS</label>
+                        <select name="consultorio" id="idconsultorio"  class="form-control" onchange="setCita()">
+                            <option value="">Seleccione una opción</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="inputApellido" class="form-label">*CLINICAS</label>
+                        
+                        <select name="clinica" id="idclinica"  class="form-control" onchange="setCita()">
+                            <option value="">Seleccione una opción</option>
+                        </select>
+                    </div>
+                @endhasrole
                
-               {{--  @if ($consultorio == 0)
-                    <select name="data[id_consultorio]" id="" class="form-control select2multiple">
-                        @foreach ($getAsignedConsultories as $getAsignedConsultory)
-                           
-                                <option value="{{  $getAsignedConsultory->idconsultorios }}">{{ $getAsignedConsultory->vnumconsultorio }}</option>
-                           
-                        @endforeach
-                    </select>
-                @endif --}}
+               @hasrole(['medico', 'auxiliar', 'secretario'])
+
                 @if (count($getConsultorios) > 0)
                 <div class="form-group mb-3">
                     <label for="inputApellido" class="form-label">CONSULTORIOS</label>
@@ -74,7 +85,7 @@
                         @endforeach
                     </select>
                 </div>
-                   
+                    
                 @endif
                 @if (count($getClinicas) > 0)
                 <div class="form-group mb-3">
@@ -89,7 +100,10 @@
                         <option value="{{ $clinica->idclinica }}">{{ $clinica->tnombre }}</option>
                         @endforeach
                     </select>
+                </div>
                 @endif
+               @endrole
+               
                 <div class="form-group">
                     <label for="InputFecha">FECHA CITA</label>
                     <input type="date" class="form-control" id="InputFecha" name="data[fecha]" onchange="setCita()"  placeholder="Enter email" value="{{ $fecha  }}">

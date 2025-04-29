@@ -215,4 +215,13 @@ class UserController extends Controller
         $user->save();
         return response()->json(['success' => true]);
     }
+
+    //seccion para obtener los consultorios de un usuario
+    public function getUsuarioConsultorioClinica($user_id)
+    {
+        $user = User::findOrFail($user_id);
+        $consultorios = ConsultorioUser::where('user_id', $user->id) ->with('consultorio')->get();
+        $clinicas = ClinicaUser::where('user_id', $user->id)->with('clinica')->get();
+        return response()->json(['consultorios' => $consultorios, 'clinicas' => $clinicas]);
+    }
 }

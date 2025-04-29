@@ -4,10 +4,13 @@ namespace App\Lib;
 
 use App\Mail\ActivateSystemEmail;
 use App\Mail\AdjuntarComprobanteEmail;
+use App\Mail\SolicitudPorCaducarEmail;
 use App\Mail\SolicitudUsuarioEmail;
 use App\Models\Setting;
 use App\Models\Solicitud;
 use App\Models\User;
+use App\Models\VinculacionSolicitud;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -95,5 +98,55 @@ class NotificationUser
         Mail::to($user->email)->send(new ActivateSystemEmail($data));
     }
     
+    //cuando la solicitud está próxima a caducar
+    public function solicitudPorCaducarPaquete()
+    {
+        $user = User::find(Auth::user()->id);
+        if ($user->hasRole('medico')) {
+            
+            /* //obtener la vinculacion de la solicitud para saber si vencio la solicitud
+            $vinvulacion = VinculacionSolicitud::where('idRel', Auth::user()->id)->first();
     
+            if ($vinvulacion != null) {
+                # si la solicitud esta proxima a vencer en 30 dias
+                $solicitud30Dias = Solicitud::where('fecha_vencimiento', '<', now()->addDays(30))
+                    ->where('estatus', '=', 1)
+                    ->where('id', $vinvulacion->solicitudId)
+                    ->first();
+    
+               
+                $user = User::find($solicitud30Dias->user_id);
+                
+                if ($solicitud30Dias != null) {
+                    $data = array(
+                        'nombre' => $user->name. ' '.$user->vapellido.' '.$user->segundo_apellido,
+                        'from' => 'contacto@umbralcreepy.xyz',
+                        'subject' => 'Solicitud por caducar',
+                        'solicitud' => $solicitud30Dias
+                    );
+                    Mail::to($user->email)->send(new SolicitudPorCaducarEmail($data));
+                }
+                # si la solicitud ya vencio
+                $solicitudVencida = Solicitud::where('fecha_vencimiento', '<', now())
+                    ->where('estatus', '=', 1)
+                    ->where('id', $vinvulacion->solicitudId)
+                    ->first();
+    
+                if ($solicitudVencida != null) {
+                    $user = User::find($solicitudVencida->user_id);
+                    $data = array(
+                        'nombre' => $user->name. ' '.$user->vapellido.' '.$user->segundo_apellido,
+                        'from' => 'contacto@umbralcreepy.xyz',
+                        'subject' => 'Solicitud vencida',
+                        'solicitud' => $solicitudVencida
+                    );
+                    Mail::to($user->email)->send(new SolicitudPorCaducarEmail($data));
+                }
+            } */
+        }
+       
+       
+    }
+
+   
 }

@@ -124,6 +124,21 @@
                     </div>
                 </div>
             </div>
+
+            @hasrole(['administrador'])
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/citas" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fas fa-calendar-day fs-3"></i>
+                            </div>
+                            <span class="fw-bold text-dark"> CITAS</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @endrole
             
             <div class="col-md-2 text-center mb-3">
                 <div class="card shadow-sm border-0 h-100 transition-hover">
@@ -392,13 +407,15 @@
                     </div>
                 </div>
             </div>
+            @endrole
             
+            @hasrole(['medico','auxiliar'])
             <div class="col-md-2 text-center mb-3">
                 <div class="card shadow-sm border-0 h-100 transition-hover">
                     <div class="card-body d-flex flex-column align-items-center justify-content-center">
                         <a href="/admin/sin_citas" class="text-decoration-none">
                             <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
-                                <i class="fas fa-calendar-day fs-3"></i>
+                                <i class="fas fa-calendar fs-3"></i>
                             </div>
                             <span class="fw-bold text-dark">DÍAS SIN CITAS</span>
                         </a>

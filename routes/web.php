@@ -75,6 +75,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/usuarios/activar/{user_id}', [UserController::class, 'showActivationForm'])->name('users.activation.form');
     Route::post('/usuarios/activar/{user_id}', [UserController::class, 'activateUser'])->name('users.activation');
     Route::delete('/usuarios/ine/{type}/delete', [UserController::class, 'deleteIneImage'])->name('users.ine.delete');
+    
+    Route::get('/usuarios/{user_id}/consultorio/clinica/get', [UserController::class, 'getUsuarioConsultorioClinica'])->name('users.consultorio.get');
 
     Route::resource('catalogo', '\App\Http\Controllers\Admin\CatalogoController')->middleware('auth');
     Route::resource('paquete', '\App\Http\Controllers\Admin\PackageController')->middleware('auth');

@@ -518,7 +518,6 @@ class User extends Authenticatable
         if ($password != null) {
             $data['password'] = bcrypt($password);
         }
-
         if ($user_id == null) {
             $data['creador_id'] = Auth::user()->id;
             $user = User::create($data);

@@ -221,3 +221,29 @@ window.iniciarConsulta = function(consultaId, consultaAsignadoId) {
   });
 }
 
+if (document.getElementById('get-clinica-consultorio')) {
+ 
+  window.getClinicaConsultorio = function(iddoctor) {
+
+    $('#idconsultorio').empty();
+    $('#idclinica').empty();
+
+    axios.get('/admin/usuarios/'+iddoctor.value+'/consultorio/clinica/get')
+    .then(function (response) {
+      let result = response.data;
+      let consultorios = result.consultorios || [];
+      let clinicas = result.clinicas || [];
+
+      consultorios.forEach(function(consultorioUser) {
+        let consultorio = consultorioUser.consultorio;
+        $('#idconsultorio').append('<option value="'+consultorio.idconsultorios+'">'+consultorio.vnumconsultorio+'</option>');
+      });
+
+      clinicas.forEach(function(clinicaUser) {
+        let clinica = clinicaUser.clinica;
+        $('#idclinica').append('<option value="'+clinica.idclinica+'">'+clinica.tnombre+'</option>');
+      });
+    })
+  
+  }
+}
