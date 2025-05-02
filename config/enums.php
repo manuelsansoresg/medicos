@@ -23,19 +23,18 @@ return [
         '' => 'Seleccione una opción',
         'administrador' => 'ADMINISTRADOR',
         'medico' => 'MEDICO',
-        'auxiliar' => 'AUXILIAR',
+        'auxiliar' => 'MEDICO AUXILIAR',
         'secretario' => 'SECRETARIO',
     ),
     
     'usuario_puesto_medico' => array(
         '' => 'Seleccione una opción',
-        'medico' => 'MEDICO AUXILIAR',
+        'auxiliar' => 'MEDICO AUXILIAR',
         'secretario' => 'SECRETARIO',
     ),
     
     'usuario_auxiliar' => array(
         '' => 'Seleccione una opción',
-        'medico' => 'MEDICO AUXILIAR',
         'secretario' => 'SECRETARIO',
     ),
 
