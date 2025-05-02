@@ -326,7 +326,15 @@ class Solicitud extends Model
         
         if ($packages != null) {
 
-            $getUser = User::selectRaw('COUNT(id) as total')->where('usuario_principal', $userId)->orWhere('id', $userId)->first();
+            $getUser = User::selectRaw('COUNT(id) as total')
+                ->where(function($query) use ($userId) {
+                    $query->where('usuario_principal', $userId)
+                          ->orWhere('id', Auth::user()->id);
+                })
+                ->whereHas('roles', function($query) {
+                    $query->whereIn('name', ['administrador', 'medico', 'auxiliar', 'secretario']);
+                })
+                ->first();
             $getCon = Consultorio::selectRaw('COUNT(idconsultorios) as total')->where('idusrregistra', $userId)->first();
             $getClinic = Clinica::selectRaw('COUNT(idclinica) as total')->where('idusrregistra', $userId)->first();
             $getPacientes = User::where('usuario_principal', $userId)
@@ -403,28 +411,28 @@ class Solicitud extends Model
             $data['totalUsuariosSistema'] = [
                 'title' => 'Usuarios',
                 'lbl' => "{$usuariosDisponibles}/{$usuariosUsados}",
-                'isLimit' => $usuariosDisponibles == $usuariosUsados,
+                'isLimit' => $usuariosDisponibles < $usuariosUsados ? true : false,
                 'solicitudId' => $solicitudIdUsuarios
             ];
 
             $data['totalConsultorioExtra'] = [
                 'title' => 'Consultorios',
                 'lbl' => "{$consultoriosDisponibles}/{$consultoriosUsados}",
-                'isLimit' => $consultoriosDisponibles == $consultoriosUsados,
+                'isLimit' => $consultoriosDisponibles < $consultoriosUsados ? true : false,
                 'solicitudId' => $solicitudIdConsultorios
             ];
 
             $data['totalClinica'] = [
                 'title' => 'Clinica',
                 'lbl' => "{$clinicaDisponible}/{$clinicaUsada}",
-                'isLimit' => $clinicaDisponible == $clinicaUsada,
+                'isLimit' => $clinicaDisponible < $clinicaUsada ? true : false,
                 'solicitudId' => $solicitudIdClinica
             ];
 
             $data['totalPacientes'] = [
                 'title' => 'Pacientes',
                 'lbl' => "{$pacientesDisponibles}/{$pacientesUsados}",
-                'isLimit' => $pacientesDisponibles == $pacientesUsados,
+                'isLimit' => $pacientesDisponibles < $pacientesUsados ? true : false,
                 'solicitudId' => $solicitudIdPacientes
             ];
         }

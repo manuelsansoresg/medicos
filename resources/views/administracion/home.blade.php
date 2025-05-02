@@ -309,7 +309,13 @@
                     
                     <div class="card-body p-0">
                         <div class="list-group list-group-flush">
-                            @if ($consultas != null && count($consultas) > 0)
+                            @if (Session::get('clinica') == null && Session::get('consultorio') == null)
+                                <div class="text-center py-4">
+                                    <i class="fas fa-filter text-muted mb-2" style="font-size: 2rem;"></i>
+                                    <p class="text-muted">Por favor seleccione una clínica o consultorio para ver las citas</p>
+                                </div>
+                                @else
+                                    @if ($consultas != null && count($consultas) > 0)
                                     @foreach ($consultas as $consulta)
                                     @php
                                         $paciente = $consulta->paciente;
@@ -343,6 +349,8 @@
                                         <p class="text-muted">No hay citas programadas para hoy</p>
                                     </div>
                                 @endif
+                            @endif
+                            
                         </div>
                     </div>
                 </div>

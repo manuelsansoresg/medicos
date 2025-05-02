@@ -70,7 +70,7 @@ class HomeController extends Controller
         $getUsedStatusPackages = Solicitud::getUsedStatusPackages();
         $getPackage = Solicitud::getMyPackage();
         $statusPackages = Solicitud::getUsedStatusPackages();
-        //dd($statusPackage);
+        //dd($statusPackages);
         /* $notification = new NotificationUser();
         $notification->requestRegistration(37, 49); */
         return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'statusPackages', 'getUsedStatusPackages', 'statusPacient', 'earrings', 'consultas', 'getPorcentajeSistema', 'getPackage'));
