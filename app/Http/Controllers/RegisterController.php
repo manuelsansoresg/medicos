@@ -66,6 +66,8 @@ class RegisterController extends Controller
                 'message' => 'Usuario registrado exitosamente'
             ], 201);
 
+            
+
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',

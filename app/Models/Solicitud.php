@@ -28,7 +28,8 @@ class Solicitud extends Model
         'source_id', //* 0-paquete 1- cualquier relacion diferente a paquete usuario, clinica, consultorio, paciente
         'payment_type',
         'observaciones',
-        'fecha_pago'
+        'fecha_pago',
+        'is_notification'
     ];
 
     protected $table = 'solicitudes';
@@ -240,11 +241,10 @@ class Solicitud extends Model
             'estatus' => 0 ,
             'cantidad' => $getSolicitud->cantidad ,
             'user_id' => $getSolicitud->user_id ,
-            'solicitud_origin_id' => $getSolicitud->id ,
         );
         $solicitud = Solicitud::create($dataSolicitud);
         Solicitud::where('id', $solicitudId)->update([
-            'estatus' => 3
+            'estatus' => 4
         ]);
         return $solicitud;
     }
@@ -473,6 +473,26 @@ class Solicitud extends Model
         ]);
     }
 
+    public static function getPaqueteVencidoByUser()
+    {
+        $userId = User::getMyUserPrincipal();
+        $solicitud = Solicitud::where('user_id', $userId)->where('source_id', 0)->where('estatus', 1)->first();
+        $getPaqueteVencido = self::getPaqueteActivo($solicitud->id);
+        return array('solicitud' => $solicitud != null ? $solicitud : null, 'getPaqueteVencido' => $getPaqueteVencido);
+    }
+
+    public static function getStatusVencidoAllByUser()
+    {
+        $userId = User::getMyUserPrincipal();
+        $solicitudes = Solicitud::where('user_id', $userId)->where('source_id', '!=', 0)->where('estatus', 1)->get();
+        $solicitudesVencidas = [];
+        foreach ($solicitudes as $solicitud) {
+            $getPaqueteVencido = self::getPaqueteActivo($solicitud->id);
+            $solicitud->getPaqueteVencido = $getPaqueteVencido;
+            $solicitudesVencidas[] = array('solicitud' => $solicitud, 'getPaqueteVencido' => $getPaqueteVencido);
+        }
+        return array('solicitudesVencidas' => $solicitudesVencidas);
+    }
 
     public static function getPaqueteActivo($solicitudId)
     {

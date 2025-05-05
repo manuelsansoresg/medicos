@@ -59,6 +59,8 @@ class HomeController extends Controller
      */
     public function index()
     {
+        
+
         $statusClinic  = User::getPersentConsult();
         $statusConsult = User::getPersentClinic();
         $statusUser    = User::getPersentUser();

@@ -11,6 +11,7 @@ use App\Models\Consultorio;
 use App\Models\ConsultorioUser;
 use App\Models\FormularioConfiguration;
 use App\Models\LogSystem;
+use App\Models\Notification;
 use App\Models\Solicitud;
 use App\Models\User;
 use App\Models\VinculacionSolicitud;
@@ -70,6 +71,7 @@ class UserController extends Controller
         $solicitudId = $request->solicitud_id;
         $usuarioId = $request->usuario;
 
+        Notification::vinculacionUsuario($usuarioId);
         return VinculacionSolicitud::addVinculacion($solicitudId, $usuarioId, 3);
     }
 

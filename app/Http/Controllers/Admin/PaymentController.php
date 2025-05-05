@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Lib\NotificationUser;
+use App\Models\Notification;
 use App\Models\Package;
 use App\Models\Payment;
 use App\Models\Solicitud;
 use App\Models\User;
 use App\Models\VinculacionSolicitud;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
@@ -52,6 +54,10 @@ class PaymentController extends Controller
 
         $notification = new NotificationUser();
         $notification->requestRegistration($userId, $solicitud->id, 'transfer');
+
+        $user = User::find($userId);
+
+       Notification::SolicitudPaquete($package->id, $userId);
     }
 
     /**
@@ -97,7 +103,8 @@ class PaymentController extends Controller
         
         User::where('id', $userId)->update(['status' => 1]);
 
-        
+
+        Notification::SolicitudPaquete($package->id, $userId);
         
         return response()->json($payment, 201);
     }

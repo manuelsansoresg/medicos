@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Clinica;
 use App\Models\Consultorio;
+use App\Models\Notification;
 use App\Models\Solicitud;
 use App\Models\VinculacionSolicitud;
 use Illuminate\Http\Request;
@@ -124,7 +125,9 @@ class ClinicaController extends Controller
         $solicitudId = $request->solicitud_id;
         $clinicaId = $request->clinica;
 
+        Notification::vinculacionClinica($clinicaId);
         return VinculacionSolicitud::addVinculacion($solicitudId, $clinicaId, 1);
+
     }
 
     /**

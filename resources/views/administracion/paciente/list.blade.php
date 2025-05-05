@@ -34,6 +34,7 @@
                             <tr>
                                 <th>NOMBRE</th>
                                 <th>CORREO</th>
+                                <th>PERFÍL COMPARTIDO</th>
                                 <th>ACCIONES</th>
                             </tr>
                         </thead>
@@ -52,6 +53,17 @@
                                         @endif    
                                     </td>
                                     <td> {{ $user->email }} </td>
+                                    <td>
+                                        @if ($user->is_share_profile)
+                                            <span class="badge bg-success me-2">
+                                                <i class="fas fa-check"></i> Compartido
+                                            </span>
+                                        @else
+                                            <span class="badge bg-danger me-2">
+                                                <i class="fas fa-times"></i> No compartido
+                                            </span>
+                                        @endif
+                                    </td>
                                     <td class="col-3">
                                         <a onclick="sharePacient({{ $user->id }})" class="btn btn-success"> <i class="fas fa-share-alt"></i> </a>
                                         @if ($isLinked)

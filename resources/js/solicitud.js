@@ -152,7 +152,7 @@ window.renew = function(SolicitudId)
         .then(function (response) {
             let data = response.data;
             Swal.fire({
-                text: 'Su solicitud ha sido enviada, favor de adjuntar el comprobante de pago en la siguiente ventana para su activación',
+                text: 'Su solicitud ha sido enviada, favor de terminar el proceso de pago para su activación',
                 icon: "warning"
             }).then((result) => {
                 // Acción después de cerrar el alerta

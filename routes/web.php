@@ -52,7 +52,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('paciente/curp', [App\Http\Controllers\Admin\PacientesController::class, 'curp'])->middleware('auth');
     Route::post('paciente/vincular', [App\Http\Controllers\Admin\PacientesController::class, 'vincular'])->middleware('auth');
     Route::post('paciente/delete-vinculo', [App\Http\Controllers\Admin\PacientesController::class, 'deleteVinculo'])->middleware('auth');
-
+    Route::post('paciente/share', [App\Http\Controllers\Admin\PacientesController::class, 'share'])->middleware('auth');
+    
     Route::resource('pendientes', '\App\Http\Controllers\Admin\PendientesController')->middleware('auth');
     Route::resource('administracion', '\App\Http\Controllers\Admin\AdministracionController')->middleware('auth');
     

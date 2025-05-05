@@ -56,12 +56,13 @@
                         $mesesRestantes = null;
                         $fechaVencimiento = $solicitud->fecha_vencimiento;
                         $isVencido = false;
-                        if ($solicitud->solicitud_origin_id == 1) {
-                            $mesesRestantes = $MSolicitud::getPaqueteActivo($solicitud->id);
-                        }
+                       
+                        $mesesRestantes = $MSolicitud::getPaqueteActivo($solicitud->id);
                     @endphp
                    <tr>
-                    <td>{{ $solicitud->nombre_solicitud }}</td>
+                    <td>
+                        {{ $solicitud->nombre_solicitud }}
+                    </td>
                     @hasrole(['administrador'])
                     <td> {{ $solicitud->name }} {{ $solicitud->apellido }}  </td>
                     @endrole

@@ -17,21 +17,6 @@ class VinculacionSolicitud extends Model
         'idRel',
     ];
 
-    public static function vincularPaquete($solicitudId)
-    {
-        $solicitud = Solicitud::find($solicitudId);
-        $getVinculacion = VinculacionSolicitud::where(['solicitudId'  => $solicitud->id, 'idRel' => $solicitud->user_id ])->count();
-        if ($getVinculacion == 0 ) {
-            VinculacionSolicitud::create(array(
-                'user_id' => $solicitud->user_id,
-                'idusrregistra' => Auth::user()->id,
-                'solicitudId' => $solicitud->id,
-                'idRel' => $solicitud->user_id,
-                
-            ));
-        }
-
-    }
 
     public static function addVinculacion($solicitudId, $idRel, $solicitud_origin_id)
     {

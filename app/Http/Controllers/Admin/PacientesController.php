@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\Paciente;
 use App\Models\Solicitud;
 use App\Models\User;
@@ -45,6 +46,13 @@ class PacientesController extends Controller
     {
         $paciente = User::find($request->user_id);
         User::vincularPaciente($paciente->id);
+    }
+
+    public function share(Request $request)
+    {
+        $paciente = User::find($request->pacienteId);
+        $paciente->is_share_profile = true;
+        $paciente->update();
     }
 
     public function deleteVinculo(Request $request)
@@ -102,10 +110,15 @@ class PacientesController extends Controller
         
         $user = User::saveEdit($request);
         $usuario_principal = User::getMyUserPrincipal();
-        VinculoPacienteUsuario::firstOrCreate([
+        $vinculo = VinculoPacienteUsuario::firstOrCreate([
             'user_id' => $usuario_principal,
             'paciente_id' => $user->id
         ]);
+
+        // Si el vínculo se creó por primera vez (wasRecentlyCreated), crear notificación
+        if ($vinculo->wasRecentlyCreated) {
+            Notification::vinculacionPaciente($user->id);
+        }
     }
 
     /**

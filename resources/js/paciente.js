@@ -98,7 +98,21 @@ window.deleteVinculo = function(user_id)
     
 }	
 
-window.permisosPaciente = function(user_id)
+window.sharePacient = function(pacienteId)
 {
-
+    Swal.fire({
+        title: '¿Deseas compartir el perfíl del paciente?',
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: 'SÍ',
+        denyButtonText: `NO`,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            axios.post('/admin/paciente/share', {
+                pacienteId: pacienteId
+            }).then(function(response){
+                window.location.href = '/admin/pacientes';
+            });
+        }
+    });
 }
