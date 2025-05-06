@@ -27,6 +27,20 @@ class Notification extends Model
         'paciente' => 'Paciente',
     );
 
+    public static function getAllNotifications($limit = 5)
+    {
+        $isAdmin = Auth::user()->hasRole('administrador');
+        
+       
+        if($isAdmin){
+            return Notification::orderBy('created_at', 'desc')
+            ->paginate($limit);
+        }else{
+            return Notification::where('user_id', User::getMyUserPrincipal())  ->orderBy('created_at', 'desc')
+            ->paginate($limit);
+        }
+    }
+
     public static function SolicitudPaquete($packageId, $userId)
     {
         $package = Package::find($packageId);

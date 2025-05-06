@@ -18,7 +18,8 @@
                 </div>
             @endif
         </div>
-        <div class="col-12">
+        @livewire('notifications-livewire')
+        <div class="col-12" style="display: none;">
             <div class="border-0 h-100">
                 <div class="bg-white border-bottom-0">
                     <div class="d-flex justify-content-between align-items-center">

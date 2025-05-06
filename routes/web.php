@@ -207,3 +207,7 @@ Route::post('solicitud/{solicitudId}/comprobante/adjuntar/store', [HomeControlle
 Route::get('solicitud/{solicitudId}/comprobante/exitoso', [HomeController::class, 'salidaComprobanteExitoso'])->name('solicitud.comprobante.exitoso');
 
 Route::post('/admin/expedientes/descargar-archivos', [App\Http\Controllers\Admin\ExpedienteController::class, 'descargarArchivos']);
+
+Route::get('/notifications', function () {
+    return view('notifications.all');
+})->name('notifications.all')->middleware(['auth']);
