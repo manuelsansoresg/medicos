@@ -3,6 +3,7 @@
         <div class="col-12">
             <form id="frm-download-expedient">
                 <div class="row align-items-end">
+                    @hasrole(['administrador', 'medico', 'auxiliar', 'secretario', 'paciente'])
                     <div class="col-md-3">
                         <div class="mb-3">
                             <label for="setClinica" class="form-label">*CLINICAS</label>
@@ -35,6 +36,7 @@
                             </select>
                         </div>
                     </div>
+                    @endhasrole
                     <div class="col-md-2">
                         <div class="mb-3">
                             <label for="setConsultorio" class="form-label">FECHA INICIO</label>

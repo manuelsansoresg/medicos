@@ -194,7 +194,7 @@ class User extends Authenticatable
         if(!$isAdmin){ //no es admin
             $pacientes = [];
             if ( Auth::user()->hasRole('paciente')) {
-                $pacientes[] = Auth::user()->id;
+                 $pacientes[] = Auth::user()->id;
             } else { //obtener los pacientes vinculados cuando un usuario no es paciente
                 $vinculos = VinculoPacienteUsuario::where('user_id', User::getMyUserPrincipal())->get();  
                 
