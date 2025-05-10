@@ -21,15 +21,15 @@ return [
     
     'usuario_puesto' => array(
         '' => 'Seleccione una opción',
-        'administrador' => 'ADMINISTRADOR',
-        'medico' => 'MEDICO',
-        'auxiliar' => 'MEDICO AUXILIAR',
+        'administrador' => 'ADMINISTRADOR SISTEMA', //administrador
+        'medico' => 'ADMINISTRADOR', //medico
+        'auxiliar' => 'AUXILIAR',
         'secretario' => 'SECRETARIO',
     ),
     
     'usuario_puesto_medico' => array(
         '' => 'Seleccione una opción',
-        'auxiliar' => 'MEDICO AUXILIAR',
+        'auxiliar' => 'AUXILIAR',
         'secretario' => 'SECRETARIO',
     ),
     

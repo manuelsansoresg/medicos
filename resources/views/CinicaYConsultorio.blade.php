@@ -4,6 +4,7 @@
     $my_clinics = $ClinicaUser::myClinics();
     $my_consultories = $ConsultorioUser::myConsultories();
 @endphp
+@hasrole(['administrador', 'medico', 'auxiliar', 'secretario'])
 <div class="row mt-3">
     <div class="col-12">
         <div class="card">
@@ -56,3 +57,4 @@
     </div>
     
 </div>
+@endhasrole

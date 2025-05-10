@@ -191,11 +191,16 @@ class User extends Authenticatable
             whereHas('roles', function ($q) use($roles) {
             $q->whereIn('name', $roles);
         });
-        if(!$isAdmin){
-            $vinculos = VinculoPacienteUsuario::where('user_id', User::getMyUserPrincipal())->get();  
+        if(!$isAdmin){ //no es admin
             $pacientes = [];
-            foreach ($vinculos as $vinculo) {
-                $pacientes[] = $vinculo->paciente_id;
+            if ( Auth::user()->hasRole('paciente')) {
+                $pacientes[] = Auth::user()->id;
+            } else { //obtener los pacientes vinculados cuando un usuario no es paciente
+                $vinculos = VinculoPacienteUsuario::where('user_id', User::getMyUserPrincipal())->get();  
+                
+                foreach ($vinculos as $vinculo) {
+                    $pacientes[] = $vinculo->paciente_id;
+                }
             }
             $users->whereIn('id', $pacientes);
         }

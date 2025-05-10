@@ -18,7 +18,9 @@
                 </div>
             @endif
         </div>
-        @livewire('notifications-livewire')
+        @hasrole(['administrador'])
+            @livewire('notifications-livewire')
+        @endhasrole
         <div class="col-12" style="display: none;">
             <div class="border-0 h-100">
                 <div class="bg-white border-bottom-0">
@@ -471,14 +473,17 @@
                 </div>
             </div>
         </div>
-        @endrole
+      
        
     <livewire:solicitudes-livewire :limit="50" />
    
     <livewire:ganancias-livewire :limit="50" />
 
     <input type="hidden" id="porcentajeSistema" value="{{ $getPorcentajeSistema['percent'] }}">
-    
+    @endrole
+    @hasrole(['paciente'])
+        <livewire:expedient-livewire :limit="50"  />
+    @endhasrole
 </div>
 
 <!-- modal reactivacion usuarios y consultorios -->
