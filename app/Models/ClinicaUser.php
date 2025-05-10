@@ -23,7 +23,15 @@ class ClinicaUser extends Model
             $my_clinics = ClinicaUser::select('clinica_id')->distinct()->get();
 
         } else {
-            $my_clinics = ClinicaUser::where('user_id', User::getMyUserPrincipal())->get();
+            $isPaciente = Auth::user()->hasRole(['paciente']);
+            if ($isPaciente === true) { //obtener clinicas que se usaron en consultas o expedientes
+            $my_clinics = UserCita::where('paciente_id', Auth::user()->id)
+                ->select('id_clinica')
+                ->distinct()
+                ->get();
+            } else {
+                $my_clinics = ClinicaUser::where('user_id', User::getMyUserPrincipal())->get();
+            }
         }
         return $my_clinics;
     }
@@ -59,4 +67,6 @@ class ClinicaUser extends Model
     {
         return $this->belongsTo(Clinica::class, 'clinica_id');
     }
+
+    
 }

@@ -36,7 +36,15 @@ class ConsultorioUser extends Model
             $my_consultories = ConsultorioUser::select('consultorio_id')->distinct()->get();
             
         } else {
-            $my_consultories = ConsultorioUser::where('user_id', User::getMyUserPrincipal())->get();
+            $isPaciente = Auth::user()->hasRole(['paciente']);
+            if ($isPaciente === true) {
+                $my_consultories = UserCita::where('paciente_id', Auth::user()->id)
+                    ->select('id_consultorio')
+                    ->distinct()
+                    ->get();
+            } else {
+                $my_consultories = ConsultorioUser::where('user_id', User::getMyUserPrincipal())->get();
+            }
         }
         return $my_consultories;
     }

@@ -77,4 +77,14 @@ class UserCita extends Model
     {
         return $this->belongsTo(User::class, 'paciente_id');
     }
+
+    public function clinica()
+    {
+        return $this->belongsTo(Clinica::class, 'id_clinica');
+    }
+
+    public function consultorio()
+    {
+        return $this->belongsTo(Consultorio::class, 'id_consultorio');
+    }
 }
