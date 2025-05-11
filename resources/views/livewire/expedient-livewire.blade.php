@@ -9,10 +9,7 @@
                             <label for="setClinica" class="form-label">*CLINICAS</label>
                             <select name="clinica" id="selectClinic" class="form-control" wire:model="clinica">
                                 <option value="">Seleccione una opción</option>
-                                @foreach ($my_clinics as $my_clinic)
-                                    @php
-                                        $clinica = $my_clinic->clinica;
-                                    @endphp
+                                @foreach ($my_clinics as $clinica)
                                     <option value="{{ $clinica->idclinica }}">
                                         {{ $clinica->tnombre }}
                                     </option>
@@ -25,12 +22,9 @@
                             <label for="setConsultorio" class="form-label">*CONSULTORIOS</label>
                             <select name="consultorio" id="selectConsultory" class="form-control" wire:model="consultorio">
                                 <option value="">Seleccione una opción</option>
-                                @foreach ($my_consultories as $my_consultory)
-                                    @php
-                                        $consultory = $my_consultory->consultorio;
-                                    @endphp
-                                    <option value="{{ $consultory->idconsultorios }}">
-                                        {{ $consultory->vnumconsultorio }}
+                                @foreach ($my_consultories as $consultorio)
+                                    <option value="{{ $consultorio->idconsultorios }}">
+                                        {{ $consultorio->vnumconsultorio }}
                                     </option>
                                 @endforeach
                             </select>

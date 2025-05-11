@@ -187,6 +187,8 @@ class User extends Authenticatable
 
         $roles = ['paciente'];
         $isAdmin = Auth::user()->hasRole('administrador');
+        $isPaciente = Auth::user()->hasRole('paciente');
+
         $users = User::
             whereHas('roles', function ($q) use($roles) {
             $q->whereIn('name', $roles);
@@ -213,30 +215,35 @@ class User extends Authenticatable
             });
         }
 
-        $userIds = [];
+       
 
-        // Recolectar IDs de clínica
-        if ($clinica != null) {
-            $clinicaUsers = ClinicaUser::where('clinica_id', $clinica)
-                ->pluck('user_id')
-                ->toArray();
-            $userIds = array_merge($userIds, $clinicaUsers);
+        if (!$isPaciente) { // Aplicar filtro si hay IDs recolectados y si no es paciente
+            $userIds = [];
+            // Recolectar IDs de clínica
+            if ($clinica != null) {
+                $clinicaUsers = ClinicaUser::where('clinica_id', $clinica)
+                    ->pluck('user_id')
+                    ->toArray();
+                
+                $userIds = array_merge($userIds, $clinicaUsers);
+            }
+    
+            // Recolectar IDs de consultorio
+            if ($consultorio != null) {
+                $consultorioUsers = ConsultorioUser::where('consultorio_id', $consultorio)
+                    ->pluck('user_id')
+                    ->toArray();
+                $userIds = array_merge($userIds, $consultorioUsers);
+            }
+            
+            if (!empty($userIds)) {
+                // Eliminar duplicados y aplicar el filtro
+                $uniqueUserIds = array_unique($userIds);
+                $users->whereIn('id', $uniqueUserIds);
+            }
         }
 
-        // Recolectar IDs de consultorio
-        if ($consultorio != null) {
-            $consultorioUsers = ConsultorioUser::where('consultorio_id', $consultorio)
-                ->pluck('user_id')
-                ->toArray();
-            $userIds = array_merge($userIds, $consultorioUsers);
-        }
-
-        // Aplicar filtro si hay IDs recolectados
-        if (!empty($userIds)) {
-            // Eliminar duplicados y aplicar el filtro
-            $uniqueUserIds = array_unique($userIds);
-            $users->whereIn('id', $uniqueUserIds);
-        }
+        
 
         $limit = $limit === null ? 50 : $limit;
         $users = $users->paginate($limit);
