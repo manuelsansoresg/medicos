@@ -47,7 +47,7 @@
                                 <input type="text" class="form-control" name="data[ttelefono]" id="inputTelefono" value="{{ $query != null ? $query->ttelefono : null }}">
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputClinica" class="form-label">*CLINICA</label>
                                 <select name="data[idclinica]" id="inputClinica" class="form-control" required>
@@ -57,7 +57,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-md-12 text-end">
                             <div class="mb-3">
                                 <input type="hidden" name="id" value="{{ $id }}" >
