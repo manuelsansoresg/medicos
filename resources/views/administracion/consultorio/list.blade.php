@@ -29,7 +29,7 @@
                 @hasrole(['administrador'])
                     <a href="/admin/consultorio/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
                 @endrole
-                @if ($getUsedStatusPackages['totalConsultorioExtra']['isLimit']  == false)
+                @if (isset($getUsedStatusPackages['totalConsultorioExtra']['isLimit']) && $getUsedStatusPackages['totalConsultorioExtra']['isLimit']  == false)
                     {{-- Cuando se quiera asignar un consultorio verificar que este validado el usuario --}}
                     @php
                         $solicitud = $Solicitud::getMyPackage();
