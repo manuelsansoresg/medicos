@@ -473,14 +473,13 @@
                 </div>
             </div>
         </div>
-      
-       
+        @endrole
     <livewire:solicitudes-livewire :limit="50" />
    
     <livewire:ganancias-livewire :limit="50" />
 
     <input type="hidden" id="porcentajeSistema" value="{{ $getPorcentajeSistema['percent'] }}">
-    @endrole
+    
     @hasrole(['paciente'])
         <livewire:expedient-livewire :limit="50"  />
     @endhasrole

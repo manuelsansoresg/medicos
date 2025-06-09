@@ -337,6 +337,7 @@ class Solicitud extends Model
                 ->first();
             $getCon = Consultorio::selectRaw('COUNT(idconsultorios) as total')->where('idusrregistra', $userId)->first();
             $getClinic = Clinica::selectRaw('COUNT(idclinica) as total')->where('idusrregistra', $userId)->first();
+            
             $getPacientes = User::where('usuario_principal', $userId)
                             ->where('is_share_profile', true)
                 ->whereHas('roles', function($query) {

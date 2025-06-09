@@ -26,7 +26,7 @@
                     @hasrole(['administrador'])
                         <a href="/admin/usuarios/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
                         @else
-                        @if ($getUsedStatusPackages['totalUsuariosSistema']['isLimit']  == false)
+                        @if (isset($getUsedStatusPackages['totalUsuariosSistema']['isLimit']) && $getUsedStatusPackages['totalUsuariosSistema']['isLimit']  == true)
                             <a href="/admin/usuarios/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
                         @endif
                     @endrole

@@ -22,6 +22,7 @@ class ClinicaController extends Controller
     {
         $clinicas = Clinica::getAll();
         $getUsedStatusPackages = Solicitud::getUsedStatusPackages();
+        //dd($getUsedStatusPackages);
         return view('administracion.clinica.list', compact('clinicas', 'getUsedStatusPackages'));
     }
 
