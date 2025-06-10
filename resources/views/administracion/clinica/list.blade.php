@@ -31,10 +31,10 @@
             <div class="col-12 text-end">
                 <a href="/" class="btn btn-primary"><i class="fas fa-home"></i></a>
                 @hasrole(['administrador'])
-                admin
+                
                     <a href="/admin/clinica/create" class="btn btn-primary"><i class="fas fa-plus"></i></a>
                     @else
-                        @if (isset($getUsedStatusPackages['totalClinica']['isLimit']) && $getUsedStatusPackages['totalClinica']['isLimit']  == true)
+                        @if (isset($getUsedStatusPackages['totalClinica']['isLimit']) && $getUsedStatusPackages['totalClinica']['isLimit']  == false)
                         {{-- Cuando se quiera asignar un consultorio verificar que este validado el usuario --}}
                         @php
                             $solicitud = $Solicitud::getMyPackage();

@@ -41,6 +41,19 @@ class Notification extends Model
         }
     }
 
+    public static function SolicitudPaqueteByTransfer($packageId, $userId)
+    {
+        $package = Package::find($packageId);
+        $user = User::find($userId);
+        Notification::create([
+            'user_id' => $userId,
+            'idusrregistra' => $userId,
+            'title' => 'Solicitud alta de paquete',
+            'msg' => 'Solicitud para alta del paquete '.$package->nombre.' por transferencia de '.$user->name.' '.$user->vapellido.' '.$user->segundo_apellido,
+            'leido' => 0,
+        ]);
+    }
+
     public static function SolicitudPaquete($packageId, $userId)
     {
         $package = Package::find($packageId);

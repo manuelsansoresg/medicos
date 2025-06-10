@@ -37,6 +37,7 @@ class PaymentController extends Controller
 
     public function storeTransfer(Request $request)
     {
+        
         $userId = $request->user_id;
         $paqueteId = $request->paquete_id;
         $package = Package::find($paqueteId);
@@ -44,20 +45,17 @@ class PaymentController extends Controller
         //crear solicitud de registro
         $solicitud = Solicitud::create([
             'solicitud_origin_id' => $package->id,
-            'source_id' => 1,
+            'source_id' => 0,
             'estatus' => 0,
             'cantidad' => 1,
             'precio_total' => $amount,
             'user_id' => $userId,
             'payment_type' => 'transferencia',
         ]);
-
         $notification = new NotificationUser();
         $notification->requestRegistration($userId, $solicitud->id, 'transfer');
-
-        $user = User::find($userId);
-
-       Notification::SolicitudPaquete($package->id, $userId);
+        
+        Notification::SolicitudPaqueteByTransfer($package->id, $userId);
     }
 
     /**

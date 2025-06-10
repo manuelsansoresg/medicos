@@ -29,6 +29,7 @@ class UserController extends Controller
     public function index()
     {
         $users        = User::GetListUsers();
+        
         $my_clinics   = null;
         $getUsedStatusPackages = Solicitud::getUsedStatusPackages();
         return view('administracion.user.list', compact('users', 'my_clinics', 'getUsedStatusPackages'));

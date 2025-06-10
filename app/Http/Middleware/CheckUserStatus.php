@@ -33,7 +33,7 @@ class CheckUserStatus
         if ($isMedic) {
 
             //validar si tu usuario vinculado a una solicitud ya vencio
-            $vinculacionSolicitud = VinculacionSolicitud::where('user_id', $user->id)->first();
+            /* $vinculacionSolicitud = VinculacionSolicitud::where('user_id', $user->id)->first();
             if ($vinculacionSolicitud != null) {
                 $solicitudVinculada  = Solicitud::where('id', $vinculacionSolicitud->solicitudId)->first();
                 if ($solicitudVinculada != null) {
@@ -80,7 +80,7 @@ class CheckUserStatus
                     Solicitud::where('id', $solicitudVencida['solicitud']->id)->update(['is_notification' => true]);
                     Notification::solicitudVencida($solicitudVencida['solicitud']->id);
                 }
-            }
+            } */
 
            
             

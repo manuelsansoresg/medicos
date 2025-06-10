@@ -253,6 +253,7 @@ class Solicitud extends Model
     {
         $userId       = User::getMyUserPrincipal();
         $getSolicitud =  Solicitud::where('user_id', $userId)->where('source_id', 0)->orderBy('id', 'DESC')->first();
+        
         $packages = $getSolicitud != null ? Package::find($getSolicitud->solicitud_origin_id) : null;
         return $packages;
     }
@@ -697,20 +698,19 @@ class Solicitud extends Model
     public static function paymentTransferStore($request)
     {
         $getSolicitud = Solicitud::find($request->solicitudId);
-        $userId = User::getMyUserPrincipal();
 
         if ($request->hasFile('comprobante')) {
             // Validar el archivo de comprobante
             $validator = Validator::make($request->all(), [
                 'comprobante' => 'mimes:jpeg,png,jpg,pdf|max:1024' // Máximo 1MB
             ]);
-
+            
             // Si la validación falla, redireccionar con errores
             if ($validator->fails()) {
                 
                 return back()->withErrors($validator)->withInput();
             }
-
+            
             // Procesar y guardar el archivo si la validación es exitosa
             if ($request->file('comprobante')->isValid()) {
                 
@@ -725,6 +725,7 @@ class Solicitud extends Model
                 $archivo->move($rutaDestino, $nombreArchivo);
                 //modificar solicitud de registro
                 Solicitud::where('id', $getSolicitud->id)->update($dataSolicitud);
+                
                 $notification = new NotificationUser();
                 $notification->verifyPaymentReceipt($getSolicitud->id);
             }

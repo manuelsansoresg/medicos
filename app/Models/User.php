@@ -465,7 +465,6 @@ class User extends Authenticatable
         $usuario_principal = User::getMyUserPrincipal();
         $roles = ['administrador', 'medico', 'auxiliar', 'secretario'];
         $users =  null;
-        
         if ($isAdmin === true) {
             $users = User::getUsersByRoles($roles, $setUserId);
         } else {
