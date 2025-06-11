@@ -339,12 +339,12 @@ class Solicitud extends Model
             $getCon = Consultorio::selectRaw('COUNT(idconsultorios) as total')->where('idusrregistra', $userId)->first();
             $getClinic = Clinica::selectRaw('COUNT(idclinica) as total')->where('idusrregistra', $userId)->first();
             
-            $getPacientes = User::where('usuario_principal', $userId)
+            /* $getPacientes = User::where('usuario_principal', $userId)
                             ->where('is_share_profile', true)
                 ->whereHas('roles', function($query) {
                     $query->where('name', 'paciente');
                 })
-                ->count();
+                ->count(); */
 
             $usuariosUsados = $getUser->total ?? 0;
             $consultoriosUsados = $getCon->total ?? 0;
@@ -431,12 +431,12 @@ class Solicitud extends Model
                 'solicitudId' => $solicitudIdClinica
             ];
 
-            $data['totalPacientes'] = [
+            /* $data['totalPacientes'] = [
                 'title' => 'Pacientes',
                 'lbl' => "{$pacientesDisponibles}/{$pacientesUsados}",
                 'isLimit' => $pacientesDisponibles < $pacientesUsados ? true : false,
                 'solicitudId' => $solicitudIdPacientes
-            ];
+            ]; */
         }
         return $data;
     }

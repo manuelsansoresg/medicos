@@ -78,7 +78,14 @@ $(document).ready(function () {
         // Realizar la solicitud POST utilizando Axios
         axios.post('/admin/citas', formData)
           .then(function (response) {
-            window.location.reload();
+            Swal.fire({
+              text: "Los valores se han almacenado con éxito.",
+              icon: "info"
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  window.location = '/';
+              }
+          });
           })
           .catch(function (error) {
             // Manejar errores si es necesario

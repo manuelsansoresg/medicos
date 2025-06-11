@@ -111,7 +111,6 @@ class ConsultaAsignado extends Model
             'consultasignado.iddoctor' => $doctor_id,
             'consultasignado.idia' => $dayOfWeek
         ]);
-        
         if (!$isAdmin) {
             if ($idconsultorio != 0) {
                 $consulta->where('idconsultorio', $idconsultorio);
