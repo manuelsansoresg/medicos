@@ -166,7 +166,7 @@
                                         <div class="col-12">
                                             <div class="mb-3">
                                                 <label for="inputPeso" class="form-label">DIAGNOSTICOS</label>
-                                                <textarea name="data[diagnosticos]" id="diagnosticos" cols="30" rows="4" class="form-control" required></textarea>
+                                                <textarea name="data[diagnosticos]" id="diagnosticos" cols="30" rows="4" class="form-control" ></textarea>
                                             </div>
                                         </div>
                                         
