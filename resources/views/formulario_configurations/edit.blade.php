@@ -54,7 +54,7 @@
                                 <option value="date" @if($field->field_type == 'date') selected @endif>Fecha</option>
                                 <option value="textarea" @if($field->field_type == 'textarea') selected @endif>Área de Texto</option>
                                 <option value="select" @if($field->field_type == 'select') selected @endif>Seleccionar</option>
-                                <option value="image" @if($field->field_type == 'image') selected @endif>Imagen</option>
+                                {{-- <option value="image" @if($field->field_type == 'image') selected @endif>Imagen</option> --}}
                             </select>
             
                             <label for="fields[{{ $index }}][is_required]">¿Es Obligatorio?</label>

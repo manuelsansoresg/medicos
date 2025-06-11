@@ -55,7 +55,7 @@
                             <option value="date">Fecha</option>
                             <option value="textarea">Área de Texto</option>
                             <option value="select">Seleccionar</option>
-                            <option value="image">Imagen</option>
+                            {{-- <option value="image">Imagen</option> --}}
                         </select>
         
                         <label for="fields[0][is_required]">¿Es Obligatorio?</label>
