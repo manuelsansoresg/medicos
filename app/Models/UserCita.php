@@ -151,6 +151,12 @@ class UserCita extends Model
         // Agrupar por paciente
         $pacientes = $citas->groupBy('paciente_id')->map(function($citasPaciente, $pacienteId) {
             $paciente = $citasPaciente->first()->paciente;
+            
+            // Verificar si el paciente existe antes de asignar propiedades
+            if ($paciente === null) {
+                return null; // Omitir pacientes nulos
+            }
+            
             $paciente->citas = $citasPaciente;
             $paciente->total_consultas = $citasPaciente->sum(function($cita) {
                 return $cita->consultas->count();
@@ -159,6 +165,8 @@ class UserCita extends Model
                 return $cita->estudios->count();
             });
             return $paciente;
+        })->filter(function($paciente) {
+            return $paciente !== null; // Filtrar pacientes nulos
         });
 
         return $pacientes;
