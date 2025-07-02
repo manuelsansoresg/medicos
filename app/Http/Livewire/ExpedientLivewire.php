@@ -3,9 +3,9 @@
 namespace App\Http\Livewire;
 
 use App\Models\ClinicaUser;
-use App\Models\Consulta;
 use App\Models\ConsultorioUser;
-use App\Models\User;
+use App\Models\UserCita;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -14,8 +14,7 @@ class ExpedientLivewire extends Component
     use WithPagination; 
     protected $paginationTheme = 'bootstrap';
     public $limit;
-    public $expedients;
-    public $search          = '';
+    public $search = '';
     public $my_clinics;
     public $my_consultories;
     public $clinica;
@@ -28,11 +27,13 @@ class ExpedientLivewire extends Component
     public function updatedClinica($value)
     {
         session(['clinica' => $value]);
+        $this->resetPage();
     }
 
     public function updatedConsultorio($value)
     {
         session(['consultorio' => $value]);
+        $this->resetPage();
     }
 
     public function mount($limit)
@@ -64,35 +65,52 @@ class ExpedientLivewire extends Component
         $this->consultorio = session('consultorio', '');
     }
 
-    private function filtrarPorSesionPaciente($coleccion)
-    {
-        if (!auth()->user() || !auth()->user()->hasRole('paciente')) {
-            return $coleccion;
-        }
-        $sessionClinica = session('clinica');
-        $sessionConsultorio = session('consultorio');
-        return $coleccion->filter(function($item) use ($sessionClinica, $sessionConsultorio) {
-            if (!isset($item->user_cita_id) || !$item->user_cita_id) return false;
-            $userCita = \App\Models\UserCita::find($item->user_cita_id);
-            if (!$userCita) return false;
-            if (!$sessionClinica && !$sessionConsultorio) return true;
-            return ($sessionClinica && $userCita->id_clinica == $sessionClinica)
-                || ($sessionConsultorio && $userCita->id_consultorio == $sessionConsultorio);
-        });
-    }
-
     public function render()
     {
         if ($this->search !== '' && $this->page > 1) {
             $this->resetPage();
         }
-        $pacientes = User::searchPacient($this->search, $this->limit);
-        // Filtrar consultas y estudios para cada paciente si es paciente
-        $pacientes->transform(function($paciente) {
-            $paciente->consultas = $this->filtrarPorSesionPaciente(\App\Models\Consulta::getByPaciente($paciente->id, null, null, false, $this->fecha_inicio, $this->fecha_final));
-            $paciente->estudios = $this->filtrarPorSesionPaciente(\App\Models\Estudio::getByPaciente($paciente->id, null, null, false, $this->fecha_inicio, $this->fecha_final));
-            return $paciente;
-        });
-        return view('livewire.expedient-livewire', compact('pacientes'));
+
+        // Construir filtros
+        $filters = [
+            'clinica' => $this->clinica,
+            'consultorio' => $this->consultorio,
+            'fecha_inicio' => $this->fecha_inicio,
+            'fecha_final' => $this->fecha_final,
+            'search' => $this->search
+        ];
+
+        // Obtener pacientes con citas usando la nueva estructura
+        $pacientes = UserCita::getPacientesWithCitas($filters);
+        
+        // Los filtros de permisos se manejan en el modelo UserCita
+        
+        // Debug: verificar si hay datos
+        if ($pacientes->isEmpty()) {
+            // Si no hay datos, crear una colección vacía pero con estructura correcta
+            $pacientes = collect();
+        }
+        
+        // Aplicar paginación manual
+        $total = $pacientes->count();
+        $perPage = $this->limit ?: 50;
+        $currentPage = $this->page;
+        $offset = ($currentPage - 1) * $perPage;
+        
+        $pacientes = $pacientes->slice($offset, $perPage);
+        
+        // Crear objeto de paginación manual
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $pacientes,
+            $total,
+            $perPage,
+            $currentPage,
+            [
+                'path' => request()->url(),
+                'pageName' => 'page',
+            ]
+        );
+
+        return view('livewire.expedient-livewire', compact('paginator'));
     }
 }

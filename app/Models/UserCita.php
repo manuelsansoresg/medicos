@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Mail\NotificationEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
@@ -86,5 +87,80 @@ class UserCita extends Model
     public function consultorio()
     {
         return $this->belongsTo(Consultorio::class, 'id_consultorio');
+    }
+
+    public function consultas()
+    {
+        return $this->hasMany(FormularioEntry::class, 'user_cita_id');
+    }
+
+    public function estudios()
+    {
+        return $this->hasMany(Estudio::class, 'user_cita_id');
+    }
+
+    public static function getCitasWithDetails($filters = [])
+    {
+        $query = UserCita::with(['paciente', 'clinica', 'consultorio', 'consultas', 'estudios'])
+            ->where('status', '!=', 3); // Excluir citas canceladas
+
+        // Filtros
+        if (!empty($filters['clinica'])) {
+            $query->where('id_clinica', $filters['clinica']);
+        }
+
+        if (!empty($filters['consultorio'])) {
+            $query->where('id_consultorio', $filters['consultorio']);
+        }
+
+        if (!empty($filters['fecha_inicio']) && !empty($filters['fecha_final'])) {
+            $query->whereBetween('fecha', [$filters['fecha_inicio'], $filters['fecha_final']]);
+        } elseif (!empty($filters['fecha_inicio'])) {
+            $query->where('fecha', '>=', $filters['fecha_inicio']);
+        } elseif (!empty($filters['fecha_final'])) {
+            $query->where('fecha', '<=', $filters['fecha_final']);
+        }
+
+        if (!empty($filters['search'])) {
+            $query->whereHas('paciente', function($q) use ($filters) {
+                $q->where('name', 'like', '%' . $filters['search'] . '%')
+                  ->orWhere('vapellido', 'like', '%' . $filters['search'] . '%')
+                  ->orWhere('codigo_paciente', 'like', '%' . $filters['search'] . '%');
+            });
+        }
+
+        // Filtrar por permisos de usuario - se manejará en el componente Livewire
+        // Aquí solo aplicamos filtros básicos de clínica/consultorio si están en sesión
+        $clinica = session('clinica');
+        $consultorio = session('consultorio');
+        
+        if ($clinica) {
+            $query->where('id_clinica', $clinica);
+        }
+        if ($consultorio) {
+            $query->where('id_consultorio', $consultorio);
+        }
+
+        return $query->orderBy('fecha', 'desc')->orderBy('hora', 'desc');
+    }
+
+    public static function getPacientesWithCitas($filters = [])
+    {
+        $citas = self::getCitasWithDetails($filters)->get();
+        
+        // Agrupar por paciente
+        $pacientes = $citas->groupBy('paciente_id')->map(function($citasPaciente, $pacienteId) {
+            $paciente = $citasPaciente->first()->paciente;
+            $paciente->citas = $citasPaciente;
+            $paciente->total_consultas = $citasPaciente->sum(function($cita) {
+                return $cita->consultas->count();
+            });
+            $paciente->total_estudios = $citasPaciente->sum(function($cita) {
+                return $cita->estudios->count();
+            });
+            return $paciente;
+        });
+
+        return $pacientes;
     }
 }
