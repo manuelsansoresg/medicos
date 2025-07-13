@@ -161,4 +161,15 @@ class ClinicaController extends Controller
     {
         session(['consultorio' => $value]);
     }
+
+    /**
+     * Obtener lista de clínicas para el wizard
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function list()
+    {
+        $clinicas = Clinica::getAll();
+        return response()->json($clinicas);
+    }
 }

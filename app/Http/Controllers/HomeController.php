@@ -74,6 +74,10 @@ class HomeController extends Controller
 
         /* $notification = new NotificationUser();
         $notification->requestRegistration(37, 49); */
+        //*Validar si medico principal y si ya configuro su entorno
+        if (Auth::user()->hasRole('medico') && Auth::user()->is_config == false) {
+            return view('administracion.configurar_entorno');
+        }
         return view('administracion.home', compact('statusClinic', 'statusConsult', 'statusUser', 'statusPackages', 'getUsedStatusPackages', 'statusPacient', 'earrings', 'consultas', 'getPorcentajeSistema', 'getPackage'));
     }
 

@@ -76,6 +76,22 @@ class UserController extends Controller
         return VinculacionSolicitud::addVinculacion($solicitudId, $usuarioId, 3);
     }
 
+    public function TypeConfiguration(Request $request)
+    {
+        $userId = $request->user_id;
+        $user = User::find($userId);
+        $user->type_configuration = $request->tipo;
+        $user->save();
+        return response()->json(['success' => true]);                                           
+    }
+    public function finishConfig(Request $request)
+    {
+        $userId = $request->userId;
+        $user = User::find($userId);
+        $user->is_config = true;
+        $user->save();
+    }
+
     /**
      * Store a newly created resource in storage.
      *

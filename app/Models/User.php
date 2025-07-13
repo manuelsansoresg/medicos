@@ -41,6 +41,8 @@ class User extends Authenticatable
         'idclinica',
         'idoctora',
         'status',
+        'is_config',
+        'type_configuration',
         'is_cedula_active', //borrar
         'usuario_alta',
         'vcodigodocto',

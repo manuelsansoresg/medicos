@@ -40,7 +40,7 @@
                         <div class="form-group">
                             <label class="form-label">CONSULTORIO</label>
                             <div class="form-control-wrap">
-                                <select name="data[idconsultorio]" id="offices"  onchange="changeOffice(this.value, {{ $myUser->id }})" class="form-control">
+                                <select name="data[idconsultorio]" id="offices"  onchange="changeOffice({{ $myUser->id }})" class="form-control">
                                     <option value="">Seleccione una opción</option>
                                    @foreach ($offices as $office)
                                    @php

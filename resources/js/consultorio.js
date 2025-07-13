@@ -36,11 +36,14 @@ $("#frm-consultorio").submit(function (e) {
 
 //horario consulta
 
-window.changeOffice = function (office, userId) {
+window.changeOffice = function (userId) {
     $('#content-horario-consulta').html('');
     $('#content-duracion-consulta').hide();
+    let clinicaId = $('#clinica').val();
+    let consultorioId = $('#offices').val();
+
     axios
-        .get("/admin/consultorio/" + office+'/'+userId+'/show')
+        .get("/admin/consultorio/" + clinicaId+'/'+consultorioId+'/'+userId+'/show')
         .then(function (response) {
             let result = response.data;
             $('#content-horario-consulta').html(result);

@@ -22,6 +22,7 @@ require('./expedient');
 require('./solicitud');
 require('./setting');
 require('./paciente');
+require('./configurar_entorno');
 
 document.addEventListener('DOMContentLoaded', function() {
     $('.select2multiple').select2({

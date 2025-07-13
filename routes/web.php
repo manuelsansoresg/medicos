@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\FormularioController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ClipPaymentController;
 use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use App\Models\Estudio;
@@ -56,22 +57,29 @@ Route::group(['prefix' => 'admin'], function () {
     
     Route::resource('pendientes', '\App\Http\Controllers\Admin\PendientesController')->middleware('auth');
     Route::resource('administracion', '\App\Http\Controllers\Admin\AdministracionController')->middleware('auth');
+    Route::get('configurar-entorno', [App\Http\Controllers\Admin\AdministracionController::class, 'configurarEntorno'])->middleware('auth');
+    Route::post('configurar-entorno/completar', [App\Http\Controllers\Admin\AdministracionController::class, 'completarConfiguracion'])->middleware('auth');
     
-    Route::resource('clinica', '\App\Http\Controllers\Admin\ClinicaController')->middleware('auth');
+    Route::resource('clinicas', '\App\Http\Controllers\Admin\ClinicaController')->middleware('auth');
     Route::get('/clinica/{clinica}/consultorio/get', [App\Http\Controllers\Admin\ClinicaController::class, 'consultorioGet'])->middleware('auth');
+    Route::get('/clinicas/list', [App\Http\Controllers\Admin\ClinicaController::class, 'list'])->middleware('auth');
     Route::get('/clinica/consultorio/myConfiguration', [App\Http\Controllers\Admin\ClinicaController::class, 'consultorioGet'])->middleware('auth');
     Route::post('/clinica/consultorio/set', [App\Http\Controllers\Admin\ClinicaController::class, 'setClinicaConsultorio'])->middleware('auth');
     Route::get('/clinica/consultorio/get', [App\Http\Controllers\Admin\ClinicaController::class, 'getClinicaConsultorio'])->middleware('auth');
     Route::post('/clinica/vincular/store', [App\Http\Controllers\Admin\ClinicaController::class, 'storeVincular'])->middleware('auth');
 
 
-    Route::resource('consultorio', '\App\Http\Controllers\Admin\ConsultoriosController')->middleware('auth');
-    Route::get('/consultorio/{id}/{userId}/show', [App\Http\Controllers\Admin\ConsultoriosController::class, 'show'])->middleware('auth');
+    Route::resource('consultorios', '\App\Http\Controllers\Admin\ConsultoriosController')->middleware('auth');
+    Route::get('/consultorio/{clinicaId}/{consultorioId}/{userId}/show', [App\Http\Controllers\Admin\ConsultoriosController::class, 'show'])->middleware('auth');
+    Route::get('/consultorios/list', [App\Http\Controllers\Admin\ConsultoriosController::class, 'list'])->middleware('auth');
+    Route::get('/horarios/consultorio/{consultorioId}', [App\Http\Controllers\Admin\ConsultoriosController::class, 'getHorarios'])->middleware('auth');
     Route::post('/consultorio/vincular/store', [App\Http\Controllers\Admin\ConsultoriosController::class, 'storeVincular'])->middleware('auth');
 
     Route::resource('usuarios', '\App\Http\Controllers\Admin\UserController')->middleware('auth');
     Route::get('usuarios/{pacientes}/permisos/get', [\App\Http\Controllers\Admin\UserController::class, 'permisosGet'])->middleware('auth');
     Route::post('/usuarios/vincular/store', [App\Http\Controllers\Admin\UserController::class, 'storeVincular'])->middleware('auth');
+    Route::post('/usuarios/typeConfiguration/store', [App\Http\Controllers\Admin\UserController::class, 'TypeConfiguration'])->middleware('auth');
+    Route::post('/usuarios/config/finish/store', [App\Http\Controllers\Admin\UserController::class, 'finishConfig'])->middleware('auth');
 
     Route::get('/usuarios/activar/{user_id}', [UserController::class, 'showActivationForm'])->name('users.activation.form');
     Route::post('/usuarios/activar/{user_id}', [UserController::class, 'activateUser'])->name('users.activation');

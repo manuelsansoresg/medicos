@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class AdministracionController extends Controller
 {
@@ -15,6 +16,16 @@ class AdministracionController extends Controller
     public function index()
     {
         return view('administracion.list');
+    }
+
+    /**
+     * Mostrar la vista de configuración del entorno
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function configurarEntorno()
+    {
+        return view('administracion.configurar_entorno');
     }
 
     /**
@@ -81,5 +92,29 @@ class AdministracionController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Completar la configuración del entorno del usuario
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function completarConfiguracion(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            User::where('id', $user->id)->update(['is_config' => 1]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Configuración completada exitosamente'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al completar la configuración: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

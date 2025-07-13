@@ -12,6 +12,7 @@ use App\Models\VinculacionSolicitud;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\View;
 
 class ConsultoriosController extends Controller
 {
@@ -65,15 +66,16 @@ class ConsultoriosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id, $userId = null)
+    public function show($clinicaId, $consultorioId, $userId = null)
     {
         $myUser = User::find(Auth::user()->id);
         $data = array(
-            'idconsultorio' => $id,
+            'idconsultorio' => $consultorioId,
+            'idclinica' => $clinicaId,
             'userId' => $userId,
             'myUser' => $myUser,
         );
-        $view = \View::make('administracion.consultorio.horarios', $data)->render();
+        $view = View::make('administracion.consultorio.horarios', $data)->render();
         return response()->json($view);
     }
 
@@ -123,5 +125,40 @@ class ConsultoriosController extends Controller
     {
         VinculacionSolicitud::deleteVinculacion($id);
         Consultorio::find($id)->delete();
+    }
+
+    /**
+     * Obtener lista de consultorios para el wizard
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function list()
+    {
+        $consultorios = Consultorio::getAll();
+        return response()->json($consultorios);
+    }
+
+    /**
+     * Obtener horarios de un consultorio
+     *
+     * @param  int  $consultorioId
+     * @return \Illuminate\Http\Response
+     */
+    public function getHorarios($consultorioId)
+    {
+        // Aquí deberías obtener los horarios del consultorio
+        // Por ahora retorno horarios de ejemplo
+        $horarios = [
+            ['id' => 1, 'hora_inicio' => '08:00', 'hora_fin' => '09:00'],
+            ['id' => 2, 'hora_inicio' => '09:00', 'hora_fin' => '10:00'],
+            ['id' => 3, 'hora_inicio' => '10:00', 'hora_fin' => '11:00'],
+            ['id' => 4, 'hora_inicio' => '11:00', 'hora_fin' => '12:00'],
+            ['id' => 5, 'hora_inicio' => '16:00', 'hora_fin' => '17:00'],
+            ['id' => 6, 'hora_inicio' => '17:00', 'hora_fin' => '18:00'],
+            ['id' => 7, 'hora_inicio' => '18:00', 'hora_fin' => '19:00'],
+            ['id' => 8, 'hora_inicio' => '19:00', 'hora_fin' => '20:00'],
+        ];
+        
+        return response()->json($horarios);
     }
 }

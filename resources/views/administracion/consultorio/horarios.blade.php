@@ -24,10 +24,18 @@
                         $data_where = [
                             'idia' => $idia,
                             'iturno' => $iturno,
-                            'idconsultorio' => $idconsultorio,
                             'iddoctor' => $userId,
                             'itipousr' => 1, //*revisar porque es el tipo de usuario
                         ];
+                        
+                        // Agregar idconsultorio o idclinica según cuál esté disponible
+                        if ($idconsultorio != null) {
+                            $data_where['idconsultorio'] = $idconsultorio;
+                        }
+                        if ($idclinica != null) {
+                            $data_where['idclinica'] = $idclinica;
+                        }
+                        
                         //dd($data_where);
                         $queryConsultaAsignado    = $consultaAsignado::where($data_where);
                         $getQueryConsultaAsignado = $queryConsultaAsignado->first();
