@@ -36,11 +36,11 @@ class ClinicaUser extends Model
         return $my_clinics;
     }
 
-    public static function saveEdit($id, $request)
+    public static function saveEdit($id, $request, $is_new = false)
     {
         $existingConfiguration = ClinicaUser::where(['user_id' => $id]);
 
-        if ($existingConfiguration != null) {
+        if ($existingConfiguration != null && $is_new == false) {
             $existingConfiguration->delete();
         }
 

@@ -365,7 +365,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Guarda el Card Token ID de la tarjeta en una constante
                         const cardTokenID = cardToken.id;
                         console.log("Card Token ID:", cardTokenID);
-                        registerPayment(cardTokenID);
+                        
+                        // Esperar a que se complete el registro del pago
+                        await registerPayment(cardTokenID);
 
                     } catch (error) {
 
@@ -374,12 +376,13 @@ document.addEventListener('DOMContentLoaded', function () {
                             case "CL2200":
                             case "CL2290":
                                 alert("Error: " + error.message);
-                                throw error;
                                 break;
                             case "AI1300":
                                 console.log("Error: ", error.message);
                                 break;
                             default:
+                                console.error("Error en el proceso de pago:", error);
+                                alert("Error en el proceso de pago. Por favor, intente nuevamente.");
                                 break;
                         }
                     }

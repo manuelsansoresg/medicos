@@ -126,6 +126,10 @@ class Consultorio extends Model
             $consultorio = Consultorio::find($consultorio_id);
             $consultorio->update($data);
         }
+        //vincular el consultorio al usuario si no esta vinculado
+        $fakeRequest = new \stdClass();
+        $fakeRequest->consultorios = [$consultorio->idconsultorios]; 
+        ConsultorioUser::saveEdit($userId, $fakeRequest, true);
         return $consultorio;
     }
 

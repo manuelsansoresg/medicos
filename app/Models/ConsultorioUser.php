@@ -49,11 +49,12 @@ class ConsultorioUser extends Model
         return $my_consultories;
     }
 
-    public static function saveEdit($id, $request)
+    
+
+    public static function saveEdit($id, $request, $is_new = false)
     {
         $existingConfiguration = ConsultorioUser::where(['user_id' => $id]);
-
-        if ($existingConfiguration != null) {
+        if ($existingConfiguration != null && $is_new == false) {
             $existingConfiguration->delete();
         }
 

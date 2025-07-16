@@ -49,6 +49,11 @@ class Clinica extends Model
             $clinica = Clinica::find($clinica_id);
             $clinica->update($data);
         }
+        //vincular la clinica al usuario si no esta vinculado
+        $fakeRequest = new \stdClass();
+        $fakeRequest->clinicas = [$clinica->idclinica]; 
+        ClinicaUser::saveEdit($userPrincipal, $fakeRequest, true);
+
         return $clinica;
     }
 
