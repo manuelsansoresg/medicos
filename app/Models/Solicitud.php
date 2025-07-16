@@ -319,10 +319,10 @@ class Solicitud extends Model
         return $data;
     }
 
-    public static function getUsedStatusPackages()
+    public static function getUsedStatusPackages($userId = null)
     {
         $packages = self::getStatusPackages();
-        $userId   = User::getMyUserPrincipal();
+        $userId   = $userId != null ? $userId : User::getMyUserPrincipal();
         $data     = [];
         
         if ($packages != null) {

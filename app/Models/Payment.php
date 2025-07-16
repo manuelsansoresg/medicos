@@ -38,7 +38,7 @@ class Payment extends Model
             
             if ($status == 1) {
                 Log::info('Pago aprobado, obteniendo status packages...');
-                $statusPackages = Solicitud::getUsedStatusPackages();
+                $statusPackages = Solicitud::getUsedStatusPackages($user->id);
                 Log::info('Status packages obtenido:', $statusPackages);
                 
                 if ($statusPackages && isset($statusPackages['totalUsuariosSistema']['solicitudId'])) {
