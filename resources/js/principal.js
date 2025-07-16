@@ -246,6 +246,7 @@ $(document).ready(function () {
         $('#step3-indicator').addClass('active');
     });
 
+    // Función para registrar el pago
     function registerPayment(CardTokenID) {
         let paqueteId = $('#paquete-id').val();
         let user_id = $('#user_id').val();
@@ -295,6 +296,26 @@ $(document).ready(function () {
         $(this).val($(this).val().replace(/[^\d]/g, '').trim());
     });
 });
+
+// Función global para registrar el pago (accesible desde fuera del document.ready)
+window.registerPayment = function(CardTokenID) {
+    let paqueteId = $('#paquete-id').val();
+    let user_id = $('#user_id').val();
+    return axios.post('/payment', {
+        paquete_id: paqueteId,
+        user_id: user_id,
+        card_token_id: CardTokenID
+    })
+        .then(function (response) {
+            console.log('Payment registered successfully:', response.data);
+            window.location.href = '/registro-exitoso';
+        })
+        .catch(function (error) {
+            console.error('Error registering payment:', error);
+            $('#errorPaymentModal').modal('show');
+            throw error;
+        });
+};
 
 
 
