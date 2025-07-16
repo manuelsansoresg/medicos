@@ -40,20 +40,27 @@ class Payment extends Model
             
             if ($status == 1) {
                 Log::info('Pago aprobado, verificando sesión activa...');
-                $vincularSolicitud = false;
                 // Solo ejecutar getUsedStatusPackages si hay sesión activa
                 if (Auth::check()) {
                     Log::info('Sesión activa, obteniendo status packages...');
-                    $statusPackages = Solicitud::getUsedStatusPackages();
-                    Log::info('Status packages obtenido:', $statusPackages);
                     
-                    if ($statusPackages && isset($statusPackages['totalUsuariosSistema']['solicitudId'])) {
-                        $solicitudId = $statusPackages['totalUsuariosSistema']['solicitudId'];
-                        Log::info('Guardando vinculación con solicitudId:', ['solicitudId' => $solicitudId, 'user_id' => $dataPayment['user_id']]);
-                        VinculacionSolicitud::saveVinculacion($dataPayment['user_id'], $solicitudId); 
-                    } else {
-                        Log::warning('No se pudo obtener solicitudId para vinculación');
+                    try {
+                        $statusPackages = Solicitud::getUsedStatusPackages();
+                        Log::info('Status packages obtenido:', $statusPackages);
+                    
+                        if ($statusPackages && isset($statusPackages['totalUsuariosSistema']['solicitudId'])) {
+                            $solicitudId = $statusPackages['totalUsuariosSistema']['solicitudId'];
+                            Log::info('Guardando vinculación con solicitudId:', ['solicitudId' => $solicitudId, 'user_id' => $dataPayment['user_id']]);
+                            VinculacionSolicitud::saveVinculacion($dataPayment['user_id'], $solicitudId); 
+                        } else {
+                            Log::warning('No se pudo obtener solicitudId para vinculación');
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('Error en Solicitud::getUsedStatusPackages: ' . $e->getMessage());
+                        $statusPackages = null;
                     }
+
+                  
                 } else {
                     VinculacionSolicitud::saveVinculacion($dataPayment['user_id'], $solicitudId); 
                 }
