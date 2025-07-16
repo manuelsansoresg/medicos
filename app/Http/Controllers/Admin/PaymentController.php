@@ -113,7 +113,7 @@ class PaymentController extends Controller
             );
             
             Log::info('Llamando a Payment::savePayment con datos:', $dataPayment);
-            $payment = Payment::savePayment($dataPayment);
+            $payment = Payment::savePayment($dataPayment, $solicitud->id);
             Log::info('Payment::savePayment completado:', $payment);
 
             $notification = new NotificationUser();
