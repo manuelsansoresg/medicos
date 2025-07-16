@@ -58,9 +58,20 @@ class Notification extends Model
     {
         $package = Package::find($packageId);
         $user = User::find($userId);
+        
+        // Crear variables para user_id e idusrregistra
+        if (Auth::check()) {
+            $notificationUserId = User::getMyUserPrincipal();
+            $notificationIdusrregistra = Auth::user()->id;
+        } else {
+            // Si no hay sesión activa, usar el $userId para ambas variables
+            $notificationUserId = $userId;
+            $notificationIdusrregistra = $userId;
+        }
+        
         Notification::create([
-            'user_id' => User::getMyUserPrincipal(),
-            'idusrregistra' => Auth::user()->id,
+            'user_id' => $notificationUserId,
+            'idusrregistra' => $notificationIdusrregistra,
             'title' => 'Solicitud alta de paquete',
             'msg' => 'Solicitud para alta del paquete '.$package->nombre.' por transferencia de '.$user->name.' '.$user->vapellido.' '.$user->segundo_apellido,
             'leido' => 0,
