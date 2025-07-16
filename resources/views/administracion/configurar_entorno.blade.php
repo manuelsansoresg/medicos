@@ -241,7 +241,7 @@
             
             <div class="text-center btn-navigation">
                 <button class="btn btn-secondary mr-2" id="back-to-step3"><i class="fas fa-arrow-left"></i> Anterior</button>
-                <button class="btn btn-success" id="finalizar-configuracion" disabled><i class="fas fa-check-circle"></i> Finalizar Configuración</button>
+                <button class="btn btn-primary" id="finalizar-configuracion" disabled><i class="fas fa-check-circle"></i> Finalizar Configuración</button>
             </div>
         </div>
     </div>
