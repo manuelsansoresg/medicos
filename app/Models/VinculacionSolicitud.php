@@ -34,21 +34,18 @@ class VinculacionSolicitud extends Model
         return $getVinculacion;
     }
 
-    public static function saveVinculacion($idRel, $solicitud_origin_id)
+    //cuando se registra un usuario por primera vez no cuenta con una sesión activa asi que se le pasa el userId
+    public static function saveVinculacion($idRel, $solicitud_origin_id, $userId = null)
     {
-        $isMedico = Auth::user()->hasRole('medico');
-        $isAuxiliar = Auth::user()->hasRole('auxiliar');
-        $isAdmin = Auth::user()->hasRole('administrador');
         $data = array();
-        if ($isMedico == true || $isAuxiliar == true || $isAdmin == true) {
-            $userPrincipal = User::getMyUserPrincipal();
-            $data['user_id'] = Auth::user()->id;
-            $data['idusrregistra'] = $userPrincipal;
-            
-            //$getUsedStatusPackages = Solicitud::getUsedStatusPackages();
-            //$solicitudId = $getUsedStatusPackages[$type]['solicitudId'];
+        
+        // Si se pasa $userId, crear la vinculación directamente sin verificar roles
+        if ($userId !== null) {
+            $data['user_id'] = $userId;
+            $data['idusrregistra'] = $userId;
             $data['solicitudId'] = $solicitud_origin_id;
             $data['idRel'] = $idRel;
+            
             $exists = VinculacionSolicitud::where([
                 'solicitudId' => $solicitud_origin_id,
                 'idRel' => $idRel,
@@ -56,6 +53,32 @@ class VinculacionSolicitud extends Model
 
             if (!$exists) {
                 VinculacionSolicitud::create($data);
+            }
+        } else {
+            // Si no se pasa $userId, verificar roles y usar el comportamiento original
+            if (Auth::check()) {
+                $isMedico = Auth::user()->hasRole('medico');
+                $isAuxiliar = Auth::user()->hasRole('auxiliar');
+                $isAdmin = Auth::user()->hasRole('administrador');
+                
+                if ($isMedico == true || $isAuxiliar == true || $isAdmin == true) {
+                    $userPrincipal = User::getMyUserPrincipal();
+                    $data['user_id'] = Auth::user()->id;
+                    $data['idusrregistra'] = $userPrincipal;
+                    
+                    //$getUsedStatusPackages = Solicitud::getUsedStatusPackages();
+                    //$solicitudId = $getUsedStatusPackages[$type]['solicitudId'];
+                    $data['solicitudId'] = $solicitud_origin_id;
+                    $data['idRel'] = $idRel;
+                    $exists = VinculacionSolicitud::where([
+                        'solicitudId' => $solicitud_origin_id,
+                        'idRel' => $idRel,
+                    ])->exists();
+
+                    if (!$exists) {
+                        VinculacionSolicitud::create($data);
+                    }
+                }
             }
         }
     }

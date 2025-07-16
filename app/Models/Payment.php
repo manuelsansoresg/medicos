@@ -62,7 +62,7 @@ class Payment extends Model
 
                   
                 } else {
-                    VinculacionSolicitud::saveVinculacion($dataPayment['user_id'], $solicitudId); 
+                    VinculacionSolicitud::saveVinculacion($dataPayment['user_id'], $solicitudId, $dataPayment['user_id']); 
                 }
 
 
