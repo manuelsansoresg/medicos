@@ -10,7 +10,7 @@
                     <path d="M6 11.268A4.5 4.5 0 0 0 7.5 12h1a4.5 4.5 0 0 0 1.5-1.732A4.5 4.5 0 0 0 10 8.268V6.732A4.5 4.5 0 0 0 7.5 8H7a4.5 4.5 0 0 0-1 .732V11.268z"/>
                 </svg>
             </div>
-            <h2 class="card-title mb-3">Verificación en Proceso</h2>
+            <h2 class="card-title mb-3">Verificación en Proceso </h2>
             <p class="card-text text-muted">Estamos revisando sus datos. Le responderemos a la brevedad posible para que pueda continuar con el proceso de activación del sistema. Agradecemos su paciencia. 
               <br>  Por correo se le notificará con una URL para darle continuidad al proceso de activación.</p>
             
