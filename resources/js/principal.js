@@ -365,7 +365,7 @@ $(document).ready(function () {
         })
             .then(function (response) {
                 console.log('Payment registered successfully:', response.data);
-                window.location.href = '/registro-exitoso';
+                //window.location.href = '/registro-exitoso';
             })
             .catch(function (error) {
                 console.error('Error registering payment:', error);
@@ -416,7 +416,7 @@ window.registerPayment = function(CardTokenID) {
     })
         .then(function (response) {
             console.log('Payment registered successfully:', response.data);
-            window.location.href = '/registro-exitoso';
+            //window.location.href = '/registro-exitoso';
         })
         .catch(function (error) {
             console.error('Error registering payment:', error);
