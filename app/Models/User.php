@@ -41,6 +41,7 @@ class User extends Authenticatable
         'idclinica',
         'idoctora',
         'status',
+        'accepted_terms',
         'is_config',
         'type_configuration',
         'is_cedula_active', //borrar

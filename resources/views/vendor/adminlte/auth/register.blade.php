@@ -27,16 +27,26 @@
             </div>
             <div class="step" id="step2-indicator">
                 <div class="step-number">2</div>
-                <div class="step-title">Selección de Paquete</div>
+                <div class="step-title">Tipo</div>
                 <div class="step-connector"></div>
             </div>
             <div class="step" id="step3-indicator">
                 <div class="step-number">3</div>
-                <div class="step-title">Información Personal</div>
+                <div class="step-title">Paquete</div>
                 <div class="step-connector"></div>
             </div>
             <div class="step" id="step4-indicator">
                 <div class="step-number">4</div>
+                <div class="step-title">Información Personal</div>
+                <div class="step-connector"></div>
+            </div>
+            <div class="step" id="step5-indicator">
+                <div class="step-number">5</div>
+                <div class="step-title">Términos y Condiciones</div>
+                <div class="step-connector"></div>
+            </div>
+            <div class="step" id="step6-indicator">
+                <div class="step-number">6</div>
                 <div class="step-title">Pago</div>
                 <div class="step-connector"></div>
             </div>
@@ -71,12 +81,26 @@
                 </div>
             </div>
             
-            <!-- Paso 2: Selección de Paquete -->
+            <!-- Paso 2: Tipo de Establecimiento -->
             <div class="step-pane" id="step2">
-                <h3 class="text-center mb-4"><i class="fas fa-box-open"></i> Seleccione un Paquete</h3>
+                <h3 class="text-center mb-4"><i class="fas fa-hospital"></i> Seleccione su tipo de establecimiento</h3>
                 
-                <div class="row" id="packages-container">
-                    <!-- Aquí se cargarán dinámicamente los paquetes -->
+                <div class="radio-container">
+                    <div class="custom-radio" id="clinica">
+                        <div class="radio-icon">
+                            <i class="fas fa-hospital-alt"></i>
+                        </div>
+                        <h5>Clínica</h5>
+                        <p class="text-muted small">Para establecimientos médicos con múltiples especialidades</p>
+                    </div>
+                    
+                    <div class="custom-radio" id="consultorio">
+                        <div class="radio-icon">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <h5>Consultorio</h5>
+                        <p class="text-muted small">Para consultorios médicos individuales</p>
+                    </div>
                 </div>
                 
                 <div class="text-center btn-navigation">
@@ -85,8 +109,22 @@
                 </div>
             </div>
             
-            <!-- Paso 3: Información Personal -->
+            <!-- Paso 3: Selección de Paquete -->
             <div class="step-pane" id="step3">
+                <h3 class="text-center mb-4"><i class="fas fa-box-open"></i> Seleccione un Paquete</h3>
+                
+                <div class="row" id="packages-container">
+                    <!-- Aquí se cargarán dinámicamente los paquetes -->
+                </div>
+                
+                <div class="text-center btn-navigation">
+                    <button class="btn btn-secondary mr-2" id="back-to-step2"><i class="fas fa-arrow-left"></i> Anterior</button>
+                    <button class="btn btn-primary" id="next-to-step4" disabled>Continuar <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            
+            <!-- Paso 4: Información Personal -->
+            <div class="step-pane" id="step4">
                 <h3 class="text-center mb-4"><i class="fas fa-user-plus"></i> Complete su información</h3>
                 
                 <!-- Resumen de selecciones anteriores -->
@@ -101,12 +139,18 @@
                         </div>
                         <div class="col-md-6">
                             <div class="summary-item">
-                                <span class="summary-label">Paquete seleccionado:</span>
-                                <span id="summary-paquete-nombre"></span>
+                                <span class="summary-label">Tipo de establecimiento:</span>
+                                <span id="summary-establecimiento-tipo"></span>
                             </div>
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-6">
+                            <div class="summary-item">
+                                <span class="summary-label">Paquete seleccionado:</span>
+                                <span id="summary-paquete-nombre"></span>
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="summary-item">
                                 <span class="summary-label">Precio:</span>
@@ -130,9 +174,11 @@
                     @csrf
                     <!-- Campos ocultos para los valores de los pasos anteriores -->
                     <input type="hidden" id="tipo-registro" name="tipo-registro">
+                    <input type="hidden" id="tipo-establecimiento" name="tipo-establecimiento">
                     <input type="hidden" id="paquete-id" name="paquete-id">
                     <input type="hidden" id="paquete-nombre" name="paquete-nombre">
                     <input type="hidden" id="paquete-precio" name="paquete-precio">
+                    <input type="hidden" id="accepted-terms" name="accepted_terms" value="false">
                     
                     <div class="row">
                         <div class="col-md-4">
@@ -281,13 +327,38 @@
                     </div>
                     
                     <div class="text-center btn-navigation">
-                        <button type="button" class="btn btn-secondary mr-2" id="back-to-step2"><i class="fas fa-arrow-left"></i> Anterior</button>
+                        <button type="button" class="btn btn-secondary mr-2" id="back-to-step3"><i class="fas fa-arrow-left"></i> Anterior</button>
                         <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i> Completar Registro</button>
                     </div>
                 </form>
             </div>
-            <!-- Paso 4: Pago -->
-            <div class="step-pane" id="step4">
+            <!-- Paso 5: Términos y Condiciones -->
+            <div class="step-pane" id="step5">
+                <h3 class="text-center mb-4"><i class="fas fa-file-contract"></i> Términos y Condiciones</h3>
+                
+                <div class="terms-container">
+                    <div class="pdf-viewer">
+                        <iframe id="terms-pdf" src="{{ asset('documents/terminos_y_condiciones.html') }}" width="100%" height="400px" frameborder="0"></iframe>
+                    </div>
+                    
+                    <div class="terms-checkbox mt-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="accept-terms" disabled>
+                            <label class="form-check-label" for="accept-terms">
+                                <i class="fas fa-check-circle"></i> He leído y acepto los términos y condiciones
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center btn-navigation">
+                    <button type="button" class="btn btn-secondary mr-2" id="back-to-step4"><i class="fas fa-arrow-left"></i> Anterior</button>
+                    <button type="button" class="btn btn-primary" id="next-to-step6" disabled>Continuar <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            
+            <!-- Paso 6: Pago -->
+            <div class="step-pane" id="step6">
                 <h3 class="text-center mb-4"><i class="fas fa-credit-card"></i> Información de Pago</h3>
                 <form id="payment-form">
                     <!-- Resumen final de la compra -->
@@ -366,7 +437,7 @@
                     </div>
                     <input type="hidden" id="user_id" name="user_id" value="">
                     <div class="text-center btn-navigation">
-                        <button type="button" class="btn btn-secondary mr-2" id="back-to-step3">
+                        <button type="button" class="btn btn-secondary mr-2" id="back-to-step5">
                             <i class="fas fa-arrow-left"></i> Anterior
                         </button>
                         <button type="button" class="btn btn-success" id="complete-payment" style="display: none;">
@@ -381,7 +452,7 @@
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-body text-center">
-                            <i class="fas fa-times-circle text-danger" style="font-size: 4rem; margin: 20px;"></i>
+                            <i class="far fa-frown text-danger" style="font-size: 3rem; margin: 20px;"></i>
                             <h4>Error en el Pago</h4>
                             <p>Lo sentimos, no se pudo procesar su pago correctamente. Por favor, verifique los datos de su tarjeta e intente nuevamente.</p>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>

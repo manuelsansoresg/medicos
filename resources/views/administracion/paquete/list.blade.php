@@ -39,6 +39,7 @@
                             <th>PRECIO</th>
                             <th>ACTIVO</th>
                             <th>ELEMENTOS</th>
+                            <th>TIPO</th>
                             <th>VALIDAR CÉDULA</th>
                             <th></th>
                         </tr>
@@ -65,6 +66,14 @@
                                         @foreach ($query->items as $item)
                                             <span class="badge bg-info">{{ $item->catalogPrice->nombre ?? 'Sin nombre' }} ({{ $item->max }}) </span>
                                         @endforeach
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($query->owner_type == 'clinica')
+                                        CLÍNICA
+                                    @endif
+                                    @if ($query->owner_type == 'consultorio')
+                                        CONSULTORIO
                                     @endif
                                 </td>
                                 <td>

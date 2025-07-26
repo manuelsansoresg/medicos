@@ -24,10 +24,11 @@ class PackageController extends Controller
     public function getPackages(Request $request)
     {
         $isValidateCedula = $request->query('isValidateCedula', null);
-        
+        $owner_type = $request->query('owner_type', null);
         // Filtrar paquetes según el valor de isValidateCedula
         $packages = Package::where('status', 1)
                           ->where('isValidateCedula', $isValidateCedula)
+                          ->where('owner_type', $owner_type)
                           ->with(['items.catalogPrice'])
                           ->get();
         

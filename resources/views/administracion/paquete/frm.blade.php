@@ -136,6 +136,16 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="inputOwnerType" class="form-label">Tipo </label>
+                                <select name="data[owner_type]" id="inputOwnerType" class="form-control" required>
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="clinica" {{ $query != null && $query->owner_type == 'clinica' ? 'selected' : null }}>Clínica</option>
+                                    <option value="consultorio" {{ $query != null && $query->owner_type == 'consultorio' ? 'selected' : null }}>Consultorio</option>
+                                </select>
+                            </div>
+                        </div>
 
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -154,7 +164,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputReporte" class="form-label">SOPORTE</label>
-                                <select name="data[tipoReporte]" id="inputReporte" class="form-control" required>
+                                <select name="data[tipoReporte]" id="inputReporte" class="form-control">
 
                                     @foreach (config('enums.soporte') as $key => $item)
                                         <option value="{{ $key }}"

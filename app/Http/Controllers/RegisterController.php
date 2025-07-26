@@ -48,6 +48,7 @@ class RegisterController extends Controller
                 'especialidad' => $request->especialidad,
                 'email' => $request->email,
                 'status' => 0,
+                'accepted_terms' => $request->accepted_terms === 'true' ? true : false,
                 'password' => Hash::make($request->password),
             ]);
 

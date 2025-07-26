@@ -2,15 +2,18 @@ window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 $(document).ready(function () {
+    console.log('Document ready iniciado');
     // Variables
     let hasCedula = null;
+    let selectedEstablishment = null;
     let selectedPackage = null;
     let packageName = "";
     let packagePrice = 0;
+    let termsAccepted = false;
 
     // Paso 1: Selección de tipo de registro
-    $('.custom-radio').click(function () {
-        $('.custom-radio').removeClass('selected');
+    $('#step1 .custom-radio').click(function () {
+        $('#step1 .custom-radio').removeClass('selected');
         $(this).addClass('selected');
 
         if ($(this).attr('id') === 'with-cedula') {
@@ -22,16 +25,34 @@ $(document).ready(function () {
         $('#next-to-step2').prop('disabled', false);
     });
 
+    // Paso 2: Selección de tipo de establecimiento
+    $('#step2 .custom-radio').click(function () {
+        console.log('Establecimiento seleccionado:', $(this).attr('id'));
+        $('#step2 .custom-radio').removeClass('selected');
+        $(this).addClass('selected');
+
+        if ($(this).attr('id') === 'clinica') {
+            selectedEstablishment = 'clinica';
+        } else {
+            selectedEstablishment = 'consultorio';
+        }
+
+        console.log('selectedEstablishment:', selectedEstablishment);
+        $('#next-to-step3').prop('disabled', false);
+    });
+
     // Modificado: Ahora solo adjuntamos el evento después de cargar los paquetes
     function attachPackageEvents() {
-        // Paso 2: Selección de paquete
+        console.log('Adjuntando eventos a paquetes');
+        // Paso 3: Selección de paquete
         $('.package-card').click(function () {
+            console.log('Paquete seleccionado:', $(this).attr('id'));
             $('.package-card').removeClass('selected');
             $(this).addClass('selected');
             selectedPackage = $(this).attr('id');
             packageName = $(this).data('package-name');
             packagePrice = $(this).data('package-price');
-            $('#next-to-step3').prop('disabled', false);
+            $('#next-to-step4').prop('disabled', false);
         });
     }
 
@@ -41,6 +62,14 @@ $(document).ready(function () {
         $('#step2').addClass('active');
         $('#step1-indicator').removeClass('active').addClass('completed');
         $('#step2-indicator').addClass('active');
+    });
+
+    $('#next-to-step3').click(function () {
+        console.log('Navegando al paso 3');
+        $('#step2').removeClass('active');
+        $('#step3').addClass('active');
+        $('#step2-indicator').removeClass('active').addClass('completed');
+        $('#step3-indicator').addClass('active');
 
         // Cargar paquetes según la selección de cédula
         loadPackages(hasCedula ? 1 : 0);
@@ -48,16 +77,20 @@ $(document).ready(function () {
 
     // Función para cargar paquetes
     function loadPackages(isValidateCedula) {
+        console.log('Cargando paquetes con:', { isValidateCedula, selectedEstablishment });
+        
         // Mostrar indicador de carga
         $('#packages-container').html('<div class="col-12 text-center"><i class="fas fa-spinner fa-spin fa-2x"></i><p>Cargando paquetes...</p></div>');
 
         // Hacer petición a la ruta que devolverá el HTML de los paquetes
         axios.get('/obtener-paquetes', {
             params: {
-                isValidateCedula: isValidateCedula
+                isValidateCedula: isValidateCedula,
+                owner_type: selectedEstablishment
             }
         })
             .then(function (response) {
+                console.log('Paquetes cargados:', response.data);
                 // Insertar HTML en el contenedor
                 $('#packages-container').html(response.data);
 
@@ -70,22 +103,28 @@ $(document).ready(function () {
             });
     }
 
-    $('#next-to-step3').click(function () {
-        $('#step2').removeClass('active');
-        $('#step3').addClass('active');
-        $('#step2-indicator').removeClass('active').addClass('completed');
-        $('#step3-indicator').addClass('active');
+    $('#next-to-step4').click(function () {
+        console.log('Navegando al paso 4');
+        $('#step3').removeClass('active');
+        $('#step4').addClass('active');
+        $('#step3-indicator').removeClass('active').addClass('completed');
+        $('#step4-indicator').addClass('active');
 
         // Actualizar el resumen y los campos ocultos con los valores seleccionados
         const tipoRegistroTexto = hasCedula ? 'Con Cédula Profesional' : 'Sin Cédula Profesional';
+        const tipoEstablecimientoTexto = selectedEstablishment === 'clinica' ? 'Clínica' : 'Consultorio';
+
+        console.log('Resumen:', { tipoRegistroTexto, tipoEstablecimientoTexto, packageName, packagePrice });
 
         // Actualizar el resumen visual
         $('#summary-registro-tipo').text(tipoRegistroTexto);
+        $('#summary-establecimiento-tipo').text(tipoEstablecimientoTexto);
         $('#summary-paquete-nombre').text(packageName);
         $('#summary-paquete-precio').text('$' + packagePrice + '/mes');
 
         // Actualizar los campos ocultos del formulario
         $('#tipo-registro').val(hasCedula ? 'con_cedula' : 'sin_cedula');
+        $('#tipo-establecimiento').val(selectedEstablishment);
         $('#paquete-id').val(selectedPackage);
         $('#paquete-nombre').val(packageName);
         $('#paquete-precio').val(packagePrice);
@@ -121,6 +160,27 @@ $(document).ready(function () {
         $('#step2').addClass('active');
         $('#step3-indicator').removeClass('active');
         $('#step2-indicator').removeClass('completed').addClass('active');
+    });
+
+    $('#back-to-step3').click(function () {
+        $('#step4').removeClass('active');
+        $('#step3').addClass('active');
+        $('#step4-indicator').removeClass('active');
+        $('#step3-indicator').removeClass('completed').addClass('active');
+    });
+
+    $('#back-to-step4').click(function () {
+        $('#step5').removeClass('active');
+        $('#step4').addClass('active');
+        $('#step5-indicator').removeClass('active');
+        $('#step4-indicator').removeClass('completed').addClass('active');
+    });
+
+    $('#back-to-step5').click(function () {
+        $('#step6').removeClass('active');
+        $('#step5').addClass('active');
+        $('#step6-indicator').removeClass('active');
+        $('#step5-indicator').removeClass('completed').addClass('active');
     });
 
     // Limpiar errores previos
@@ -193,15 +253,13 @@ $(document).ready(function () {
                 let user = response.data.user;
                 $('#user_id').val(user.id);
                 // Registro exitoso
-                $('#step3').removeClass('active');
-                $('#step4').addClass('active');
-                $('#step3-indicator').removeClass('active').addClass('completed');
-                $('#step4-indicator').addClass('active');
+                $('#step4').removeClass('active');
+                $('#step5').addClass('active');
+                $('#step4-indicator').removeClass('active').addClass('completed');
+                $('#step5-indicator').addClass('active');
 
-                // Update payment summary
-                $('#payment-package-name').text($('#summary-paquete-nombre').text());
-                $('#payment-registration-type').text($('#summary-registro-tipo').text());
-                $('#payment-total').text($('#summary-paquete-precio').text());
+                // Inicializar términos y condiciones
+                initializeTermsAndConditions();
 
                 //window.location.href = response.data.redirect || '/home';
             })
@@ -224,20 +282,64 @@ $(document).ready(function () {
             });
     });
 
-    $('#next-to-step4').click(function () {
-        // Validate step 3 fields first
-        if (validateStep3()) {
-            $('#step3').removeClass('active');
-            $('#step4').addClass('active');
-            $('#step3-indicator').removeClass('active');
-            $('#step4-indicator').addClass('active');
+    // Función para inicializar términos y condiciones
+    function initializeTermsAndConditions() {
+        const iframe = document.getElementById('terms-pdf');
+        const checkbox = document.getElementById('accept-terms');
+        const nextButton = document.getElementById('next-to-step6');
 
-            // Update payment summary
-            $('#payment-package-name').text($('#summary-paquete-nombre').text());
-            $('#payment-registration-type').text($('#summary-registro-tipo').text());
-            $('#payment-total').text($('#summary-paquete-precio').text());
+        // Función para verificar si el usuario llegó al final del documento
+        function checkScrollPosition() {
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                const scrollTop = iframeDoc.documentElement.scrollTop || iframeDoc.body.scrollTop;
+                const scrollHeight = iframeDoc.documentElement.scrollHeight || iframeDoc.body.scrollHeight;
+                const clientHeight = iframeDoc.documentElement.clientHeight || iframeDoc.body.clientHeight;
+
+                // Si el usuario llegó al final (con un margen de 100px)
+                if (scrollTop + clientHeight >= scrollHeight - 100) {
+                    checkbox.disabled = false;
+                    checkbox.parentElement.querySelector('label').style.color = '#495057';
+                    checkbox.parentElement.querySelector('label').style.cursor = 'pointer';
+                }
+            } catch (error) {
+                // Si hay error de CORS, habilitar el checkbox después de un tiempo
+                setTimeout(() => {
+                    checkbox.disabled = false;
+                    checkbox.parentElement.querySelector('label').style.color = '#495057';
+                    checkbox.parentElement.querySelector('label').style.cursor = 'pointer';
+                }, 8000); // 8 segundos
+            }
         }
-    });
+
+        // Esperar a que el iframe cargue completamente
+        iframe.onload = function() {
+            // Verificar posición del scroll cada 500ms
+            setInterval(checkScrollPosition, 500);
+        };
+
+        // Manejar cambio del checkbox
+        checkbox.addEventListener('change', function() {
+            termsAccepted = this.checked;
+            $('#accepted-terms').val(termsAccepted);
+            nextButton.disabled = !termsAccepted;
+        });
+
+        // Manejar navegación al paso de pago
+        $('#next-to-step6').click(function() {
+            if (termsAccepted) {
+                $('#step5').removeClass('active');
+                $('#step6').addClass('active');
+                $('#step5-indicator').removeClass('active').addClass('completed');
+                $('#step6-indicator').addClass('active');
+
+                // Update payment summary
+                $('#payment-package-name').text($('#summary-paquete-nombre').text());
+                $('#payment-registration-type').text($('#summary-registro-tipo').text());
+                $('#payment-total').text($('#summary-paquete-precio').text());
+            }
+        });
+    }
 
     $('#back-to-step3').click(function () {
         $('#step4').removeClass('active');
