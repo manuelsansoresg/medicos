@@ -227,3 +227,90 @@ body {
   border-radius: 0.25rem;
   background-color: white;
 }
+
+/* Estilos para el paso de términos y condiciones */
+.terms-container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.pdf-viewer {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f8f9fa;
+  margin-bottom: 20px;
+}
+
+.pdf-viewer iframe {
+  border: none;
+  background-color: white;
+}
+
+.terms-checkbox {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.terms-checkbox .form-check {
+  margin: 0;
+}
+
+.terms-checkbox .form-check-input {
+  margin-right: 10px;
+}
+
+.terms-checkbox .form-check-label {
+  font-weight: 500;
+  color: #495057;
+  cursor: pointer;
+}
+
+.terms-checkbox .form-check-input:disabled + .form-check-label {
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+.terms-checkbox .form-check-input:checked + .form-check-label {
+  color: #28a745;
+}
+
+/* Estilos para el checkbox siempre habilitado */
+.terms-checkbox .form-check-input {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.terms-checkbox .form-check-label {
+  color: #495057;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+/* Animación cuando se marca el checkbox */
+.terms-checkbox .form-check-input:checked + .form-check-label {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.terms-checkbox .form-check-input:checked ~ .terms-checkbox {
+  background-color: #e8f5e8;
+  border-color: #28a745;
+  transition: all 0.3s ease;
+}
+
+/* Estilo para el mensaje informativo */
+.terms-checkbox small {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+/* Hover effect */
+.terms-checkbox .form-check:hover {
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  padding: 5px;
+  margin: -5px;
+}

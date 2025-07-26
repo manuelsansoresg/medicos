@@ -337,9 +337,9 @@
                 <h3 class="text-center mb-4"><i class="fas fa-file-contract"></i> Términos y Condiciones</h3>
                 
                 <div class="terms-container">
-                    <div class="alert alert-info mb-3">
-                        <i class="fas fa-info-circle"></i>
-                        <strong>Importante:</strong> Por favor, lea completamente los términos y condiciones. El checkbox se habilitará automáticamente cuando llegue al final del documento.
+                    <div class="alert alert-warning mb-3">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Importante:</strong> Para continuar con el proceso de pago, debe leer y aceptar los términos y condiciones. Por favor, lea completamente el documento antes de marcar la casilla.
                     </div>
                     
                     <div class="pdf-viewer">
@@ -348,11 +348,15 @@
                     
                     <div class="terms-checkbox mt-4">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="accept-terms" disabled>
+                            <input class="form-check-input" type="checkbox" id="accept-terms">
                             <label class="form-check-label" for="accept-terms">
                                 <i class="fas fa-check-circle"></i> He leído y acepto los términos y condiciones
                             </label>
                         </div>
+                        <small class="text-muted mt-2 d-block">
+                            <i class="fas fa-info-circle"></i> 
+                            Al marcar esta casilla, confirma que ha leído, entendido y acepta los términos y condiciones en su totalidad.
+                        </small>
                     </div>
                 </div>
                 

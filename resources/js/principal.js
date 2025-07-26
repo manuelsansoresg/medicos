@@ -286,17 +286,10 @@ $(document).ready(function () {
     function initializeTermsAndConditions() {
         console.log('Inicializando términos y condiciones...');
         
-        const iframe = document.getElementById('terms-pdf');
         const checkbox = document.getElementById('accept-terms');
         const nextButton = document.getElementById('next-to-step6');
-        let scrollCheckInterval;
         
         // Verificar que los elementos existan
-        if (!iframe) {
-            console.error('No se encontró el iframe de términos y condiciones');
-            return;
-        }
-        
         if (!checkbox) {
             console.error('No se encontró el checkbox de términos y condiciones');
             return;
@@ -309,73 +302,6 @@ $(document).ready(function () {
         
         console.log('Elementos encontrados correctamente');
 
-        // Función para verificar si el usuario llegó al final del documento
-        function checkScrollPosition() {
-            try {
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                const scrollTop = iframeDoc.documentElement.scrollTop || iframeDoc.body.scrollTop;
-                const scrollHeight = iframeDoc.documentElement.scrollHeight || iframeDoc.body.scrollHeight;
-                const clientHeight = iframeDoc.documentElement.clientHeight || iframeDoc.body.clientHeight;
-
-                // Si el usuario llegó al final (con un margen de 50px)
-                if (scrollTop + clientHeight >= scrollHeight - 50) {
-                    // Habilitar el checkbox
-                    checkbox.disabled = false;
-                    checkbox.parentElement.querySelector('label').style.color = '#495057';
-                    checkbox.parentElement.querySelector('label').style.cursor = 'pointer';
-                    
-                    // Agregar clase visual para indicar que está habilitado
-                    checkbox.parentElement.classList.add('checkbox-enabled');
-                    
-                    // Detener el intervalo una vez que se ha habilitado
-                    if (scrollCheckInterval) {
-                        clearInterval(scrollCheckInterval);
-                    }
-                    
-                    console.log('Checkbox habilitado - usuario llegó al final del documento');
-                }
-            } catch (error) {
-                console.log('Error al verificar scroll del iframe:', error.message);
-                // Si hay error de CORS, habilitar el checkbox después de un tiempo
-                setTimeout(() => {
-                    checkbox.disabled = false;
-                    checkbox.parentElement.querySelector('label').style.color = '#495057';
-                    checkbox.parentElement.querySelector('label').style.cursor = 'pointer';
-                    checkbox.parentElement.classList.add('checkbox-enabled');
-                    
-                    if (scrollCheckInterval) {
-                        clearInterval(scrollCheckInterval);
-                    }
-                    
-                    console.log('Checkbox habilitado por timeout (CORS)');
-                }, 10000); // 10 segundos
-            }
-        }
-
-        // Esperar a que el iframe cargue completamente
-        iframe.onload = function() {
-            console.log('Iframe de términos y condiciones cargado');
-            
-            // Verificar posición del scroll cada 300ms
-            scrollCheckInterval = setInterval(checkScrollPosition, 300);
-            
-            // También verificar inmediatamente por si el contenido es corto
-            setTimeout(checkScrollPosition, 1000);
-            
-            // Intentar agregar event listener de scroll al iframe
-            try {
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                if (iframeDoc) {
-                    iframeDoc.addEventListener('scroll', function() {
-                        checkScrollPosition();
-                    });
-                    console.log('Event listener de scroll agregado al iframe');
-                }
-            } catch (error) {
-                console.log('No se pudo agregar event listener de scroll al iframe (CORS):', error.message);
-            }
-        };
-
         // Manejar cambio del checkbox
         checkbox.addEventListener('change', function() {
             termsAccepted = this.checked;
@@ -383,16 +309,26 @@ $(document).ready(function () {
             nextButton.disabled = !termsAccepted;
             
             console.log('Checkbox cambiado:', termsAccepted);
+            
+            // Mostrar mensaje de confirmación
+            if (this.checked) {
+                const notification = document.createElement('div');
+                notification.className = 'alert alert-success mt-3';
+                notification.innerHTML = '<i class="fas fa-check-circle"></i> Términos y condiciones aceptados. Puede continuar con el proceso de pago.';
+                checkbox.parentElement.appendChild(notification);
+                
+                // Remover notificación después de 3 segundos
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 3000);
+            }
         });
 
         // Manejar navegación al paso de pago
         $('#next-to-step6').click(function() {
             if (termsAccepted) {
-                // Limpiar el intervalo de verificación de scroll
-                if (scrollCheckInterval) {
-                    clearInterval(scrollCheckInterval);
-                }
-                
                 $('#step5').removeClass('active');
                 $('#step6').addClass('active');
                 $('#step5-indicator').removeClass('active').addClass('completed');
@@ -406,13 +342,7 @@ $(document).ready(function () {
                 console.log('Navegando al paso de pago');
             } else {
                 console.log('No se puede continuar - términos no aceptados');
-            }
-        });
-        
-        // Limpiar intervalo cuando se navega hacia atrás
-        $('#back-to-step4').click(function() {
-            if (scrollCheckInterval) {
-                clearInterval(scrollCheckInterval);
+                alert('Debe aceptar los términos y condiciones para continuar con el proceso de pago.');
             }
         });
     }
