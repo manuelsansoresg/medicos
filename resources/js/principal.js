@@ -90,7 +90,7 @@ $(document).ready(function () {
             }
         })
             .then(function (response) {
-                console.log('Paquetes cargados:', response.data);
+                //console.log('Paquetes cargados:', response.data);
                 // Insertar HTML en el contenedor
                 $('#packages-container').html(response.data);
 
@@ -543,7 +543,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 break;
                             default:
                                 console.error("Error en el proceso de pago:", error);
-                                alert("Error en el proceso de pago. Por favor, intente nuevamente.");
+                                
                                 break;
                         }
                     }
