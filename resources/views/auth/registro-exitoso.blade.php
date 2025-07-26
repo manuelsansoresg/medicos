@@ -33,12 +33,12 @@
     </style>
 </head>
 <body>
-    <div class="success-container">
+   <div class="success-container">
         <div class="success-card">
-            <i class="fas fa-check-circle success-icon"></i>
+            <i class="far fa-smile-beam success-icon" style="color: #28a745;"></i>
             <h2 class="mb-4">¡Registro Exitoso!</h2>
             <p class="lead mb-4">El pago se ha procesado correctamente. Por favor, revise su correo electrónico para activar su cuenta y comenzar a usar nuestros servicios.</p>
-            
+            <p class="text-muted"><small>Si no encuentra el correo, revise su bandeja de spam o correo no deseado.</small></p>
         </div>
     </div>
 </body>
