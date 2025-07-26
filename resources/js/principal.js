@@ -365,10 +365,26 @@ $(document).ready(function () {
         })
             .then(function (response) {
                 console.log('Payment registered successfully:', response.data);
-                //window.location.href = '/registro-exitoso';
+                
+                // Verificar si el pago fue exitoso
+                if (response.data && response.data.status === 'approved') {
+                    console.log('✅ Pago aprobado, redirigiendo...');
+                    window.location.href = '/registro-exitoso';
+                } else if (response.data && response.data.response && response.data.response.error_code) {
+                    // Error de Clip
+                    console.error('❌ Error de Clip:', response.data.response);
+                    $('#errorPaymentModal').modal('show');
+                    throw new Error(response.data.response.message || 'Error en el pago');
+                } else {
+                    // Otro tipo de respuesta
+                    console.log('Respuesta del servidor:', response.data);
+                    window.location.href = '/registro-exitoso';
+                }
             })
             .catch(function (error) {
                 console.error('Error registering payment:', error);
+                
+                // Solo mostrar el modal con el mensaje genérico
                 $('#errorPaymentModal').modal('show');
                 throw error;
             });
@@ -416,10 +432,26 @@ window.registerPayment = function(CardTokenID) {
     })
         .then(function (response) {
             console.log('Payment registered successfully:', response.data);
-            //window.location.href = '/registro-exitoso';
+            
+            // Verificar si el pago fue exitoso
+            if (response.data && response.data.status === 'approved') {
+                console.log('✅ Pago aprobado, redirigiendo...');
+                window.location.href = '/registro-exitoso';
+            } else if (response.data && response.data.response && response.data.response.error_code) {
+                // Error de Clip
+                console.error('❌ Error de Clip:', response.data.response);
+                $('#errorPaymentModal').modal('show');
+                throw new Error(response.data.response.message || 'Error en el pago');
+            } else {
+                // Otro tipo de respuesta
+                console.log('Respuesta del servidor:', response.data);
+                window.location.href = '/registro-exitoso';
+            }
         })
         .catch(function (error) {
             console.error('Error registering payment:', error);
+            
+            // Solo mostrar el modal con el mensaje genérico
             $('#errorPaymentModal').modal('show');
             throw error;
         });
