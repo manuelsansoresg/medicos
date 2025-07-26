@@ -337,6 +337,11 @@
                 <h3 class="text-center mb-4"><i class="fas fa-file-contract"></i> Términos y Condiciones</h3>
                 
                 <div class="terms-container">
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Importante:</strong> Por favor, lea completamente los términos y condiciones. El checkbox se habilitará automáticamente cuando llegue al final del documento.
+                    </div>
+                    
                     <div class="pdf-viewer">
                         <iframe id="terms-pdf" src="{{ asset('documents/terminos_y_condiciones.html') }}" width="100%" height="400px" frameborder="0"></iframe>
                     </div>
