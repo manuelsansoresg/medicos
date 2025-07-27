@@ -44,7 +44,7 @@ class RegisterController extends Controller
                 'ttelefono' => $request->ttelefono,
                 'tdireccion' => $request->tdireccion,
                 'vcedula' => $request->vcedula,
-                'tipo_establecimiento' => $tipo_establecimiento,
+                'type_configuration' => $tipo_establecimiento,
                 'RFC' => $request->RFC,
                 'especialidad' => $request->especialidad,
                 'email' => $request->email,
