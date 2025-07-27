@@ -9,177 +9,102 @@ $.ajaxSetup({
 });
 
 $(document).ready(function() {
-    let entornoSeleccionado = '';
     let clinicaId = null;
     let consultorioId = null;
     let horariosConfigurados = false;
+    let currentStep = 1;
+    let totalSteps = 0;
 
     // Variables para almacenar datos de los formularios
     let datosClinica = {};
     let datosConsultorio = {};
     let datosHorarios = {};
 
-    // Flujo dinámico de pasos
-    let wizardSteps = [];
-    let wizardIndex = 0;
-    const stepMap = {
-        'clinica': 2,
-        'consultorio': 3,
-        'horarios': 4
-    };
-    const stepLabels = {
-        'clinica': 'Clínica',
-        'consultorio': 'Consultorio',
-        'horarios': 'Horarios'
-    };
-
-    function setWizardSteps() {
-        if (entornoSeleccionado === 'clinica-only') {
-            wizardSteps = ['clinica', 'horarios'];
-        } else if (entornoSeleccionado === 'consultorio-only') {
-            wizardSteps = ['consultorio', 'horarios'];
-        } else if (entornoSeleccionado === 'ambos') {
-            wizardSteps = ['clinica', 'consultorio', 'horarios'];
-        } else {
-            wizardSteps = [];
+    // Configurar el wizard según el tipo de configuración
+    function initializeWizard() {
+        const typeConfig = window.typeConfiguration;
+        
+        if (typeConfig === 1) {
+            // Flujo: Clínica -> Consultorio -> Horarios
+            totalSteps = 3;
+            showStep(1);
+        } else if (typeConfig === 2) {
+            // Flujo: Consultorio -> Horarios
+            totalSteps = 2;
+            showStep(1);
         }
-        wizardIndex = 0;
-        renderStepIndicators();
+        
+        updateStepIndicators();
     }
 
-    // Renderizar los indicadores de pasos dinámicamente
-    function renderStepIndicators() {
-        // Siempre mostrar el paso 1 (selección de entorno)
-        let html = `<div class="step" id="step1-indicator">
-            <div class="step-number">1</div>
-            <div class="step-title">Selección de Entorno</div>
-            <div class="step-connector"></div>
-        </div>`;
-        wizardSteps.forEach((step, idx) => {
-            const num = idx + 2;
-            html += `<div class="step" id="step${stepMap[step]}-indicator">
-                <div class="step-number">${num}</div>
-                <div class="step-title">${stepLabels[step]}</div>
-                <div class="step-connector"></div>
-            </div>`;
-        });
-        $('.steps').html(html);
-    }
-
-    // Paso 1: Selección de entorno
-    $('.custom-radio').click(function() {
-        $('.custom-radio').removeClass('selected');
-        $(this).addClass('selected');
-        
-        entornoSeleccionado = $(this).attr('id');
-        $('#entorno-seleccionado').val(entornoSeleccionado);
-        
-        // Habilitar botón continuar
-        $('#next-to-step2').prop('disabled', false);
-    });
-
-    // Navegación entre pasos
-    $('#next-to-step2').click(async function() {
-        if (entornoSeleccionado) {
-            // Enviar configuración de tipo al backend
-            let tipoConfiguracion;
-            if (entornoSeleccionado === 'clinica-only') {
-                tipoConfiguracion = 1;
-            } else if (entornoSeleccionado === 'consultorio-only') {
-                tipoConfiguracion = 2;
-            } else if (entornoSeleccionado === 'ambos') {
-                tipoConfiguracion = 3;
-            }
-
-            try {
-                await axios.post('/admin/usuarios/typeConfiguration/store', {
-                    tipo: tipoConfiguracion,
-                    user_id: window.userId
-                });
-                
-                setWizardSteps();
-                wizardIndex = 0;
-                showWizardStep();
-            } catch (error) {
-                console.error('Error guardando tipo de configuración:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Ocurrió un error al guardar la configuración. Por favor, intente nuevamente.'
-                });
-            }
-        }
-    });
-
-    // Avanzar paso (con creación/actualización de datos si aplica)
-    $('#next-to-step3, #next-to-step4').click(async function() {
-        const current = wizardSteps[wizardIndex];
-        let valid = true;
-        if (current === 'clinica') valid = validateClinicaForm();
-        if (current === 'consultorio') valid = validateConsultorioForm();
-        if (current === 'horarios') valid = validateHorariosForm();
-        if (!valid) return;
-
-        // Guardar/actualizar en backend si es paso de creación
-        if (current === 'clinica') {
-            await saveOrUpdateClinica();
-        }
-        if (current === 'consultorio') {
-            await saveOrUpdateConsultorio();
-        }
-
-        wizardIndex++;
-        showWizardStep();
-    });
-
-    // Botones de regreso
-    $('#back-to-step1, #back-to-step2, #back-to-step3, #back-to-step4').click(function() {
-        if (wizardIndex > 0) {
-            wizardIndex--;
-            showWizardStep();
-        } else {
-            // Regresar a selección de entorno
-            $('.step-pane').removeClass('active');
-            $('#step1').addClass('active');
-            renderStepIndicators();
-            updateStepIndicators(1);
-        }
-    });
-
-    // Finalizar configuración (ahora en el paso de horarios)
-    $('#finalizar-configuracion').click(function() {
-        finalizarConfiguracion();
-    });
-
-    // Mostrar el paso correcto según el flujo
-    function showWizardStep() {
+    // Mostrar el paso específico
+    function showStep(stepNumber) {
         $('.step-pane').removeClass('active');
-        // Paso actual
-        const stepKey = wizardSteps[wizardIndex];
-        const stepNum = stepMap[stepKey];
-        $('#step' + stepNum).addClass('active');
-        updateStepIndicators(stepNum);
-        if (stepKey === 'horarios') {
+        $(`#step${stepNumber}`).addClass('active');
+        currentStep = stepNumber;
+        updateStepIndicators();
+        
+        // Cargar datos específicos del paso si es necesario
+        if (stepNumber === totalSteps) {
             loadHorariosData();
         }
     }
 
-    function updateStepIndicators(activeStep) {
+    // Actualizar indicadores de pasos
+    function updateStepIndicators() {
         $('.step').removeClass('active completed');
-        // Solo los steps renderizados
-        $('.step').each(function(idx) {
-            const stepNum = parseInt($(this).find('.step-number').text());
-            if (stepNum < (wizardIndex + 2)) {
-                $(this).addClass('completed');
-            } else if (stepNum === (wizardIndex + 2)) {
-                $(this).addClass('active');
+        
+        for (let i = 1; i <= totalSteps; i++) {
+            const stepElement = $(`#step${i}-indicator`);
+            if (i < currentStep) {
+                stepElement.addClass('completed');
+            } else if (i === currentStep) {
+                stepElement.addClass('active');
             }
-        });
-        // El primer paso (selección de entorno)
-        if (activeStep === 1) {
-            $('#step1-indicator').addClass('active');
         }
     }
+
+    // Navegación entre pasos
+    $('#next-to-step2').click(async function() {
+        const typeConfig = window.typeConfiguration;
+        
+        if (typeConfig === 1) {
+            // Validar formulario de clínica
+            if (!validateClinicaForm()) return;
+            await saveOrUpdateClinica();
+            showStep(2);
+        } else if (typeConfig === 2) {
+            // Validar formulario de consultorio
+            if (!validateConsultorioForm()) return;
+            await saveOrUpdateConsultorio();
+            showStep(2);
+        }
+    });
+
+    $('#next-to-step3').click(async function() {
+        // Solo para type_configuration = 1
+        if (!validateConsultorioForm()) return;
+        await saveOrUpdateConsultorio();
+        showStep(3);
+    });
+
+    // Botones de regreso
+    $('#back-to-step1').click(function() {
+        if (currentStep > 1) {
+            showStep(currentStep - 1);
+        }
+    });
+
+    $('#back-to-step2').click(function() {
+        if (currentStep > 1) {
+            showStep(currentStep - 1);
+        }
+    });
+
+    // Finalizar configuración
+    $('#finalizar-configuracion').click(function() {
+        finalizarConfiguracion();
+    });
 
     // Validaciones de formularios
     function validateClinicaForm() {
@@ -232,34 +157,36 @@ $(document).ready(function() {
     }
 
     function validateHorariosForm() {
-        let clinica = $('#clinica-wizard').length ? ($('#clinica-wizard').val() || null) : null;
-        let consultorio = $('#offices-wizard').length ? ($('#offices-wizard').val() || null) : null;
-        let duracion = $('#duraconsulta-wizard').val();
+        const typeConfig = window.typeConfiguration;
+        let clinica = null;
+        let consultorio = null;
+        
+        if (typeConfig === 1) {
+            clinica = $('#clinica-wizard').val() || null;
+            consultorio = $('#offices-wizard').val() || null;
+            
+            if (!clinica || !consultorio) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Campos requeridos',
+                    text: 'Por favor seleccione una clínica y un consultorio.'
+                });
+                return false;
+            }
+        } else if (typeConfig === 2) {
+            consultorio = $('#offices-wizard').val() || null;
+            
+            if (!consultorio) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Campo requerido',
+                    text: 'Por favor seleccione un consultorio.'
+                });
+                return false;
+            }
+        }
 
-        if (entornoSeleccionado === 'clinica-only' && !clinica) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Campo requerido',
-                text: 'Por favor seleccione una clínica.'
-            });
-            return false;
-        }
-        if (entornoSeleccionado === 'consultorio-only' && !consultorio) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Campo requerido',
-                text: 'Por favor seleccione un consultorio.'
-            });
-            return false;
-        }
-        if (entornoSeleccionado === 'ambos' && (!clinica || !consultorio)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Campos requeridos',
-                text: 'Por favor seleccione una clínica y un consultorio.'
-            });
-            return false;
-        }
+        let duracion = $('#duraconsulta-wizard').val();
 
         // Guardar datos de horarios
         datosHorarios = {
@@ -273,6 +200,8 @@ $(document).ready(function() {
 
     // Cargar datos para horarios
     function loadHorariosData() {
+        const typeConfig = window.typeConfiguration;
+        
         // Cargar consultorios
         $.ajax({
             url: '/admin/consultorios/list',
@@ -286,61 +215,81 @@ $(document).ready(function() {
             }
         });
 
-        // Cargar clínicas
-        $.ajax({
-            url: '/admin/clinicas/list',
-            method: 'GET',
-            success: function(response) {
-                let options = '<option value="">Seleccione una opción</option>';
-                response.forEach(function(clinica) {
-                    options += `<option value="${clinica.idclinica}">${clinica.tnombre}</option>`;
-                });
-                $('#clinica-wizard').html(options);
-            }
-        });
+        // Cargar clínicas solo si es type_configuration = 1
+        if (typeConfig === 1) {
+            $.ajax({
+                url: '/admin/clinicas/list',
+                method: 'GET',
+                success: function(response) {
+                    let options = '<option value="">Seleccione una opción</option>';
+                    response.forEach(function(clinica) {
+                        options += `<option value="${clinica.idclinica}">${clinica.tnombre}</option>`;
+                    });
+                    $('#clinica-wizard').html(options);
+                }
+            });
+        }
     }
 
     // Función para cambiar consultorio en horarios
     window.changeOfficeWizard = function(userId) {
         $('#content-horario-consulta').html('');
         $('#content-duracion-consulta-wizard').hide();
-        let clinicaId = $('#clinica-wizard').length ? ($('#clinica-wizard').val() || null) : null;
-        let consultorioId = $('#offices-wizard').length ? ($('#offices-wizard').val() || null) : null;
+        
+        const typeConfig = window.typeConfiguration;
+        let clinicaId = null;
+        let consultorioId = null;
+        
+        if (typeConfig === 1) {
+            clinicaId = $('#clinica-wizard').val() || null;
+            consultorioId = $('#offices-wizard').val() || null;
+        } else if (typeConfig === 2) {
+            consultorioId = $('#offices-wizard').val() || null;
+        }
 
-        axios
-        .get("/admin/consultorio/" + clinicaId+'/'+consultorioId+'/'+userId+'/show')
-        .then(function (response) {
-            let result = response.data;
-            $('#content-horario-consulta').html(result);
-            $('#content-duracion-consulta-wizard').show();
-            
-            // Verificar validación después de cargar horarios
-            setTimeout(function() {
-                checkHorariosValidation();
-            }, 100);
-        })
-        .catch(e => { 
-            console.error('Error cargando horarios:', e);
-        });
+        if (!consultorioId) return;
+
+        const url = typeConfig === 1 
+            ? `/admin/consultorio/${clinicaId}/${consultorioId}/${userId}/show`
+            : `/admin/consultorio/null/${consultorioId}/${userId}/show`;
+
+        axios.get(url)
+            .then(function (response) {
+                let result = response.data;
+                $('#content-horario-consulta').html(result);
+                $('#content-duracion-consulta-wizard').show();
+                
+                // Verificar validación después de cargar horarios
+                setTimeout(function() {
+                    checkHorariosValidation();
+                }, 100);
+            })
+            .catch(e => { 
+                console.error('Error cargando horarios:', e);
+            });
     };
 
     // Función para verificar la validación de horarios
     function checkHorariosValidation() {
-        let clinica = $('#clinica-wizard').length ? ($('#clinica-wizard').val() || null) : null;
-        let consultorio = $('#offices-wizard').length ? ($('#offices-wizard').val() || null) : null;
+        const typeConfig = window.typeConfiguration;
         let isValid = false;
-        if (entornoSeleccionado === 'clinica-only') {
-            isValid = !!clinica;
-        } else if (entornoSeleccionado === 'consultorio-only') {
-            isValid = !!consultorio;
-        } else if (entornoSeleccionado === 'ambos') {
+        
+        if (typeConfig === 1) {
+            const clinica = $('#clinica-wizard').val();
+            const consultorio = $('#offices-wizard').val();
             isValid = !!clinica && !!consultorio;
+        } else if (typeConfig === 2) {
+            const consultorio = $('#offices-wizard').val();
+            isValid = !!consultorio;
         }
+        
         $('#finalizar-configuracion').prop('disabled', !isValid);
     }
 
     // Finalizar configuración
     function finalizarConfiguracion() {
+        if (!validateHorariosForm()) return;
+        
         Swal.fire({
             title: '¿Está seguro?',
             text: "¿Desea finalizar la configuración del panel?",
@@ -466,12 +415,12 @@ $(document).ready(function() {
         const folio = $('#inputFolioClinica').val();
         const estatus = $('#inputEstatusClinica').val();
         
-        $('#next-to-step3').prop('disabled', !(nombre && folio && estatus));
+        $('#next-to-step2').prop('disabled', !(nombre && folio && estatus));
     });
 
     $('#frm-consultorio-wizard input, #frm-consultorio-wizard textarea').on('change keyup', function() {
         const nombre = $('#inputNombreConsultorio').val();
-        $('#next-to-step4').prop('disabled', !nombre);
+        $('#next-to-step2, #next-to-step3').prop('disabled', !nombre);
     });
 
     $('#offices-wizard, #clinica-wizard').on('change', function() {
@@ -495,28 +444,17 @@ $(document).ready(function() {
 
     // Mostrar solo los selects necesarios en horarios
     function updateHorariosSelects() {
-        if (entornoSeleccionado === 'clinica-only') {
+        const typeConfig = window.typeConfiguration;
+        
+        if (typeConfig === 1) {
             $('#clinica-wizard').closest('.col-md-6').show();
-            $('#offices-wizard').closest('.col-md-6').hide();
-        } else if (entornoSeleccionado === 'consultorio-only') {
-            $('#clinica-wizard').closest('.col-md-6').hide();
             $('#offices-wizard').closest('.col-md-6').show();
-        } else {
-            $('#clinica-wizard').closest('.col-md-6').show();
+        } else if (typeConfig === 2) {
+            $('#clinica-wizard').closest('.col-md-6').hide();
             $('#offices-wizard').closest('.col-md-6').show();
         }
     }
 
-    // Llamar a estas funciones en el paso correspondiente
-    function showWizardStep() {
-        $('.step-pane').removeClass('active');
-        const stepKey = wizardSteps[wizardIndex];
-        const stepNum = stepMap[stepKey];
-        $('#step' + stepNum).addClass('active');
-        updateStepIndicators(stepNum);
-        if (stepKey === 'horarios') {
-            updateHorariosSelects();
-            loadHorariosData();
-        }
-    }
+    // Inicializar el wizard
+    initializeWizard();
 });

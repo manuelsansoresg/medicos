@@ -43,7 +43,7 @@ class User extends Authenticatable
         'status',
         'accepted_terms',
         'is_config',
-        'type_configuration',
+        'type_configuration', // 1 clinica, 2 consultorio, 3 ambos
         'is_cedula_active', //borrar
         'usuario_alta',
         'vcodigodocto',
