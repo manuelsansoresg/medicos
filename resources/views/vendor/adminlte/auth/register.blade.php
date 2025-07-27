@@ -174,7 +174,7 @@
                     @csrf
                     <!-- Campos ocultos para los valores de los pasos anteriores -->
                     <input type="hidden" id="tipo-registro" name="tipo-registro">
-                    <input type="hidden" id="tipo-establecimiento" name="tipo-establecimiento">
+                    <input type="hidden" id="tipo-establecimiento" name="tipo_establecimiento">
                     <input type="hidden" id="paquete-id" name="paquete-id">
                     <input type="hidden" id="paquete-nombre" name="paquete-nombre">
                     <input type="hidden" id="paquete-precio" name="paquete-precio">

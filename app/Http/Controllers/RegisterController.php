@@ -36,7 +36,7 @@ class RegisterController extends Controller
 
         try {
             $rol = 'medico';
-            
+            $tipo_establecimiento = $request->tipo_establecimiento == 'clinica' ? 1 : 2;
             $user = User::create([
                 'name' => $request->name,
                 'vapellido' => $request->vapellido,
@@ -44,6 +44,7 @@ class RegisterController extends Controller
                 'ttelefono' => $request->ttelefono,
                 'tdireccion' => $request->tdireccion,
                 'vcedula' => $request->vcedula,
+                'tipo_establecimiento' => $tipo_establecimiento,
                 'RFC' => $request->RFC,
                 'especialidad' => $request->especialidad,
                 'email' => $request->email,
