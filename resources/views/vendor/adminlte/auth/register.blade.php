@@ -432,7 +432,7 @@
                                                     <p class="mb-1"><strong>Titular:</strong> {{ $setting->titular }}</p>
                                                     <p class="mb-1"><strong>Cuenta:</strong> {{ $setting->cuenta }}</p>
                                                     <p class="mb-1"><strong>CLABE:</strong> {{ $setting->clabe }}</p>
-                                                    <p class="mb-0"><small>Una vez realizada la transferencia, por favor revisar el correo electronico para proceder a validar el pago </small></p>
+                                                    <p class="mb-0"><small>Una vez realizada la transferencia, por favor revisa tu correo electrónico (incluyendo las carpetas de spam o no deseado) para proceder a validar el pago. </small></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -450,9 +450,9 @@
                             <i class="fas fa-arrow-left"></i> Anterior
                         </button>
                         <button type="button" class="btn btn-success" id="complete-payment" style="display: none;">
-                            <i class="fas fa-lock"></i> Pagar y Finalizar
+                            <i class="fas fa-lock"></i> Finalizar
                         </button>
-                        <button id="submit" class="btn btn-success" style="display: none;"> <i class="fas fa-lock"></i> Pagar y Finalizar</button>
+                        <button id="submit" class="btn btn-success" style="display: none;"> <i class="fas fa-lock"></i> Finalizar</button>
                     </div>
                 </form>
             </div>
