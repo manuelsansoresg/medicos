@@ -7,6 +7,7 @@
 @section('content')
 @php
     $type_configuration = Auth::user()->type_configuration;
+    $clinicas  = $Mclinica::where('idusrregistra', Auth::user()->id)->get();
 @endphp
 <div class="wizard-container mt-5">
     <div class="header">
@@ -99,9 +100,7 @@
                             </select>
                         </div>
                     </div>
-                     @php
-                $clinicas  = $Mclinica::where('idusrregistra', Auth::user()->id)->get();
-            @endphp
+                    
             <div class="col-12">
                 <table class="table mt-3">
                     <thead>
@@ -164,6 +163,19 @@
                     <div class="col-12">
                         <p class="text-info">Los campos marcados con * son requeridos</p>
                     </div>
+
+                    <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="inputClinica" class="form-label">*CLINICA</label>
+                                <select name="data[idclinica]" id="inputClinica" class="form-control" required>
+                                    <option value="">Seleccione una opción</option>
+                                    @foreach ($clinicas as $clinica)
+                                        <option value="{{ $clinica->idclinica }}">{{ $clinica->tnombre }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="inputNombreConsultorio" class="form-label">*NOMBRE</label>
@@ -366,6 +378,41 @@
             </div>
         </div>
         @endif
+    </div>
+</div>
+{{-- clinicas encontradas --}}
+<div class="modal fade" id="clinicasEncontradasModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <p>Se encontró una coincidencia con el nombre de la clínica **[Nombre de la Clínica Buscada]**.</p>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nombre de la Clínica</th>
+                                <th scope="col">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Clínica Demo 1</td>
+                                <td><button type="button" class="btn btn-primary btn-sm">Vincular</button></td>
+                            </tr>
+                            <tr>
+                                <td>Clínica Demo 2</td>
+                                <td><button type="button" class="btn btn-primary btn-sm">Vincular</button></td>
+                            </tr>
+                            <tr>
+                                <td>Clínica Demo 3</td>
+                                <td><button type="button" class="btn btn-primary btn-sm">Vincular</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
     </div>
 </div>
 
