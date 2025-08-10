@@ -3,6 +3,8 @@
 namespace App\Http\Livewire;
 
 use App\Models\Clinica;
+use App\Models\Consultorio;
+use App\Models\Solicitud;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -10,7 +12,10 @@ class PanelConfigurationLiveWire extends Component
 {
 
     public $typeConfiguration = null;
+    public $totalConsultorio = 0;
+
     public $clinicas = [];
+    public $consultorios = [];
     
     // Propiedades para manejo de horarios
     public $horario_manana_inicio = 6;  // 6:00 AM
@@ -20,13 +25,15 @@ class PanelConfigurationLiveWire extends Component
     public $horario_noche_inicio = 18;  // 6:00 PM
     public $horario_noche_fin = 22;     // 10:00 PM
     
-    public $horario_noche_inicio_martes = 18;  // 6:00 PM
-    public $horario_noche_fin_martes = 22;     // 10:00 PM
+    
 
     public function mount()
     {
         $this->typeConfiguration = Auth::user()->type_configuration;
         $this->clinicas  = Clinica::where('idusrregistra', Auth::user()->id)->get();
+        $statusPackages = Solicitud::getUsedStatusPackages();
+        $this->totalConsultorio = $statusPackages['totalConsultorioExtra']['totalConfiguracion'];
+        $this->consultorios = Consultorio::all()->toArray();
     }
 
     // Métodos para validar horarios (sin ajuste automático)

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use SebastianBergmann\CodeCoverage\Report\Xml\Totals;
 
 class Solicitud extends Model
 {
@@ -414,21 +415,26 @@ class Solicitud extends Model
                 'title' => 'Usuarios',
                 'lbl' => "{$usuariosUsados}/{$usuariosDisponibles}",
                 'isLimit' => $usuariosDisponibles < $usuariosUsados ? true : false,
-                'solicitudId' => $solicitudIdUsuarios
+                'solicitudId' => $solicitudIdUsuarios,
+                'totalConfiguracion' => $usuariosDisponibles        
             ];
 
             $data['totalConsultorioExtra'] = [
                 'title' => 'Consultorios',
                 'lbl' => "{$consultoriosUsados}/{$consultoriosDisponibles}",
                 'isLimit' => $consultoriosDisponibles < $consultoriosUsados ? true : false,
-                'solicitudId' => $solicitudIdConsultorios
+                'solicitudId' => $solicitudIdConsultorios,
+                'totalConfiguracion' => $consultoriosDisponibles
+
             ];
 
             $data['totalClinica'] = [
                 'title' => 'Clinica',
                 'lbl' => "{$clinicaUsada}/{$clinicaDisponible}",
                 'isLimit' => $clinicaDisponible < $clinicaUsada ? true : false,
-                'solicitudId' => $solicitudIdClinica
+                'solicitudId' => $solicitudIdClinica,
+                'totalConfiguracion' => $clinicaDisponible
+
             ];
 
             /* $data['totalPacientes'] = [

@@ -46,4 +46,11 @@ return [
         'FEMENINO' => 'FEMENINO',
     ),
 
+    'interval_hours' => array(
+        15 => '15 MINUTOS',
+        30 => '30 MINUTOS',
+        45 => '45 MINUTOS',
+        60 => '1 HORA',
+    )
+
 ];

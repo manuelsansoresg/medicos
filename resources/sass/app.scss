@@ -467,12 +467,8 @@ thead > tr > th {
     position: absolute;
     top: 0;
     height: 6px;
-    background: #38b6ff;
     border-radius: 3px;
     transition: all 0.3s ease;
-    margin-left: 12px;
-    margin-right: 12px;
-    width: calc(100% - 24px);
 }
 
 .range-labels {
@@ -500,11 +496,11 @@ thead > tr > th {
 }
 
 .time-display {
-    background: linear-gradient(135deg, #38b6ff, #1a73e8);
-    color: white;
+    //background: #38b6ff;
+    color: #38b6ff;
     padding: 8px 15px;
-    border-radius: 20px;
+    //border-radius: 20px;
     font-weight: 600;
     margin: 0 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    //box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
