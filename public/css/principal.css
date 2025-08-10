@@ -3,6 +3,10 @@ body {
   font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
+.text-warning {
+  color: #ffbd07;
+}
+
 .registration-container {
   max-width: 900px;
   margin: 50px auto;

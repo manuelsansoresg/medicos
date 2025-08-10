@@ -7,7 +7,7 @@
     <!-- Bootstrap 4 CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
     <!-- Font Awesome 5.15.4 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/principal.css') }}">
     <script src="https://sdk.clip.mx/js/clip-sdk.js"></script>
     @inject('setting', 'App\Models\Setting')
@@ -462,6 +462,7 @@
                     <div class="modal-content">
                         <div class="modal-body text-center">
                             <i class="far fa-frown text-danger" style="font-size: 3rem; margin: 20px;"></i>
+                            <i class="fa-solid fa-circle-exclamation text-warning"></i>
                             <h4>Error en el Pago</h4>
                             <p>Lo sentimos, no se pudo procesar su pago correctamente. Por favor, verifique los datos de su tarjeta e intente nuevamente.</p>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
