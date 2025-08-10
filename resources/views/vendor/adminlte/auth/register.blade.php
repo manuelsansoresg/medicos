@@ -464,7 +464,7 @@
                             <i class="fa-solid fa-circle-exclamation text-warning" style="font-size: 3rem; margin: 20px;"></i>
                             <h4>Error en el Pago</h4>
                             <p>Lo sentimos, no se pudo procesar su pago correctamente. Por favor, verifique los datos de su tarjeta e intente nuevamente.</p>
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-warning text-white" data-dismiss="modal">Cerrar</button>
                         </div>
                     </div>
                 </div>
