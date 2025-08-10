@@ -15,5 +15,6 @@ mix.js('resources/js/app.js', 'public/js')
 
     .sass('resources/sass/app.scss', 'public/css')
     .js('resources/js/principal.js', 'public/js')
+    .js('resources/js/horarios.js', 'public/js')
     .sass('resources/sass/principal.scss', 'public/css')
     .sourceMaps();
