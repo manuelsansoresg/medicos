@@ -412,21 +412,21 @@ class Solicitud extends Model
 
             $data['totalUsuariosSistema'] = [
                 'title' => 'Usuarios',
-                'lbl' => "{$usuariosDisponibles}/{$usuariosUsados}",
+                'lbl' => "{$usuariosUsados}/{$usuariosDisponibles}",
                 'isLimit' => $usuariosDisponibles < $usuariosUsados ? true : false,
                 'solicitudId' => $solicitudIdUsuarios
             ];
 
             $data['totalConsultorioExtra'] = [
                 'title' => 'Consultorios',
-                'lbl' => "{$consultoriosDisponibles}/{$consultoriosUsados}",
+                'lbl' => "{$consultoriosUsados}/{$consultoriosDisponibles}",
                 'isLimit' => $consultoriosDisponibles < $consultoriosUsados ? true : false,
                 'solicitudId' => $solicitudIdConsultorios
             ];
 
             $data['totalClinica'] = [
                 'title' => 'Clinica',
-                'lbl' => "{$clinicaDisponible}/{$clinicaUsada}",
+                'lbl' => "{$clinicaUsada}/{$clinicaDisponible}",
                 'isLimit' => $clinicaDisponible < $clinicaUsada ? true : false,
                 'solicitudId' => $solicitudIdClinica
             ];
