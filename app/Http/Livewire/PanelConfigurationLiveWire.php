@@ -19,6 +19,9 @@ class PanelConfigurationLiveWire extends Component
     public $horario_tarde_fin = 18;     // 6:00 PM
     public $horario_noche_inicio = 18;  // 6:00 PM
     public $horario_noche_fin = 22;     // 10:00 PM
+    
+    public $horario_noche_inicio_martes = 18;  // 6:00 PM
+    public $horario_noche_fin_martes = 22;     // 10:00 PM
 
     public function mount()
     {
@@ -46,6 +49,20 @@ class PanelConfigurationLiveWire extends Component
         // Solo validar que esté en el rango permitido
         if ($value < 18) $this->horario_noche_inicio = 18;
         if ($value > 22) $this->horario_noche_inicio = 22;
+    }
+
+    // Método para convertir hora de 24h a 12h con AM/PM
+    public function formatTime12Hour($hour)
+    {
+        if ($hour == 0) {
+            return '12:00 AM';
+        } elseif ($hour < 12) {
+            return sprintf('%d:00 AM', $hour);
+        } elseif ($hour == 12) {
+            return '12:00 PM';
+        } else {
+            return sprintf('%d:00 PM', $hour - 12);
+        }
     }
 
     // Método para obtener los horarios configurados

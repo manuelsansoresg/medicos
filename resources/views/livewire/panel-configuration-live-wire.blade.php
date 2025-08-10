@@ -168,9 +168,9 @@
                                 </div>
                                 
                                 <div class="range-values">
-                                    <span class="time-display">{{ sprintf('%02d:00', $horario_manana_inicio) }}</span>
+                                    <span class="time-display">{{ $this->formatTime12Hour($horario_manana_inicio) }}</span>
                                     <span class="mx-2">a</span>
-                                    <span class="time-display">{{ sprintf('%02d:00', $horario_manana_fin) }}</span>
+                                    <span class="time-display">{{ $this->formatTime12Hour($horario_manana_fin) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -209,9 +209,9 @@
                                     </div>
                                     
                                     <div class="range-values">
-                                        <span class="time-display">{{ sprintf('%02d:00', $horario_tarde_inicio) }}</span>
+                                        <span class="time-display">{{ $this->formatTime12Hour($horario_tarde_inicio) }}</span>
                                         <span class="mx-2">a</span>
-                                        <span class="time-display">{{ sprintf('%02d:00', $horario_tarde_fin) }}</span>
+                                        <span class="time-display">{{ $this->formatTime12Hour($horario_tarde_fin) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -250,13 +250,14 @@
                                     </div>
                                     
                                     <div class="range-values">
-                                        <span class="time-display">{{ sprintf('%02d:00', $horario_noche_inicio) }}</span>
+                                        <span class="time-display">{{ $this->formatTime12Hour($horario_noche_inicio) }}</span>
                                         <span class="mx-2">a</span>
-                                        <span class="time-display">{{ sprintf('%02d:00', $horario_noche_fin) }}</span>
+                                        <span class="time-display">{{ $this->formatTime12Hour($horario_noche_fin) }}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                    
 
