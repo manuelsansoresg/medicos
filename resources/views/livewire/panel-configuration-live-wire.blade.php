@@ -21,7 +21,7 @@
                     $headTagNumConsultory = $indiceConsultorio + 1;
                     $headContConsultory = $iConsultorio + 1;
                 @endphp
-                <div class="step {{ $iConsultorio == 1 ? 'active' : '' }}" id="step2-cons-{{ $headTagNumConsultory }}">
+                <div class="step {{ $iConsultorio == 1 ? 'active' : '' }}" id="step-cons-{{ $headTagNumConsultory }}">
 
                     <div class="step-number">{{ $headContConsultory }}</div>
                     <div class="step-title">Consultorio {{ $iConsultorio }}</div>
@@ -105,8 +105,26 @@
                 $TagNumConsultory = $indiceConsultorio + 1;
                 $ContConsultory = $iConsultorio + 1;
             @endphp
-            <div class="step-pane {{ $ContConsultory == 2 ? 'active' : '' }}" id="step2-cons-{{ $ContConsultory }}">
+            <div class="step-pane {{ $ContConsultory == 2 ? 'active' : '' }}" id="step-cons-{{ $ContConsultory }}">
 
+                <!-- Mensajes de feedback -->
+                @if (session()->has('message'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('message') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @endif
+                
+                @if (session()->has('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @endif
 
                 <h3 class="text-center mb-4"><i class="fas fa-stethoscope"></i> Configurar consultorio
                     {{ $iConsultorio }} de {{ $totalConsultorio }} </h3>
@@ -120,22 +138,25 @@
 
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="inputNombreConsultorio" class="form-label">*NOMBRE</label>
-                                <input type="text" class="form-control" name="data[vnumconsultorio]"
-                                    id="inputNombreConsultorio" required>
+                                <label for="inputNombreConsultorio{{ $iConsultorio }}" class="form-label">*NOMBRE</label>
+                                <input type="text" class="form-control" 
+                                    wire:model="consultoriosData.{{ $iConsultorio - 1 }}.vnumconsultorio"
+                                    id="inputNombreConsultorio{{ $iConsultorio }}" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="inputUbicacionConsultorio" class="form-label">UBICACIÓN</label>
-                                <textarea name="data[thubicacion]" id="inputUbicacionConsultorio" cols="30" rows="3" class="form-control"></textarea>
+                                <label for="inputUbicacionConsultorio{{ $iConsultorio }}" class="form-label">UBICACIÓN</label>
+                                <textarea wire:model="consultoriosData.{{ $iConsultorio - 1 }}.thubicacion" 
+                                    id="inputUbicacionConsultorio{{ $iConsultorio }}" cols="30" rows="3" class="form-control"></textarea>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="inputTelefonoConsultorio" class="form-label">TELÉFONO</label>
-                                <input type="text" class="form-control" name="data[ttelefono]"
-                                    id="inputTelefonoConsultorio">
+                                <label for="inputTelefonoConsultorio{{ $iConsultorio }}" class="form-label">TELÉFONO</label>
+                                <input type="text" class="form-control" 
+                                    wire:model="consultoriosData.{{ $iConsultorio - 1 }}.ttelefono"
+                                    id="inputTelefonoConsultorio{{ $iConsultorio }}">
                             </div>
                         </div>
                         <h3 class="text-center mb-4 mt-3"><i class="fas fa-clock"></i> Configurar horarios por día</h3>
@@ -282,7 +303,7 @@
                 <div class="text-center btn-navigation">
                     <button class="btn btn-secondary mr-2" id="back-to-step1"><i class="fas fa-arrow-left"></i>
                         Anterior</button>
-                    <button class="btn btn-primary">Continuar <i class="fas fa-arrow-right"></i></button>
+                    <button class="btn btn-primary" wire:click="guardarConsultorio({{ $iConsultorio - 1 }})">Continuar <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
         @endfor

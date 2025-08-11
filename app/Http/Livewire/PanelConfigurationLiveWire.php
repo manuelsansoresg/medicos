@@ -13,9 +13,13 @@ class PanelConfigurationLiveWire extends Component
 
     public $typeConfiguration = null;
     public $totalConsultorio = 0;
+    public $tab = 'step1-clinic';
 
     public $clinicas = [];
     public $consultorios = [];
+    
+    // Propiedades para manejo de datos de consultorios
+    public $consultoriosData = [];
     
     // Propiedades para manejo de horarios por día de la semana
     public $horarios_semanales = [
@@ -65,6 +69,9 @@ class PanelConfigurationLiveWire extends Component
         $statusPackages = Solicitud::getUsedStatusPackages();
         $this->totalConsultorio = $statusPackages['totalConsultorioExtra']['totalConfiguracion'];
         $this->consultorios = Consultorio::getAll(null,1)->toArray();
+        
+        // Inicializar datos de consultorios
+        $this->initializeConsultoriosData();
     }
 
     // Método para cambiar el día seleccionado
@@ -118,6 +125,67 @@ class PanelConfigurationLiveWire extends Component
     public function getTodosLosHorarios()
     {
         return $this->horarios_semanales;
+    }
+    
+    // Método para inicializar datos de consultorios
+    public function initializeConsultoriosData()
+    {
+        for ($i = 0; $i < $this->totalConsultorio; $i++) {
+            // Si existe un consultorio en esa posición, cargar sus datos
+            if (isset($this->consultorios[$i])) {
+                $consultorio = $this->consultorios[$i];
+                $this->consultoriosData[$i] = [
+                    'vnumconsultorio' => $consultorio['vnumconsultorio'] ?? '',
+                    'thubicacion' => $consultorio['thubicacion'] ?? '',
+                    'ttelefono' => $consultorio['ttelefono'] ?? '',
+                    'consultorio_id' => $consultorio['idconsultorios'] ?? null
+                ];
+            } else {
+                // Si no existe, inicializar con datos vacíos
+                $this->consultoriosData[$i] = [
+                    'vnumconsultorio' => '',
+                    'thubicacion' => '',
+                    'ttelefono' => '',
+                    'consultorio_id' => null
+                ];
+            }
+        }
+    }
+    
+    // Método para guardar consultorio específico
+    public function guardarConsultorio($indiceConsultorio)
+    {
+        try {
+            $data = $this->consultoriosData[$indiceConsultorio];
+            
+            // Validar que el nombre sea requerido
+            if (empty($data['vnumconsultorio'])) {
+                session()->flash('error', 'El nombre del consultorio es requerido.');
+                return;
+            }
+            
+            // Crear objeto request simulado
+            $request = new \stdClass();
+            $request->data = [
+                'vnumconsultorio' => $data['vnumconsultorio'],
+                'thubicacion' => $data['thubicacion'],
+                'ttelefono' => $data['ttelefono']
+            ];
+            $request->consultorio_id = $data['consultorio_id'];
+            
+            // Guardar usando el método del modelo
+            $consultorio = Consultorio::saveEdit($request);
+            
+            // Actualizar el ID en los datos locales si es un nuevo consultorio
+            if ($data['consultorio_id'] === null) {
+                $this->consultoriosData[$indiceConsultorio]['consultorio_id'] = $consultorio->idconsultorios;
+            }
+            
+            session()->flash('message', 'Consultorio guardado correctamente.');
+            
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error al guardar el consultorio: ' . $e->getMessage());
+        }
     }
     
     // Método para guardar configuración de horarios
