@@ -7,7 +7,7 @@
     <div class="steps">
         {{-- si eligio clinica --}}
         @if ($typeConfiguration == 1)
-            <div class="step" id="step1-clinic">
+            <div class="step  {{ $tab == 1 ? 'active' : '' }}" id="step1-clinic">
                 <div class="step-number">1</div>
                 <div class="step-title">Clínica</div>
                 <div class="step-connector"></div>
@@ -21,7 +21,7 @@
                     $headTagNumConsultory = $indiceConsultorio + 1;
                     $headContConsultory = $iConsultorio + 1;
                 @endphp
-                <div class="step {{ $iConsultorio == 1 ? 'active' : '' }}" id="step-cons-{{ $headTagNumConsultory }}">
+                <div class="step {{ $tab == $headContConsultory ? 'active' : '' }}" id="step-cons-{{ $headTagNumConsultory }}">
 
                     <div class="step-number">{{ $headContConsultory }}</div>
                     <div class="step-title">Consultorio {{ $iConsultorio }}</div>
@@ -35,7 +35,7 @@
     <div class="form-content">
         {{-- si eligio clinica --}}
         @if ($typeConfiguration == 1)
-            <div class="step-pane " id="step1-clinic">
+            <div class="step-pane {{ $tab == 1 ? 'active' : '' }}" id="step1-clinic">
                 <h3 class="text-center mb-4"><i class="fas fa-hospital"></i> Configurar Clínica</h3>
 
                 <form id="frm-clinica-wizard">
@@ -105,7 +105,7 @@
                 $TagNumConsultory = $indiceConsultorio + 1;
                 $ContConsultory = $iConsultorio + 1;
             @endphp
-            <div class="step-pane {{ $ContConsultory == 2 ? 'active' : '' }}" id="step-cons-{{ $ContConsultory }}">
+            <div class="step-pane {{ $tab == $ContConsultory ? 'active' : '' }}" id="step-cons-{{ $ContConsultory }}">
 
                 <!-- Mensajes de feedback -->
                 @if (session()->has('message'))
@@ -287,7 +287,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="inputRfcClinica" class="form-label">DURACIÓN CONSULTA</label>
-                                    <select name="" id="" class="form-control">
+                                    <select wire:model="consultoriosData.{{ $iConsultorio - 1 }}.duracion_consulta" class="form-control">
                                         @foreach (config('enums.interval_hours') as $key => $itemHour)
                                             <option value="{{ $key }}">{{ $itemHour }}</option>
                                         @endforeach
@@ -303,7 +303,7 @@
                 <div class="text-center btn-navigation">
                     <button class="btn btn-secondary mr-2" id="back-to-step1"><i class="fas fa-arrow-left"></i>
                         Anterior</button>
-                    <button class="btn btn-primary" wire:click="guardarConsultorio({{ $iConsultorio - 1 }})">Continuar <i class="fas fa-arrow-right"></i></button>
+                    <button class="btn btn-primary" wire:click="guardarConsultorioYHorarios({{ $iConsultorio - 1 }}, {{  $ContConsultory }})">Continuar <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
         @endfor

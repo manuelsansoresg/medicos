@@ -4,7 +4,9 @@ namespace App\Http\Livewire;
 
 use App\Models\Clinica;
 use App\Models\Consultorio;
+use App\Models\ConsultaAsignado;
 use App\Models\Solicitud;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -13,7 +15,8 @@ class PanelConfigurationLiveWire extends Component
 
     public $typeConfiguration = null;
     public $totalConsultorio = 0;
-    public $tab = 'step1-clinic';
+    public $tab = 2;
+    public $idClinica = 23;
 
     public $clinicas = [];
     public $consultorios = [];
@@ -138,7 +141,8 @@ class PanelConfigurationLiveWire extends Component
                     'vnumconsultorio' => $consultorio['vnumconsultorio'] ?? '',
                     'thubicacion' => $consultorio['thubicacion'] ?? '',
                     'ttelefono' => $consultorio['ttelefono'] ?? '',
-                    'consultorio_id' => $consultorio['idconsultorios'] ?? null
+                    'consultorio_id' => $consultorio['idconsultorios'] ?? null,
+                    'duracion_consulta' => 30 // valor por defecto
                 ];
             } else {
                 // Si no existe, inicializar con datos vacíos
@@ -146,14 +150,15 @@ class PanelConfigurationLiveWire extends Component
                     'vnumconsultorio' => '',
                     'thubicacion' => '',
                     'ttelefono' => '',
-                    'consultorio_id' => null
+                    'consultorio_id' => null,
+                    'duracion_consulta' => 30 // valor por defecto
                 ];
             }
         }
     }
     
     // Método para guardar consultorio específico
-    public function guardarConsultorio($indiceConsultorio)
+    public function guardarConsultorio($indiceConsultorio, $numberTab)
     {
         try {
             $data = $this->consultoriosData[$indiceConsultorio];
@@ -180,7 +185,8 @@ class PanelConfigurationLiveWire extends Component
             if ($data['consultorio_id'] === null) {
                 $this->consultoriosData[$indiceConsultorio]['consultorio_id'] = $consultorio->idconsultorios;
             }
-            
+            $this->tab = $numberTab + 1;
+
             session()->flash('message', 'Consultorio guardado correctamente.');
             
         } catch (\Exception $e) {
@@ -188,11 +194,118 @@ class PanelConfigurationLiveWire extends Component
         }
     }
     
-    // Método para guardar configuración de horarios
-    public function guardarHorarios()
+    // Método para guardar consultorio y horarios
+    public function guardarConsultorioYHorarios($indiceConsultorio, $contConsultory)
     {
-        // Aquí se puede implementar la lógica para guardar en base de datos
-        session()->flash('message', 'Horarios guardados correctamente para toda la semana.');
+        try {
+            // Primero guardar el consultorio
+            $this->guardarConsultorio($indiceConsultorio, $contConsultory);
+            
+            // Verificar que el consultorio se guardó correctamente
+            if (!isset($this->consultoriosData[$indiceConsultorio]['consultorio_id'])) {
+                session()->flash('error', 'Error: No se pudo obtener el ID del consultorio.');
+                return;
+            }
+            
+            $consultorioId = $this->consultoriosData[$indiceConsultorio]['consultorio_id'];
+            $duracionConsulta = $this->consultoriosData[$indiceConsultorio]['duracion_consulta'];
+            
+            // Guardar horarios para cada día de la semana
+            $this->guardarHorarios($consultorioId, $duracionConsulta);
+            
+            session()->flash('message', 'Consultorio y horarios guardados correctamente.');
+            
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error al guardar consultorio y horarios: ' . $e->getMessage());
+        }
+    }
+    
+    // Método para guardar configuración de horarios
+    public function guardarHorarios($consultorioId, $duracionConsulta)
+    {
+        try {
+            $userId = User::getMyUserPrincipal();
+            
+            // Eliminar horarios existentes para este consultorio y doctor
+            ConsultaAsignado::where('idconsultorio', $consultorioId)
+                           ->where('iddoctor', $userId)
+                           ->delete();
+            
+            // Guardar horarios para cada día de la semana
+            foreach ($this->horarios_semanales as $dia => $horarios) {
+                $numeroDia = $this->getDiaNumero($dia);
+                
+                // Turno mañana
+                if ($horarios['turno_manana_inicio'] < $horarios['turno_manana_fin']) {
+                    ConsultaAsignado::create([
+                        'iddoctor' => $userId,
+                        'idclinica' => $this->idClinica,
+                        'ihorainicial' => $horarios['turno_manana_inicio'],
+                        'ihorafinal' => $horarios['turno_manana_fin'],
+                        'idia' => $numeroDia,
+                        'iturno' => 1, // mañana
+                        'itiempo' => $duracionConsulta,
+                        'dfechaalta' => now(),
+                        'idalta' => 1,
+                        'idconsultorio' => $consultorioId,
+                        'itipousr' => 1
+                    ]);
+                }
+                
+                // Turno tarde
+                if ($horarios['turno_tarde_inicio'] < $horarios['turno_tarde_fin']) {
+                    ConsultaAsignado::create([
+                        'iddoctor' => $userId,
+                        'idclinica' => $this->idClinica,
+                        'ihorainicial' => $horarios['turno_tarde_inicio'],
+                        'ihorafinal' => $horarios['turno_tarde_fin'],
+                        'idia' => $numeroDia,
+                        'iturno' => 2, // tarde
+                        'itiempo' => $duracionConsulta,
+                        'dfechaalta' => now(),
+                        'idalta' => 1,
+                        'idconsultorio' => $consultorioId,
+                        'itipousr' => 1
+                    ]);
+                }
+                
+                // Turno noche
+                if ($horarios['turno_noche_inicio'] < $horarios['turno_noche_fin']) {
+                    ConsultaAsignado::create([
+                        'iddoctor' => $userId,
+                        'idclinica' => $this->idClinica,
+                        'ihorainicial' => $horarios['turno_noche_inicio'],
+                        'ihorafinal' => $horarios['turno_noche_fin'],
+                        'idia' => $numeroDia,
+                        'iturno' => 3, // noche
+                        'itiempo' => $duracionConsulta,
+                        'dfechaalta' => now(),
+                        'idalta' => 1,
+                        'idconsultorio' => $consultorioId,
+                        'itipousr' => 1
+                    ]);
+                }
+            }
+            
+        } catch (\Exception $e) {
+            throw new \Exception('Error al guardar horarios: ' . $e->getMessage());
+        }
+    }
+    
+    // Método auxiliar para convertir nombre de día a número
+    private function getDiaNumero($nombreDia)
+    {
+        $dias = [
+            'lunes' => 1,
+            'martes' => 2,
+            'miercoles' => 3,
+            'jueves' => 4,
+            'viernes' => 5,
+            'sabado' => 6,
+            'domingo' => 7
+        ];
+        
+        return $dias[$nombreDia] ?? 1;
     }
 
     public function render()
