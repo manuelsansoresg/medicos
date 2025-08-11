@@ -1,8 +1,13 @@
 <div class="wizard-container mt-5">
     <div class="header">
+    <div id="scroll-anchor-consultorio"></div>
         <h1><i class="fas fa-cogs"></i> Configura tu Panel</h1>
         <p>Configura tu panel para poder usar el sistema</p>
     </div>
+
+
+
+
 
     <div class="steps">
         {{-- si eligio clinica --}}
@@ -22,7 +27,7 @@
                     $headContConsultory = $iConsultorio + 1;
                 @endphp
                 <div class="step {{ $tab == $headContConsultory ? 'active' : '' }}" id="step-cons-{{ $headTagNumConsultory }}">
-
+                    
                     <div class="step-number">{{ $headContConsultory }}</div>
                     <div class="step-title">Consultorio {{ $iConsultorio }}</div>
                     <div class="step-connector"></div>
@@ -106,7 +111,7 @@
                 $ContConsultory = $iConsultorio + 1;
             @endphp
             <div class="step-pane {{ $tab == $ContConsultory ? 'active' : '' }}" id="step-cons-{{ $ContConsultory }}">
-
+                
                 <!-- Mensajes de feedback -->
                 @if (session()->has('message'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -128,7 +133,8 @@
 
                 <h3 class="text-center mb-4"><i class="fas fa-stethoscope"></i> Configurar consultorio
                     {{ $iConsultorio }} de {{ $totalConsultorio }} </h3>
-
+                    <a class="section-title"></a>
+                <div id="scroll-target-consultorio" style="padding-top: 20px; margin-top: -20px;"></div>
                 <form id="frm-consultorio-wizard">
                     @csrf
                     <div class="row">
@@ -301,12 +307,33 @@
                 
 
                 <div class="text-center btn-navigation">
-                    <button class="btn btn-secondary mr-2" id="back-to-step1"><i class="fas fa-arrow-left"></i>
+                    <button class="btn btn-secondary mr-2" wire:click="anteriorConsultorio({{ $ContConsultory }})"><i class="fas fa-arrow-left"></i>
                         Anterior</button>
-                    <button class="btn btn-primary" wire:click="guardarConsultorioYHorarios({{ $iConsultorio - 1 }}, {{  $ContConsultory }})">Continuar <i class="fas fa-arrow-right"></i></button>
+                    @if ($ContConsultory > 2)
+                        <button class="btn btn-primary" wire:click="finalizarConfiguracion">Finalizar <i class="fas fa-door-open"></i></i></button>
+                    @endif
+                    <button class="btn btn-primary"
+                        wire:click="guardarConsultorioYHorarios({{ $iConsultorio - 1 }}, {{  $ContConsultory }})"
+                        wire:loading.attr="disabled"
+                        wire:target="guardarConsultorioYHorarios"
+                        onclick="window.scrollToConsultorio()"
+                        @if($ContConsultory == 2 && !$this->hayConsultorioValido) disabled @endif>
+                        Continuar <i class="fas fa-arrow-right"></i>
+                    </button>
+                   
                 </div>
             </div>
         @endfor
     </div>
 
 </div>
+<script>
+    window.scrollToConsultorio = function() {
+        setTimeout(function() {
+            const anchor = document.getElementById('scroll-anchor-consultorio');
+            if (anchor) {
+                anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 400); // Ajusta el tiempo si es necesario para esperar el render de Livewire
+    };
+</script>

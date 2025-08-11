@@ -215,6 +215,9 @@ class PanelConfigurationLiveWire extends Component
             
             session()->flash('message', 'Consultorio y horarios guardados correctamente.');
             
+            // Emitir evento para hacer scroll a la sección de configuración
+            $this->emit('scrollToConsultorioConfig');
+            
         } catch (\Exception $e) {
             session()->flash('error', 'Error al guardar consultorio y horarios: ' . $e->getMessage());
         }
@@ -291,22 +294,39 @@ class PanelConfigurationLiveWire extends Component
             throw new \Exception('Error al guardar horarios: ' . $e->getMessage());
         }
     }
+
+    public function anteriorConsultorio($tab)
+    {
+        $this->tab = $tab - 1;
+    }
+
     
     // Método auxiliar para convertir nombre de día a número
-    private function getDiaNumero($nombreDia)
-    {
-        $dias = [
-            'lunes' => 1,
-            'martes' => 2,
-            'miercoles' => 3,
-            'jueves' => 4,
-            'viernes' => 5,
-            'sabado' => 6,
-            'domingo' => 7
-        ];
-        
-        return $dias[$nombreDia] ?? 1;
-    }
+     private function getDiaNumero($nombreDia)
+     {
+         $dias = [
+             'lunes' => 1,
+             'martes' => 2,
+             'miercoles' => 3,
+             'jueves' => 4,
+             'viernes' => 5,
+             'sabado' => 6,
+             'domingo' => 7
+         ];
+         
+         return $dias[$nombreDia] ?? 1;
+     }
+     
+     // Método para verificar si hay al menos un consultorio con datos válidos
+     public function getHayConsultorioValidoProperty()
+     {
+         foreach ($this->consultoriosData as $consultorio) {
+             if (!empty($consultorio['vnumconsultorio'])) {
+                 return true;
+             }
+         }
+         return false;
+     }
 
     public function render()
     {
