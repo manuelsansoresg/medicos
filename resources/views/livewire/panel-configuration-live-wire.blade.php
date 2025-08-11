@@ -137,36 +137,48 @@
                                     id="inputTelefonoConsultorio">
                             </div>
                         </div>
-                        <h3 class="text-center mb-4"><i class="fas fa-clock"></i> Configurar horarios</h3>
+                        <h3 class="text-center mb-4 mt-3"><i class="fas fa-clock"></i> Configurar horarios por día</h3>
+                        <!-- Selector de días de la semana -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-center flex-wrap gap-2">
+                                    @foreach(['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'] as $dia)
+                                        <button type="button" 
+                                                wire:click="cambiarDia('{{ $dia }}')"
+                                                class="btn {{ $dia_seleccionado === $dia ? 'btn-primary' : 'btn-outline-primary' }} btn-sm">
+                                            {{ ucfirst($dia) }}
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Sección de Horarios -->
-
-
                         <div class="row">
                             <div class="col-12">
-                                <p class="text-info mb-4">Configura los rangos de horarios para tu consultorio. Puedes
+                                <p class="text-info mb-4">Configura los rangos de horarios para <strong>{{ ucfirst($dia_seleccionado) }}</strong>. Puedes
                                     ajustar las horas de inicio y fin para cada período del día.</p>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-12 col-md-6 mt-3">
-                                <!-- Horario Mañana -->
+                                <!-- Turno Mañana -->
                                 <div class="horario-section horario-manana">
                                     <div class="horario-header">
-                                        <h4 class="horario-title"> <i class="fas fa-sun"></i> Horario de Mañana</h4>
+                                        <h4 class="horario-title"> <i class="fas fa-sun"></i> Turno de Mañana</h4>
                                     </div>
 
                                     <div class="range-slider-container">
                                         <div class="range-slider">
-                                            <input type="range" wire:model.live="horario_manana_inicio"
+                                            <input type="range" wire:model.live="horarios_semanales.{{ $dia_seleccionado }}.turno_manana_inicio"
                                                 min="6" max="12" step="1" value="6"
                                                 class="range-input-min">
-                                            <input type="range" wire:model.live="horario_manana_fin" min="7"
+                                            <input type="range" wire:model.live="horarios_semanales.{{ $dia_seleccionado }}.turno_manana_fin" min="7"
                                                 max="12" step="1" value="12"
                                                 class="range-input-max">
                                             <div class="range-track"
-                                                style="left: calc({{ (($horario_manana_inicio - 6) / 6) * 100 }}% + 12px); width: calc({{ (($horario_manana_fin - 6) / 6) * 100 }}% - {{ (($horario_manana_inicio - 6) / 6) * 100 }}% - 24px);">
+                                                style="left: calc({{ (($horarios_semanales[$dia_seleccionado]['turno_manana_inicio'] - 6) / 6) * 100 }}% + 12px); width: calc({{ (($horarios_semanales[$dia_seleccionado]['turno_manana_fin'] - 6) / 6) * 100 }}% - {{ (($horarios_semanales[$dia_seleccionado]['turno_manana_inicio'] - 6) / 6) * 100 }}% - 24px);">
                                             </div>
                                         </div>
 
@@ -176,84 +188,75 @@
                                         </div>
 
                                         <div class="range-values align-items-center">
-
-                                            <span
-                                                class="time-display">{{ $this->formatTime12Hour($horario_manana_inicio) }}</span>
+                                            <span class="time-display">{{ $this->formatTime12Hour($horarios_semanales[$dia_seleccionado]['turno_manana_inicio']) }}</span>
                                             <span class="mx-2">a</span>
-                                            <span
-                                                class="time-display">{{ $this->formatTime12Hour($horario_manana_fin) }}</span>
+                                            <span class="time-display">{{ $this->formatTime12Hour($horarios_semanales[$dia_seleccionado]['turno_manana_fin']) }}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 mt-3">
-                                <!-- Horario Tarde -->
+                                <!-- Turno Tarde -->
                                 <div class="horario-section horario-tarde">
                                     <div class="horario-header">
-
-                                        <h4 class="horario-title"> <i class="fas fa-sun"></i> Horario de Tarde</h4>
+                                        <h4 class="horario-title"> <i class="fas fa-sun"></i> Turno de Tarde</h4>
                                     </div>
 
                                     <div class="range-slider-container">
                                         <div class="range-slider">
-                                            <input type="range" wire:model.live="horario_tarde_inicio"
-                                                min="12" max="18" step="1" value="12"
+                                            <input type="range" wire:model.live="horarios_semanales.{{ $dia_seleccionado }}.turno_tarde_inicio"
+                                                min="13" max="18" step="1" value="13"
                                                 class="range-input-min">
-                                            <input type="range" wire:model.live="horario_tarde_fin" min="13"
+                                            <input type="range" wire:model.live="horarios_semanales.{{ $dia_seleccionado }}.turno_tarde_fin" min="13"
                                                 max="18" step="1" value="18"
                                                 class="range-input-max">
                                             <div class="range-track"
-                                                style="left: calc({{ (($horario_tarde_inicio - 12) / 6) * 100 }}% + 12px); width: calc({{ (($horario_tarde_fin - 12) / 6) * 100 }}% - {{ (($horario_tarde_inicio - 12) / 6) * 100 }}% - 24px);">
+                                                style="left: calc({{ (($horarios_semanales[$dia_seleccionado]['turno_tarde_inicio'] - 12) / 6) * 100 }}% + 12px); width: calc({{ (($horarios_semanales[$dia_seleccionado]['turno_tarde_fin'] - 12) / 6) * 100 }}% - {{ (($horarios_semanales[$dia_seleccionado]['turno_tarde_inicio'] - 12) / 6) * 100 }}% - 24px);">
                                             </div>
                                         </div>
 
                                         <div class="range-labels">
-                                            <span>12:00 PM</span>
+                                            <span>1:00 PM</span>
                                             <span>6:00 PM</span>
                                         </div>
 
                                         <div class="range-values">
-                                            <span
-                                                class="time-display">{{ $this->formatTime12Hour($horario_tarde_inicio) }}</span>
+                                            <span class="time-display">{{ $this->formatTime12Hour($horarios_semanales[$dia_seleccionado]['turno_tarde_inicio']) }}</span>
                                             <span class="mx-2">a</span>
-                                            <span
-                                                class="time-display">{{ $this->formatTime12Hour($horario_tarde_fin) }}</span>
+                                            <span class="time-display">{{ $this->formatTime12Hour($horarios_semanales[$dia_seleccionado]['turno_tarde_fin']) }}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 mt-3">
-                                <!-- Horario Noche -->
+                                <!-- Turno Noche -->
                                 <div class="horario-section horario-noche">
                                     <div class="horario-header">
-
-                                        <h4 class="horario-title"><i class="fas fa-moon"></i> Horario de Noche</h4>
+                                        <h4 class="horario-title"><i class="fas fa-moon"></i> Turno de Noche</h4>
                                     </div>
 
                                     <div class="range-slider-container">
                                         <div class="range-slider">
-                                            <input type="range" wire:model.live="horario_noche_inicio"
-                                                min="18" max="22" step="1" value="18"
+                                            <input type="range" wire:model.live="horarios_semanales.{{ $dia_seleccionado }}.turno_noche_inicio"
+                                                min="19" max="22" step="1" value="19"
                                                 class="range-input-min">
-                                            <input type="range" wire:model.live="horario_noche_fin" min="19"
+                                            <input type="range" wire:model.live="horarios_semanales.{{ $dia_seleccionado }}.turno_noche_fin" min="19"
                                                 max="22" step="1" value="22"
                                                 class="range-input-max">
                                             <div class="range-track"
-                                                style="left: calc({{ (($horario_noche_inicio - 18) / 4) * 100 }}% + 12px); width: calc({{ (($horario_noche_fin - 18) / 4) * 100 }}% - {{ (($horario_noche_inicio - 18) / 4) * 100 }}% - 24px);">
+                                                style="left: calc({{ (($horarios_semanales[$dia_seleccionado]['turno_noche_inicio'] - 18) / 4) * 100 }}% + 12px); width: calc({{ (($horarios_semanales[$dia_seleccionado]['turno_noche_fin'] - 18) / 4) * 100 }}% - {{ (($horarios_semanales[$dia_seleccionado]['turno_noche_inicio'] - 18) / 4) * 100 }}% - 24px);">
                                             </div>
                                         </div>
 
                                         <div class="range-labels">
-                                            <span>6:00 PM</span>
+                                            <span>7:00 PM</span>
                                             <span>10:00 PM</span>
                                         </div>
 
                                         <div class="range-values">
-                                            <span
-                                                class="time-display">{{ $this->formatTime12Hour($horario_noche_inicio) }}</span>
+                                            <span class="time-display">{{ $this->formatTime12Hour($horarios_semanales[$dia_seleccionado]['turno_noche_inicio']) }}</span>
                                             <span class="mx-2">a</span>
-                                            <span
-                                                class="time-display">{{ $this->formatTime12Hour($horario_noche_fin) }}</span>
+                                            <span class="time-display">{{ $this->formatTime12Hour($horarios_semanales[$dia_seleccionado]['turno_noche_fin']) }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -278,6 +281,13 @@
 
                     </div>
                 </form>
+
+                <!-- Botón para guardar horarios semanales -->
+                <div class="text-center mb-3">
+                    <button wire:click="guardarHorarios" class="btn btn-success">
+                        <i class="fas fa-save"></i> Guardar Configuración de Horarios
+                    </button>
+                </div>
 
                 <div class="text-center btn-navigation">
                     <button class="btn btn-secondary mr-2" id="back-to-step1"><i class="fas fa-arrow-left"></i>
