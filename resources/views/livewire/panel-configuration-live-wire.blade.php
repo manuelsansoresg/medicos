@@ -277,12 +277,7 @@
                     </div>
                 </form>
 
-                <!-- Botón para guardar horarios semanales -->
-                <div class="text-center mb-3">
-                    <button wire:click="guardarHorarios" class="btn btn-success">
-                        <i class="fas fa-save"></i> Guardar Configuración de Horarios
-                    </button>
-                </div>
+                
 
                 <div class="text-center btn-navigation">
                     <button class="btn btn-secondary mr-2" id="back-to-step1"><i class="fas fa-arrow-left"></i>

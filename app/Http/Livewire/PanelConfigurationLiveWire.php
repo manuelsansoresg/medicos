@@ -57,8 +57,6 @@ class PanelConfigurationLiveWire extends Component
     ];
     
     public $dia_seleccionado = 'lunes';
-    
-    
 
     public function mount()
     {
