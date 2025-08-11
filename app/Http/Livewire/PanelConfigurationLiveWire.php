@@ -66,7 +66,7 @@ class PanelConfigurationLiveWire extends Component
         $this->clinicas  = Clinica::where('idusrregistra', Auth::user()->id)->get();
         $statusPackages = Solicitud::getUsedStatusPackages();
         $this->totalConsultorio = $statusPackages['totalConsultorioExtra']['totalConfiguracion'];
-        $this->consultorios = Consultorio::all()->toArray();
+        $this->consultorios = Consultorio::getAll(null,1)->toArray();
     }
 
     // Método para cambiar el día seleccionado

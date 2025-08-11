@@ -13,7 +13,7 @@
 
 
 
-<div class="wizard-container mt-5">
+<div class="wizard-container mt-5 d-none">
     <div class="header">
         <h1><i class="fas fa-cogs"></i> Configura tu Panel</h1>
         <p>Configura tu panel para poder usar el sistema</p>

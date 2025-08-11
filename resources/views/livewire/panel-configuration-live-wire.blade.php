@@ -105,7 +105,8 @@
                 $TagNumConsultory = $indiceConsultorio + 1;
                 $ContConsultory = $iConsultorio + 1;
             @endphp
-            <div class="step-pane active" id="step2-cons-{{ $TagNumConsultory }}">
+            <div class="step-pane {{ $ContConsultory == 2 ? 'active' : '' }}" id="step2-cons-{{ $ContConsultory }}">
+
 
                 <h3 class="text-center mb-4"><i class="fas fa-stethoscope"></i> Configurar consultorio
                     {{ $iConsultorio }} de {{ $totalConsultorio }} </h3>
@@ -273,12 +274,6 @@
                                 </div>
                             </div>
                         </div>
-
-
-
-
-
-
                     </div>
                 </form>
 
