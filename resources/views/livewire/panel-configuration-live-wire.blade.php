@@ -310,7 +310,7 @@
                     <button class="btn btn-secondary mr-2" wire:click="anteriorConsultorio({{ $ContConsultory }})"><i class="fas fa-arrow-left"></i>
                         Anterior</button>
                     @if ($ContConsultory > 2)
-                        <button class="btn btn-primary" wire:click="finalizarConfiguracion">Finalizar <i class="fas fa-door-open"></i></i></button>
+                        <button class="btn btn-primary" wire:click="finalizarConfiguracion">Finalizar <i class="fa-solid fa-arrow-right-from-bracket"></i></button>
                     @endif
                     <button class="btn btn-primary"
                         wire:click="guardarConsultorioYHorarios({{ $iConsultorio - 1 }}, {{  $ContConsultory }})"
