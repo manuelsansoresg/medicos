@@ -77,8 +77,9 @@ class PanelConfigurationLiveWire extends Component
     public function mount()
     {
         $this->typeConfiguration = Auth::user()->type_configuration;
-        $this->clinicaData  = Clinica::where('idusrregistra', Auth::user()->id)->first()->toArray();
-        $this->idClinica = $this->clinicaData ? $this->clinicaData['idclinica'] : null;
+        $clinica  = Clinica::where('idusrregistra', Auth::user()->id)->first();
+        $this->clinicaData = $clinica != null ?  $clinica->toArray() : null;
+        $this->idClinica = $clinica != null ? $this->clinicaData['idclinica'] : null;
 
 
         $statusPackages = Solicitud::getUsedStatusPackages();
