@@ -22,6 +22,8 @@ require('./expedient');
 require('./solicitud');
 require('./setting');
 require('./horarios');
+require('./biencomun');
+
 
 /* require('./configurar_entorno'); */
 
