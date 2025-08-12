@@ -115,9 +115,21 @@
             </label>
         </div>
     </div>
-    <div class="col-12">
+    <div class="col-12 mt-3">
         <p class="lead">BIEN COMÚN</p>
-        
+        @php
+            $permissionBienComun = $user->hasPermissionTo('Bien común') == 1 ? 1 : 0;
+        @endphp
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="permisoBienComun" id="bienComun1" value="1"
+            @if ($permissionBienComun == 1)
+                {{ 'checked'}}
+            @endif
+            >
+            <label class="form-check-label" for="bienComun1">
+                PERMITIR ACCESO A BIEN COMÚN
+            </label>
+        </div>
     </div>
 </div>
 <div class="col-12 mt-3 text-end">

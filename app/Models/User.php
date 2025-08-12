@@ -452,6 +452,15 @@ class User extends Authenticatable
                 ]);
             }
         }
+        
+        // Manejar permiso de Bien Común
+        $permisoBienComun = isset($request->permisoBienComun) ? $request->permisoBienComun : 0;
+        
+        if ($permisoBienComun == 1) {
+            $user->givePermissionTo('Bien común');
+        } else {
+            $user->revokePermissionTo('Bien común');
+        }
     }
 
     public static function getMyUsers($userId)
