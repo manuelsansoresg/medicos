@@ -147,7 +147,7 @@ Route::group(['prefix' => 'admin'], function () {
     
     Route::get('template-formulario/{configurationId}/{consultaId}/{userCitaId}/showTemplate', [FormularioConfigurationController::class, 'showTemplate']);
     
-    Route::resource('configuracion-descargas', '\App\Http\Controllers\Admin\UserConfigDownload');
+    Route::resource('configuracion', '\App\Http\Controllers\Admin\UserConfigDownload');
 
     
     Route::resource('setting', '\App\Http\Controllers\Admin\SettingController');

@@ -138,7 +138,7 @@ $("#frm-config-download-pacient-expedient").submit(function (e) {
     const data = new FormData(form);
     
     axios
-        .post("/admin/configuracion-descargas", data)
+        .post("/admin/configuracion", data)
         .then(function (response) {
             $('#modalPermisosPaciente').modal('hide');
         })

@@ -8,7 +8,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item active" aria-current="page"><a href="/">INICIO</a></li>
                     <li class="breadcrumb-item"> <a href="/admin/usuarios">LISTA DE USUARIOS</a> </li>
-                    <li class="breadcrumb-item">CONFIGURACIÓN DE DESCARGA DE EXPEDIENTES</li>
+                    <li class="breadcrumb-item">PERMISOS DE USUARIO</li>
                 </ol>
             </nav>
         </div>

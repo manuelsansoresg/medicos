@@ -1,5 +1,9 @@
 <div class="row mt-3">
     @inject('MmyFieldConfigDownload', 'App\Models\FieldConfigDownload') 
+    <div class="col-12">
+        <p class="lead">PERMISOS DE DESCARGA DE EXPEDIENTES</p>
+
+    </div>
     <div class="col-12 mt-3">
         <div class="form-check">
             @php
@@ -87,11 +91,9 @@
     
         @endhasrole
     </div>
-    <div class="col-12">
-        <hr>
-    </div>
+   
     <div class="col-12 mt-3">
-        <h5>ESTUDIOS</h5>
+        <p class="lead">ESTUDIOS</p>
         <div class="form-check">
             <input class="form-check-input" type="radio" name="permisosDescargaEstudios" id="imagenes1" value="1"
             @if ($permisionDownloadStudy == 1)
@@ -112,6 +114,10 @@
                 SIN IMÁGENES
             </label>
         </div>
+    </div>
+    <div class="col-12">
+        <p class="lead">BIEN COMÚN</p>
+        
     </div>
 </div>
 <div class="col-12 mt-3 text-end">
