@@ -25,7 +25,7 @@ require('./horarios');
 require('./biencomun');
 
 
-/* require('./configurar_entorno'); */
+require('./configurar_entorno');
 
 document.addEventListener('DOMContentLoaded', function() {
     $('.select2multiple').select2({

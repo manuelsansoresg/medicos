@@ -251,6 +251,7 @@ class PanelConfigurationLiveWire extends Component
     // Método para guardar consultorio y horarios
     public function guardarConsultorioYHorarios($indiceConsultorio, $contConsultory)
     {
+
         try {
             // Primero guardar el consultorio
             $this->guardarConsultorio($indiceConsultorio, $contConsultory);
@@ -271,6 +272,10 @@ class PanelConfigurationLiveWire extends Component
             
             // Emitir evento para hacer scroll a la sección de configuración
             $this->emit('scrollToConsultorioConfig');
+            $numberConsultoru = $contConsultory -1;
+            if ($this->totalConsultorio == $numberConsultoru) {
+                $this->finalizarConfiguracion();
+            }
             
         } catch (\Exception $e) {
             session()->flash('error', 'Error al guardar consultorio y horarios: ' . $e->getMessage());
@@ -388,7 +393,7 @@ class PanelConfigurationLiveWire extends Component
         User::find($usuarioPrincipal)->update([
             'is_config' => true
         ]);
-        return redirect('/');
+        $this->dispatchBrowserEvent('configuracion-finalizada');
      }
 
     public function render()
