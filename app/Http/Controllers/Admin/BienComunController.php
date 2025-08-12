@@ -18,6 +18,9 @@ class BienComunController extends Controller
      */
     public function index()
     {
+        if (!Auth::user()->hasPermissionTo('Bien común')) {
+            return redirect()->route('home')->with('error', 'No tienes permisos para acceder a esta página');
+        }
         $users = User::GetListUsers();
         $bienComunes = BienComun::with(['user', 'userRegistra'])
             ->where('idusrregistra', User::getMyUserPrincipal())

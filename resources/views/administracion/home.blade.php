@@ -380,7 +380,8 @@
                     </div>
                 </div>
             </div>
-            @if (Auth::user()->type_configuration == 1)
+            @if (Auth::user()->type_configuration == 1 && Auth::user()->hasPermissionTo('Bien común'))
+
                 <div class="col-md-2 text-center mb-3">
                     <div class="card shadow-sm border-0 h-100 transition-hover">
                         <div class="card-body d-flex flex-column align-items-center justify-content-center">

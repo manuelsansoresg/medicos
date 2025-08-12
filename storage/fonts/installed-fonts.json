@@ -1,7 +1,7 @@
 {
     "roboto": {
-        "100": "roboto_100_3b79190b915f051545ebf50ce3cd9540",
-        "normal": "roboto_normal_b7834828abc03e1e6aa6b18153302986",
-        "300": "roboto_300_cc4e76f50b66ce9ac2b3d8a19b5f276d"
+        "100": "C:\\laragon\\www\\medicos\\storage\\fonts\/roboto_100_3b79190b915f051545ebf50ce3cd9540",
+        "normal": "C:\\laragon\\www\\medicos\\storage\\fonts\/roboto_normal_b7834828abc03e1e6aa6b18153302986",
+        "300": "roboto_300_67dc12b3f1f113305ec431e641e8a57d"
     }
 }
