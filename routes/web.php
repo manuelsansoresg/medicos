@@ -152,6 +152,9 @@ Route::group(['prefix' => 'admin'], function () {
     
     Route::resource('setting', '\App\Http\Controllers\Admin\SettingController');
 
+    Route::resource('bien-comun', '\App\Http\Controllers\Admin\BienComunController');
+
+
 });
 
 Auth::routes();
