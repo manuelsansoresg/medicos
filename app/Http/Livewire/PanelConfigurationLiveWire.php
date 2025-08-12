@@ -15,11 +15,20 @@ class PanelConfigurationLiveWire extends Component
 
     public $typeConfiguration = null;
     public $totalConsultorio = 0;
-    public $tab = 2;
-    public $idClinica = 23;
+    public $tab = 1;
+    public $idClinica = null;
 
     public $clinicas = [];
     public $consultorios = [];
+    
+    // Propiedades para manejo de datos de clínica
+    public $clinicaData = [
+        'tnombre' => '',
+        'tdireccion' => '',
+        'vrfc' => '',
+        'ttelefono' => '',
+        'vfolioclinica' => ''
+    ];
     
     // Propiedades para manejo de datos de consultorios
     public $consultoriosData = [];
@@ -68,7 +77,10 @@ class PanelConfigurationLiveWire extends Component
     public function mount()
     {
         $this->typeConfiguration = Auth::user()->type_configuration;
-        $this->clinicas  = Clinica::where('idusrregistra', Auth::user()->id)->get();
+        $this->clinicaData  = Clinica::where('idusrregistra', Auth::user()->id)->first()->toArray();
+        $this->idClinica = $this->clinicaData ? $this->clinicaData['idclinica'] : null;
+
+
         $statusPackages = Solicitud::getUsedStatusPackages();
         $this->totalConsultorio = $statusPackages['totalConsultorioExtra']['totalConfiguracion'];
         $this->consultorios = Consultorio::getAll(null,1)->toArray();
@@ -76,7 +88,49 @@ class PanelConfigurationLiveWire extends Component
         // Inicializar datos de consultorios
         $this->initializeConsultoriosData();
     }
-
+    
+    // Método para guardar clínica
+    public function guardarClinica()
+    {
+        try {
+            // Validar campos requeridos
+            if (empty($this->clinicaData['tnombre'])) {
+                session()->flash('error', 'El nombre de la clínica es requerido.');
+                return;
+            }
+            
+            if (empty($this->clinicaData['vfolioclinica'])) {
+                session()->flash('error', 'El folio de la clínica es requerido.');
+                return;
+            }
+            
+            // Crear objeto request simulado
+            $request = new \stdClass();
+            $request->data = $this->clinicaData;
+            $request->clinica_id = $this->idClinica; // Nueva clínica
+            
+            // Guardar usando el método del modelo
+            $clinica = Clinica::saveEdit($request);
+            
+            // Actualizar el ID de la clínica
+            $this->idClinica = $clinica->idclinica;
+            
+            // Cambiar al siguiente tab
+            $this->tab = 2;
+            
+            session()->flash('message', 'Clínica guardada correctamente.');
+            
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error al guardar la clínica: ' . $e->getMessage());
+        }
+    }
+    
+    // Computed property para verificar si el botón debe estar habilitado
+    public function getBotonHabilitadoProperty()
+    {
+        return !empty($this->clinicaData['tnombre']) && !empty($this->clinicaData['vfolioclinica']);
+    }
+    
     // Método para cambiar el día seleccionado
     public function cambiarDia($dia)
     {

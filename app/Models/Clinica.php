@@ -5,6 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Models\VinculacionSolicitud;
+use App\Models\Solicitud;
+use App\Models\ClinicaUser;
+use App\Models\Consultorio;
 
 class Clinica extends Model
 {

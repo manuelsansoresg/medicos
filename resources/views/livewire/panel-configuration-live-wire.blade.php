@@ -43,6 +43,21 @@
             <div class="step-pane {{ $tab == 1 ? 'active' : '' }}" id="step1-clinic">
                 <h3 class="text-center mb-4"><i class="fas fa-hospital"></i> Configurar Clínica</h3>
 
+                {{-- Mensajes de éxito y error --}}
+                @if (session()->has('message'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('message') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                @if (session()->has('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 <form id="frm-clinica-wizard">
                     @csrf
                     <div class="row">
@@ -52,38 +67,38 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputNombreClinica" class="form-label">*NOMBRE</label>
-                                <input type="text" class="form-control" name="data[tnombre]" id="inputNombreClinica"
+                                <input type="text" class="form-control" wire:model="clinicaData.tnombre" id="inputNombreClinica"
                                     required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputDireccionClinica" class="form-label">DIRECCIÓN</label>
-                                <input type="text" class="form-control" name="data[tdireccion]"
+                                <input type="text" class="form-control" wire:model="clinicaData.tdireccion"
                                     id="inputDireccionClinica">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputRfcClinica" class="form-label">RFC</label>
-                                <input type="text" class="form-control" name="data[vrfc]" id="inputRfcClinica">
+                                <input type="text" class="form-control" wire:model="clinicaData.vrfc" id="inputRfcClinica">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputTelefonoClinica" class="form-label">TELÉFONO</label>
-                                <input type="text" class="form-control" name="data[ttelefono]"
+                                <input type="text" class="form-control" wire:model="clinicaData.ttelefono"
                                     id="inputTelefonoClinica">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputFolioClinica" class="form-label">*FOLIO</label>
-                                <input type="text" class="form-control" name="data[vfolioclinica]"
+                                <input type="text" class="form-control" wire:model="clinicaData.vfolioclinica"
                                     id="inputFolioClinica" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="inputEstatusClinica" class="form-label">*ACTIVO</label>
                                 <select name="data[istatus]" id="inputEstatusClinica" class="form-control" required>
@@ -92,14 +107,16 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
 
                     </div>
                 </form>
 
                 <div class="text-center btn-navigation">
-                    <button class="btn btn-primary" id="next-to-step2" disabled>Continuar <i
-                            class="fas fa-arrow-right"></i></button>
+                    <button class="btn btn-primary" wire:click="guardarClinica" 
+                            {{ $this->botonHabilitado ? '' : 'disabled' }}>
+                        Continuar <i class="fas fa-arrow-right"></i>
+                    </button>
                 </div>
             </div>
         @endif
