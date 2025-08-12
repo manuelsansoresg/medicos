@@ -328,6 +328,15 @@ class PanelConfigurationLiveWire extends Component
          return false;
      }
 
+     public function finalizarConfiguracion()
+     {
+        $usuarioPrincipal = User::getMyUserPrincipal();
+        User::find($usuarioPrincipal)->update([
+            'is_config' => true
+        ]);
+        return redirect('/');
+     }
+
     public function render()
     {
         return view('livewire.panel-configuration-live-wire');

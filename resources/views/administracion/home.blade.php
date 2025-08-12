@@ -373,6 +373,18 @@
                     <div class="card-body d-flex flex-column align-items-center justify-content-center">
                         <a href="/admin/usuarios" class="text-decoration-none">
                             <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
+                                <i class="fa-solid fs-3 fa-hat-wizard text-info"></i>
+                            </div>
+                            <span class="fw-bold text-dark">WIZARD</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 text-center mb-3">
+                <div class="card shadow-sm border-0 h-100 transition-hover">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                        <a href="/admin/usuarios" class="text-decoration-none">
+                            <div class="icon-wrapper mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px">
                                 <i class="fas fa-users fs-3 text-primary"></i>
                             </div>
                             <span class="fw-bold text-dark">USUARIOS</span>

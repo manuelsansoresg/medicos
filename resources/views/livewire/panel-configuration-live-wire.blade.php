@@ -114,11 +114,10 @@
                 
                 <!-- Mensajes de feedback -->
                 @if (session()->has('message'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('message') }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                    
+                    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                         {{ session('message') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
                 
@@ -300,11 +299,17 @@
                                     </select>
                                 </div>
                             </div>
+                           
                         </div>
                     </div>
                 </form>
-
-                
+                @if ($ContConsultory > 2)
+                    <div class="col-12">
+                        <p>
+                           <i class="fa-solid fa-circle-info"></i> Puedes terminar la configuración más tarde. La información se guardará automáticamente 
+                        </p>
+                    </div>
+                @endif
 
                 <div class="text-center btn-navigation">
                     <button class="btn btn-secondary mr-2" wire:click="anteriorConsultorio({{ $ContConsultory }})"><i class="fas fa-arrow-left"></i>
