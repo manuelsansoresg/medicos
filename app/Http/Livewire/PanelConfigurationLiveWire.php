@@ -272,7 +272,8 @@ class PanelConfigurationLiveWire extends Component
             
             // Emitir evento para hacer scroll a la sección de configuración
             $this->emit('scrollToConsultorioConfig');
-            $numberConsultoru = $contConsultory -1;
+            $numberConsultoru = Auth::user()->type_configuration == 1 ? $contConsultory -1 : $contConsultory;
+
             if ($this->totalConsultorio == $numberConsultoru) {
                 $this->finalizarConfiguracion();
             }
