@@ -23,6 +23,7 @@ require('./solicitud');
 require('./setting');
 require('./horarios');
 require('./biencomun');
+require('./configuration2');
 
 
 require('./configurar_entorno');

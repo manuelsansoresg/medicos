@@ -28,6 +28,11 @@ class AdministracionController extends Controller
         return view('administracion.configurar_entorno');
     }
 
+    public function configurarEntornoTwoShow()
+    {
+        return view('administracion.configurar_entorno_two');
+    }
+
     /**
      * Show the form for creating a new resource.
      *

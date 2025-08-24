@@ -57,8 +57,13 @@ Route::group(['prefix' => 'admin'], function () {
     
     Route::resource('pendientes', '\App\Http\Controllers\Admin\PendientesController')->middleware('auth');
     Route::resource('administracion', '\App\Http\Controllers\Admin\AdministracionController')->middleware('auth');
+    
     Route::get('configurar-entorno', [App\Http\Controllers\Admin\AdministracionController::class, 'configurarEntorno'])->middleware('auth');
     Route::post('configurar-entorno/completar', [App\Http\Controllers\Admin\AdministracionController::class, 'completarConfiguracion'])->middleware('auth');
+    
+    Route::get('configurar-entorno/two/show', [App\Http\Controllers\Admin\AdministracionController::class, 'configurarEntornoTwoShow'])->middleware('auth');
+
+
     
     Route::resource('clinicas', '\App\Http\Controllers\Admin\ClinicaController')->middleware('auth');
     Route::get('/clinica/{clinica}/consultorio/get', [App\Http\Controllers\Admin\ClinicaController::class, 'consultorioGet'])->middleware('auth');

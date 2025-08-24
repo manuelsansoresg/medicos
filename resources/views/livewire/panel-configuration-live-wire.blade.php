@@ -120,8 +120,7 @@
                 </form>
 
                 <div class="text-center btn-navigation">
-                    <button class="btn btn-primary" wire:click="guardarClinica" 
-                            {{ $this->botonHabilitado ? '' : 'disabled' }}>
+                    <button class="btn btn-primary" wire:click="guardarClinica">
                         Continuar <i class="fas fa-arrow-right"></i>
                     </button>
                 </div>
