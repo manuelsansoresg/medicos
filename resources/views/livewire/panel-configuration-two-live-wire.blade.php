@@ -359,8 +359,8 @@
                         
                         <!-- Sección de configuración de horarios (inicialmente oculta) -->
                         <div id="seccion-horarios" style="display: none;" class="mt-4">
-                            <div class="card border-success">
-                                <div class="card-header bg-success text-white">
+                            <div class="card border-primary">
+                                <div class="card-header bg-primary text-white">
                                     <h5 class="mb-0"><i class="fas fa-clock"></i> Configurar Horarios por Día</h5>
                                 </div>
                                 <div class="card-body">
@@ -535,53 +535,53 @@ function configurarHorarios() {
                     <div class="col-md-4">
                         <label class="form-label">Turno Mañana</label>
                         <div class="row">
-                            <div class="col-6">
-                                <label class="form-label small">Inicio</label>
-                                <select class="form-select form-select-sm">
-                                    ${generarOpcionesHora(6)}
-                                </select>
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label small">Fin</label>
-                                <select class="form-select form-select-sm">
-                                    ${generarOpcionesHora(14)}
-                                </select>
-                            </div>
-                        </div>
+                                     <div class="col-6">
+                                         <label class="form-label small">Inicio</label>
+                                         <select class="form-select form-select-sm">
+                                             ${generarOpcionesHora(6, 'manana')}
+                                         </select>
+                                     </div>
+                                     <div class="col-6">
+                                         <label class="form-label small">Fin</label>
+                                         <select class="form-select form-select-sm">
+                                             ${generarOpcionesHora(14, 'manana')}
+                                         </select>
+                                     </div>
+                                 </div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Turno Tarde</label>
-                        <div class="row">
-                            <div class="col-6">
-                                <label class="form-label small">Inicio</label>
-                                <select class="form-select form-select-sm">
-                                    ${generarOpcionesHora(12)}
-                                </select>
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label small">Fin</label>
-                                <select class="form-select form-select-sm">
-                                    ${generarOpcionesHora(22)}
-                                </select>
-                            </div>
-                        </div>
+                         <div class="row">
+                             <div class="col-6">
+                                 <label class="form-label small">Inicio</label>
+                                 <select class="form-select form-select-sm">
+                                     ${generarOpcionesHora(12, 'tarde')}
+                                 </select>
+                             </div>
+                             <div class="col-6">
+                                 <label class="form-label small">Fin</label>
+                                 <select class="form-select form-select-sm">
+                                     ${generarOpcionesHora(22, 'tarde')}
+                                 </select>
+                             </div>
+                         </div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Turno Noche</label>
-                        <div class="row">
-                            <div class="col-6">
-                                <label class="form-label small">Inicio</label>
-                                <select class="form-select form-select-sm">
-                                    ${generarOpcionesHora(18)}
-                                </select>
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label small">Fin</label>
-                                <select class="form-select form-select-sm">
-                                    ${generarOpcionesHora(2)}
-                                </select>
-                            </div>
-                        </div>
+                         <div class="row">
+                             <div class="col-6">
+                                 <label class="form-label small">Inicio</label>
+                                 <select class="form-select form-select-sm">
+                                     ${generarOpcionesHora(18, 'noche')}
+                                 </select>
+                             </div>
+                             <div class="col-6">
+                                 <label class="form-label small">Fin</label>
+                                 <select class="form-select form-select-sm">
+                                     ${generarOpcionesHora(2, 'noche')}
+                                 </select>
+                             </div>
+                         </div>
                     </div>
                 </div>
             </div>
@@ -598,12 +598,34 @@ function configurarHorarios() {
     }
 }
 
-function generarOpcionesHora(horaSeleccionada = null) {
+function generarOpcionesHora(horaSeleccionada = null, turno = 'manana') {
     let opciones = '';
-    for (let i = 0; i < 24; i++) {
-        const hora = i.toString().padStart(2, '0') + ':00';
-        const selected = i === horaSeleccionada ? 'selected' : '';
-        opciones += `<option value="${i}" ${selected}>${hora}</option>`;
+    let horaInicio, horaFin;
+    
+    // Definir rangos según el turno
+    switch(turno) {
+        case 'manana':
+            horaInicio = 6;
+            horaFin = 14;
+            break;
+        case 'tarde':
+            horaInicio = 12;
+            horaFin = 22;
+            break;
+        case 'noche':
+            horaInicio = 18;
+            horaFin = 26; // 26 para incluir 2am del día siguiente
+            break;
+        default:
+            horaInicio = 0;
+            horaFin = 23;
+    }
+    
+    for (let i = horaInicio; i <= horaFin; i++) {
+        const horaReal = i >= 24 ? i - 24 : i; // Para manejar horas después de medianoche
+        const hora = horaReal.toString().padStart(2, '0') + ':00';
+        const selected = horaReal === horaSeleccionada ? 'selected' : '';
+        opciones += `<option value="${horaReal}" ${selected}>${hora}</option>`;
     }
     return opciones;
 }
